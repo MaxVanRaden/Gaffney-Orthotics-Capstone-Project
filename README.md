@@ -13,6 +13,38 @@ Carlos Sotello
 
 ## Documentation
 
+### defines.h
+
+For accuracy purposes, a lot of this code uses stdint.h types such as uint8_t etc. in order to guarantee that an int has exactly the amount of bits you want it to have.
+I used #defines to abbreviate these type names.
+
+```cpp
+//These are guaranteed to always be the same length.
+//If you just declare a int for example, it's USUALLY 4 bytes, but sometimes with different systems it could be 8 by default.
+//An i32 will always be 32 bits, 4 bytes. (really important for things like unions, bitwise operations, etc.)
+#define i8 int8_t
+#define u8 uint8_t
+#define i16 int16_t
+#define u16 uint16_t
+#define i32 int32_t
+#define u32 uint32_t
+#define i64 int64_t
+#define u64 uint64_t
+#define real32 float
+#define real64 double
+#define f32 float
+#define f64 double
+#define b32 int32_t
+```
+
+I also redefine static as a few different keywords because static has a few different applications that I make more explicit in the naming scheme.
+
+```cpp
+#define internal static
+#define local static
+#define global static
+```
+
 ### render.h
 
 ```cpp
