@@ -2,13 +2,13 @@
 
 ## Contributors
 
-Max Van Radon
-Corbin Stark
-Forest Pearson
-Phillip Chen 
-Stephanie Beagle
-Chris Teters
-Jacob Odell
+Max Van Radon,
+Corbin Stark,
+Forest Pearson,
+Phillip Chen,
+Stephanie Beagle,
+Chris Teters,
+Jacob Odell,
 Carlos Sotello
 
 ## Documentation
