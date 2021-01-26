@@ -16,7 +16,7 @@ Carlos Sotello
 ### defines.h
 
 For accuracy purposes, a lot of this code uses stdint.h types such as uint8_t etc. in order to guarantee that an int has exactly the amount of bits you want it to have.
-I used #defines to abbreviate these type names.
+It uses #defines to abbreviate these type names.
 
 ```cpp
 //These are guaranteed to always be the same length.
@@ -37,7 +37,7 @@ I used #defines to abbreviate these type names.
 #define b32 int32_t
 ```
 
-I also redefine static as a few different keywords because static has a few different applications that I make more explicit in the naming scheme.
+It also redefine static as a few different keywords because static has a few different applications and is kind of a vague keyword.
 
 ```cpp
 #define internal static
