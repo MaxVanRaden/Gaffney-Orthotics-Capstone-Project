@@ -22,7 +22,7 @@ struct Vertex {
     vec2 uv; //uv = texture coordinates. Might be used, might not be used.
 };
 struct Mesh {
-    GLuint vbo; //vertex buffer object, the buffer where vertex data is stored _on the GPU_.
+    GLuint vbo; //vertex buffer object, the buffer where vertex data is stored _on the GPU_
     GLuint ebo; //element buffer object, indexing the vertices saves space
     std::vector<Vertex> vertices; //storing vertex data on the _CPU_ so that it can be manipulated. Have to upload this data to the GPU again for changes to actually be rendered though.
     u32 indexcount;
