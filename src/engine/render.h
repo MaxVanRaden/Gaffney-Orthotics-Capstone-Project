@@ -46,6 +46,7 @@ struct Mesh {
     GLuint vao;
     GLuint vbo;
     GLuint ebo;
+	std::vector<Vertex> vertices;
     u32 indexcount;
     u32 material;
 };

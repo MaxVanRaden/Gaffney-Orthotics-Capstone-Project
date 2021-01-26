@@ -23,8 +23,8 @@
 #define MAX_FORMAT_TEXT_SIZE 128
 
 //just so I have to type less often, these are guaranteed to always be the same length.
-//if you just declare a float for example, it's USUALLY 4 bytes, but sometimes with different systems it could be 8 by default.
-//an f32 will always be 32 bits, 4 bytes. (really important for things like unions, bitwise operations, etc.)
+//if you just declare an int for example, it's USUALLY 4 bytes, but sometimes with different systems it could be 8 by default.
+//an i32 will always be 32 bits, 4 bytes. (really important for things like unions, bitwise operations, etc.)
 #define i8 int8_t
 #define u8 uint8_t
 #define i16 int16_t
