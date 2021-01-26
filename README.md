@@ -1,4 +1,4 @@
-# Gaffney-Orthotics-Capstone-Project
+# Gaffney Orthotics Capstone Project
 
 ## Contributors
 
@@ -134,4 +134,5 @@ void move_cam_left(Camera cam, f32 units);
 ## Contact
 
 //TODO: Other people's emails here
+
 Email: starkcorbin@gmail.com
