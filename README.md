@@ -79,7 +79,7 @@ Model load_model(const char* filename);
 void draw_mesh(Mesh mesh);
 void draw_mesh(Mesh mesh, Texture tex);
 void draw_model(Model* model, Texture tex);
-
+```
 ### maths.h
 
 2d vectors, 3d vectors, 4d vectors, basic quaternion stuff, and 4x4 matrices
