@@ -2,7 +2,7 @@
 
 ## Contributors
 
-Max Van Radon,
+Max Van Raden,
 Corbin Stark,
 Forest Pearson,
 Phillip Chen,
