@@ -13,7 +13,36 @@ Carlos Sotello
 
 ## Documentation
 
-### defines.h
+### Front End
+
+#### main.html
+
+This is the main HTML page we will be working on. Currently it only has the canvas for rendering and some debug UI like a console output.
+It loads the backend code by importing scripts like so:
+
+```html
+	<!-- The backend scripts -->
+    <script type='text/javascript' src="load_web_assembly.js"></script>
+    <script type="text/javascript" src="backend.js"></script>
+```
+
+It also has some tests that call a function from the backend code as an example.
+
+```html
+	<!-- Testing ways to call C functions from Javascript -->
+	<script>
+		Module.onRuntimeInitialized = () => {
+			_print_hello(5)
+			_print_hello(15)
+			_print_hello(25)
+			_print_hello(55)
+		}
+	</script>
+```
+
+### Back End
+
+#### defines.h
 
 For accuracy purposes, a lot of this code uses stdint.h types such as uint8_t etc. in order to guarantee that an int has exactly the amount of bits you want it to have.
 It uses #defines to abbreviate these type names.
@@ -45,7 +74,7 @@ It also redefine static as a few different keywords because static has a few dif
 #define global static
 ```
 
-### render.h
+#### render.h
 
 ```cpp
 struct Vertex {
@@ -80,7 +109,7 @@ void draw_mesh(Mesh mesh);
 void draw_mesh(Mesh mesh, Texture tex);
 void draw_model(Model* model, Texture tex);
 ```
-### maths.h
+#### maths.h
 
 2d vectors, 3d vectors, 4d vectors, basic quaternion stuff, and 4x4 matrices
 
