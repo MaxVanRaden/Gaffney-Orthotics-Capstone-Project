@@ -62,6 +62,15 @@ static const GLfloat g_vertex_buffer_data[] = {
     1.0f,-1.0f, 1.0f
 };
 
+extern "C" {
+	
+	int print_hello(int x) {
+		printf("Hello emscripten! This is my parameter: %d\n", x);
+		return x;
+	}
+	
+}
+
 int main(void) 
 {
 	if (initialize() == GL_TRUE) {		
