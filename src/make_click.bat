@@ -8,9 +8,11 @@ cls
 set emsdk_path=C:\Users\darkz\Downloads\emsdk-master\emsdk-master\emsdk_env.bat
 
 set includes=-I../core -I../engine
-set files=../core/main.cpp ../engine/render.cpp ../engine/shaders.cpp -L../engine/SOIL.lib
+set files=../core/main.cpp ../engine/render.cpp ../engine/shaders.cpp
 set link=-L../engine/assimp.lib
-set options=-s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=["_main","_print_hello","cwrap"] -s EXPORTED_RUNTIME_METHODS=["ccall","cwrap"]
+
+set functions="_main","_print_hello","_is_ready"
+set options=-s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[%functions%] -s EXPORTED_RUNTIME_METHODS=["ccall","cwrap"]
 
 start "Emscripten CMD" cmd /c "%emsdk_path% & emcc %includes% %files% %link% %options% -o backend.js & echo Compiling... & timeout /T 5"
 popd

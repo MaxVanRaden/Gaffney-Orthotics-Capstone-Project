@@ -21,6 +21,8 @@ global Camera camera;
 global Mesh mesh;
 global GLuint vertexPosObject;
 
+global bool initialized = false;
+
 //Cube Mesh Data (just a shit ton of 3d points in space to define all the triangles that make up the cube, I found it on google)
 //once we have the .obj loader working then we will just load models instead of hardcoding them.
 static const GLfloat g_vertex_buffer_data[] = {
@@ -62,11 +64,20 @@ static const GLfloat g_vertex_buffer_data[] = {
     1.0f,-1.0f, 1.0f
 };
 
+void test() {
+	printf("This was printed from a C++ function, called from a C function.\n");
+}
+
 extern "C" {
 	
 	int print_hello(int x) {
 		printf("Hello emscripten! This is my parameter: %d\n", x);
+		test();
 		return x;
+	}
+	
+	bool is_ready() {
+		return initialized;
 	}
 	
 }
@@ -81,10 +92,12 @@ int main(void)
 		basic.set_shadows_on(false);
 		camera = {0};
 		
+		initialized = true;
 		emscripten_set_main_loop(mainloop, 0, 1);
 
 		//tex = load_texture("data/textures/lava.png", GL_LINEAR);
 		//cube = load_model("data/models/cube.obj");
+
 	}
 		
 	glfwTerminate();
