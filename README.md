@@ -21,23 +21,23 @@ This is the main HTML page we will be working on. Currently it only has the canv
 It loads the backend code by importing scripts like so:
 
 ```html
-	<!-- The backend scripts -->
-    <script type='text/javascript' src="load_web_assembly.js"></script>
-    <script type="text/javascript" src="backend.js"></script>
+<!-- The backend scripts -->
+<script type='text/javascript' src="load_web_assembly.js"></script>
+<script type="text/javascript" src="backend.js"></script>
 ```
 
 It also has some tests that call a function from the backend code as an example.
 
 ```html
-	<!-- Testing ways to call C functions from Javascript -->
-	<script>
-		Module.onRuntimeInitialized = () => {
-			_print_hello(5)
-			_print_hello(15)
-			_print_hello(25)
-			_print_hello(55)
-		}
-	</script>
+<!-- Testing ways to call C functions from Javascript -->
+<script>
+	Module.onRuntimeInitialized = () => {
+		_print_hello(5)
+		_print_hello(15)
+		_print_hello(25)
+		_print_hello(55)
+	}
+</script>
 ```
 
 ### Back End
