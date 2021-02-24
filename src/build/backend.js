@@ -6487,6 +6487,9 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 var _print_hello = Module["_print_hello"] = createExportWrapper("print_hello");
 
 /** @type {function(...*):?} */
+var _is_ready = Module["_is_ready"] = createExportWrapper("is_ready");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
