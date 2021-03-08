@@ -1,0 +1,1 @@
+  -LC:/Users/Jacob-SSD/Desktop/bassimp  -LC:/Users/Jacob-SSD/Desktop/bassimp/lib  ../../lib/libassimp.dll.a ../../lib/libzlibstatic.a ../../lib/libIrrXML.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

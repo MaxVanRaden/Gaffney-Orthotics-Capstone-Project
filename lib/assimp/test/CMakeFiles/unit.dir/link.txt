@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\unit.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\unit.dir/objects.a @CMakeFiles\unit.dir\objects1.rsp
+C:\MinGW\bin\g++.exe  -fvisibility=hidden -Wall -Wno-long-long -std=c++11 -Wl,--whole-archive CMakeFiles\unit.dir/objects.a -Wl,--no-whole-archive -o ..\bin\unit.exe -Wl,--out-implib,..\lib\libunit.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\unit.dir\linklibs.rsp

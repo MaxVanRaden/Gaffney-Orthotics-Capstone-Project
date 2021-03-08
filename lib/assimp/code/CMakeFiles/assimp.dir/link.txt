@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\assimp.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\assimp.dir/objects.a @CMakeFiles\assimp.dir\objects1.rsp
+C:\MinGW\bin\g++.exe  -fvisibility=hidden -Wall -Wno-long-long -std=c++11 -shared -o ..\bin\libassimp.dll -Wl,--out-implib,..\lib\libassimp.dll.a -Wl,--major-image-version,4,--minor-image-version,1 -Wl,--whole-archive CMakeFiles\assimp.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\assimp.dir\linklibs.rsp
