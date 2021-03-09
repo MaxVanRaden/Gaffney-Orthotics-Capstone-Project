@@ -1,0 +1,1397 @@
+Debug, T4756: ScenePreprocessor: Adding default material 'DefaultMaterial'
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 5, Lines: 6, Triangles: 5, Polygons: 5 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy position track has been generated
+Debug, T4756: ScenePreprocessor: Setting animation duration
+Debug, T4756: PretransformVerticesProcess begin
+Debug, T4756: PretransformVerticesProcess finished
+Info,  T4756: Removed 31 nodes and 0 animation channels (11 output nodes)
+Info,  T4756: Kept 0 lights and 0 cameras
+Info,  T4756: Moved 25 meshes to WCS (number of output meshes: 10)
+Debug, T4756: PretransformVerticesProcess begin
+Info,  T4756: PretransformVertices: Copying mesh due to mismatching transforms
+Skipping one or more lines with the same contents
+Debug, T4756: PretransformVerticesProcess finished
+Info,  T4756: Removed 31 nodes and 0 animation channels (31 output nodes)
+Info,  T4756: Kept 0 lights and 0 cameras
+Info,  T4756: Moved 25 meshes to WCS (number of output meshes: 49)
+Info,  T4756: Removed 5500 weights. Input bones: 30. Output bones: 8
+Error, T4756: FindInvalidDataProcess fails on mesh uvcoords: INF/NAN was found in a vector component
+Error, T4756: FindInvalidDataProcess fails on mesh normals: Found zero-length vector
+Error, T4756: FindInvalidDataProcess fails on mesh bitangents: All vectors are identical
+Warn,  T4756: Found 300 degenerated primitives
+Skipping one or more lines with the same contents
+Warn,  T4756: Found 200 degenerated primitives
+Info,  T4756: Mesh exceeds the triangle limit. It will be split ...
+Debug, T4756: RemoveVCProcess begin
+Debug, T4756: Setting AI_SCENE_FLAGS_INCOMPLETE flag
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: RemoveVCProcess begin
+Debug, T4756: Setting AI_SCENE_FLAGS_INCOMPLETE flag
+Info,  T4756: RemoveVCProcess finished. Data structure cleanup has been done.
+Debug, T4756: Mesh 0 (unnamed) | Verts in: 900 out: 300 | ~66.6667%
+Debug, T4756: RemoveVCProcess begin
+Debug, T4756: Setting AI_SCENE_FLAGS_INCOMPLETE flag
+Debug, T4756: RemoveVCProcess finished. Nothing to be done ...
+Debug, T4756: RemoveRedundantMatsProcess begin
+Info,  T4756: RemoveRedundantMatsProcess finished. Removed 2 redundant and 0 unused materials.
+Debug, T4756: RemoveRedundantMatsProcess begin
+Debug, T4756: Found positive match in exclusion list: 'Unique Mat2'
+Debug, T4756: Found positive match in exclusion list: 'Complex material name'
+Info,  T4756: RemoveRedundantMatsProcess finished. Removed 1 redundant and 0 unused materials.
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/B3D/WusonBlitz.b3d
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: BlitzBasic 3D Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/B3D\'
+Info,  T4756: B3D file format version: 1
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/CSM/ThomasFechten.csm
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: CharacterStudio Motion Importer (MoCap).
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/CSM\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Collada/duck.dae
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Collada Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Collada\'
+Debug, T4756: Collada schema version is 1.4.n
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Collada/lights.dae
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Collada Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Collada\'
+Debug, T4756: Collada schema version is 1.4.n
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load lightsExp.dae
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: (Deleting previous scene)
+Info,  T4756: Found a matching importer for this file format: Collada Importer.
+Info,  T4756: Import root directory is '.\'
+Debug, T4756: Collada schema version is 1.4.n
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Collada/cameras.dae
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Collada Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Collada\'
+Debug, T4756: Collada schema version is 1.4.n
+Warn,  T4756: Collada: Orthographic cameras are not supported.
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load cameraExp.dae
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: (Deleting previous scene)
+Info,  T4756: Found a matching importer for this file format: Collada Importer.
+Info,  T4756: Import root directory is '.\'
+Debug, T4756: Collada schema version is 1.4.n
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BVH/01_01.bvh
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: BVH Importer (MoCap).
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BVH\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BLEND/BlenderMaterial_269.blend
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Blender 3D Importer 
+http://www.blender3d.org.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BLEND\'
+Info,  T4756: BLEND: Blender version is 2.69 (64bit: true, little endian: true)
+Debug, T4756: REND
+Debug, T4756: TEST
+Debug, T4756: GLOB
+Debug, T4756: WM
+Debug, T4756: DATA
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SC
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: CA
+Debug, T4756: LA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: WO
+Debug, T4756: DATA
+Debug, T4756: AC
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: OB
+Debug, T4756: DATA
+Debug, T4756: OB
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: OB
+Debug, T4756: DATA
+Debug, T4756: MA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: TE
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: ME
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: LS
+Debug, T4756: DATA
+Debug, T4756: DNA1
+Debug, T4756: BlenderDNA: Got 551 structures with totally 6353 fields
+Info,  T4756: BlenderDNA: Dumped dna to dna.txt
+Debug, T4756: ENDB
+Warn,  T4756: <add reason>
+Skipping one or more lines with the same contents
+Warn,  T4756: BlendDNA: Did not find a field named `flags` in structure `Lamp`
+Info,  T4756: (Stats) Fields read: 431, pointers resolved: 17, cache hits: 3, cached objects: 13
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BLEND/box.blend
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Blender 3D Importer 
+http://www.blender3d.org.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BLEND\'
+Info,  T4756: BLEND: Blender version is 2.76 (64bit: true, little endian: true)
+Debug, T4756: REND
+Debug, T4756: TEST
+Debug, T4756: GLOB
+Debug, T4756: WM
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SC
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: CA
+Debug, T4756: LA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: WO
+Debug, T4756: DATA
+Debug, T4756: OB
+Debug, T4756: DATA
+Debug, T4756: OB
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: OB
+Debug, T4756: DATA
+Debug, T4756: MA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: TE
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: ME
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: LS
+Debug, T4756: DATA
+Debug, T4756: DNA1
+Debug, T4756: BlenderDNA: Got 604 structures with totally 6955 fields
+Info,  T4756: BlenderDNA: Dumped dna to dna.txt
+Debug, T4756: ENDB
+Warn,  T4756: <add reason>
+Skipping one or more lines with the same contents
+Warn,  T4756: BlendDNA: Did not find a field named `flags` in structure `Lamp`
+Info,  T4756: (Stats) Fields read: 431, pointers resolved: 17, cache hits: 3, cached objects: 13
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BLEND/AreaLight_269.blend
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Blender 3D Importer 
+http://www.blender3d.org.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/BLEND\'
+Info,  T4756: BLEND: Blender version is 2.69 (64bit: true, little endian: true)
+Debug, T4756: REND
+Debug, T4756: TEST
+Debug, T4756: GLOB
+Debug, T4756: WM
+Debug, T4756: DATA
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SN
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: SC
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: CA
+Debug, T4756: LA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: LA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: LA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: WO
+Debug, T4756: DATA
+Debug, T4756: OB
+Skipping one or more lines with the same contents
+Debug, T4756: DATA
+Debug, T4756: OB
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: OB
+Debug, T4756: MA
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: TE
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: ME
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: BR
+Debug, T4756: DATA
+Skipping one or more lines with the same contents
+Debug, T4756: LS
+Debug, T4756: DATA
+Debug, T4756: DNA1
+Debug, T4756: BlenderDNA: Got 551 structures with totally 6353 fields
+Info,  T4756: BlenderDNA: Dumped dna to dna.txt
+Debug, T4756: ENDB
+Warn,  T4756: <add reason>
+Skipping one or more lines with the same contents
+Warn,  T4756: BlendDNA: Did not find a field named `flags` in structure `Lamp`
+Warn,  T4756: <add reason>
+Skipping one or more lines with the same contents
+Warn,  T4756: BlendDNA: Did not find a field named `flags` in structure `Lamp`
+Warn,  T4756: <add reason>
+Skipping one or more lines with the same contents
+Warn,  T4756: BlendDNA: Did not find a field named `flags` in structure `Lamp`
+Info,  T4756: (Stats) Fields read: 515, pointers resolved: 23, cache hits: 3, cached objects: 19
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/SIB/heffalump.sib
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Silo SIB Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/SIB\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OpenGEX/Example.ogex
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Open Game Engine Exchange.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OpenGEX\'
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OpenGEX/light_issue1262.ogex
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Open Game Engine Exchange.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OpenGEX\'
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OBJ/spider.obj
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OBJ\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OBJ/spider.obj
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OBJ\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Info,  T4756: Load $$$___magic___$$$.
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Debug, T4756: Found positive match for header keyword: usemtl
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is './'
+Error, T4756: OBJ: failed to locate material Default, creating new material
+Info,  T4756: Load $$$___magic___$$$.
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Debug, T4756: Found positive match for header keyword: usemtl
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is './'
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OBJ/cube_with_vertexcolors.obj
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/OBJ\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Info,  T4756: Load $$$___magic___$$$.
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Debug, T4756: Found positive match for header keyword: v 
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is './'
+Debug, T4756: ValidateDataStructureProcess begin
+Error, T4756: Validation failed: aiScene::mNumMeshes is 0. At least one mesh must be there
+Info,  T4756: Load $$$___magic___$$$.
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Debug, T4756: Found positive match for header keyword: v 
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is './'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load $$$___magic___$$$.
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Debug, T4756: Found positive match for header keyword: v 
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is './'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load $$$___magic___$$$.
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Debug, T4756: Found positive match for header keyword: v 
+Info,  T4756: Found a matching importer for this file format: Wavefront Object Importer.
+Info,  T4756: Import root directory is './'
+Error, T4756: OBJ: Invalid face indice
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/PLY/cube.ply
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Stanford Polygon Library (PLY) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/PLY\'
+Debug, T4756: PLY::DOM::ParseInstance() begin
+Debug, T4756: PLY::DOM::ParseHeader() begin
+Debug, T4756: PLY::DOM::ParseHeader() succeeded
+Debug, T4756: PLY::DOM::ParseElementInstanceLists() begin
+Debug, T4756: PLY::DOM::ParseElementInstanceLists() succeeded
+Debug, T4756: PLY::DOM::ParseInstance() succeeded
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/PLY/cube.ply
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Stanford Polygon Library (PLY) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/PLY\'
+Debug, T4756: PLY::DOM::ParseInstance() begin
+Debug, T4756: PLY::DOM::ParseHeader() begin
+Debug, T4756: PLY::DOM::ParseHeader() succeeded
+Debug, T4756: PLY::DOM::ParseElementInstanceLists() begin
+Debug, T4756: PLY::DOM::ParseElementInstanceLists() succeeded
+Debug, T4756: PLY::DOM::ParseInstance() succeeded
+Debug, T4756: PretransformVerticesProcess begin
+Debug, T4756: PretransformVerticesProcess finished
+Info,  T4756: Removed 1 nodes and 0 animation channels (1 output nodes)
+Info,  T4756: Kept 0 lights and 0 cameras
+Info,  T4756: Moved 1 meshes to WCS (number of output meshes: 1)
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/PLY/float-color.ply
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Stanford Polygon Library (PLY) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/PLY\'
+Debug, T4756: PLY::DOM::ParseInstance() begin
+Debug, T4756: PLY::DOM::ParseHeader() begin
+Debug, T4756: PLY::DOM::ParseHeader() succeeded
+Debug, T4756: PLY::DOM::ParseElementInstanceLists() begin
+Debug, T4756: PLY::DOM::ParseElementInstanceLists() succeeded
+Debug, T4756: PLY::DOM::ParseInstance() succeeded
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/DXF/PinkEggFromLW.dxf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Drawing Interchange Format (DXF) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/DXF\'
+Debug, T4756: DXF: got 0 entries in BLOCKS
+Debug, T4756: DXF: got 288 polylines and 0 inserted blocks in ENTITIES
+Debug, T4756: DXF: Unexpanded polycount is 288, vertex count is 1152
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X3D/ComputerKeyboard.x3d
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Extensible 3D(X3D) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X3D\'
+Info,  T4756: Skipping node "Viewpoint" in Scene.
+Info,  T4756: Skipping node "TouchSensor" in Scene.
+Info,  T4756: Skipping node "TimeSensor" in Scene.
+Info,  T4756: Skipping node "PositionInterpolator" in Scene.
+Info,  T4756: Skipping node "ROUTE" in Scene.
+Skipping one or more lines with the same contents
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X/test.x
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Direct3D XFile Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X\'
+Warn,  T4756: Unknown data object in mesh in x file
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/STL/Spider_ascii.stl
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Stereolithography (STL) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/STL\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/STL/triangle_with_two_solids.stl
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Stereolithography (STL) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/STL\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Q3D/earth.q3o
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Quick3D Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/Q3D\'
+Info,  T4756: Quick3D File format version: 30
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3MF/box.3mf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: 3mf Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3MF\'
+Debug, T4756: 3D/3dmodel.model
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Debug, T4756: ScenePreprocessor: Adding default material 'DefaultMaterial'
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3MF/box.3mf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: 3mf Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3MF\'
+Debug, T4756: 3D/3dmodel.model
+Debug, T4756: ScenePreprocessor: Adding default material 'DefaultMaterial'
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/ASE/ThreeCubesGreen.ASE
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: ASE Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/ASE\'
+Info,  T4756: Line 1: Comment: AsciiExport-Version  2,00 - Tue May 06 17:21:38 2008
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/AMF/test1.amf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Additive manufacturing file format(AMF) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/AMF\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Debug, T4756: ScenePreprocessor: Adding default material 'DefaultMaterial'
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/AC/Wuson.ac
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: AC3D Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/AC\'
+Info,  T4756: AC3D file format version: 11
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3DS/fels.3ds
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Discreet 3DS Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3DS\'
+Info,  T4756: 3DS file format version: 3
+Error, T4756: Chunk is too large
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3D/box_a.3d
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Unreal Mesh Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3D\'
+Debug, T4756: UNREAL: data file is C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3D/box_d.3d
+Debug, T4756: UNREAL: aniv file is C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3D/box_a.3d
+Debug, T4756: UNREAL: uc file is C:/Users/Jacob-SSD/Desktop/bassimp/test/models/3D/box.uc
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load $$$___magic___$$$.3ds
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Discreet 3DS Importer.
+Info,  T4756: Import root directory is './'
+Info,  T4756: 3DS file format version: 3
+Error, T4756: Chunk is too large
+Info,  T4756: Registering custom importer for these file extensions: applelinuxmacwindows
+Info,  T4756: Unregistering custom importer: 
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X/test.x
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Direct3D XFile Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X\'
+Warn,  T4756: Unknown data object in mesh in x file
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Entering post processing pipeline
+Debug, T4756: RemoveRedundantMatsProcess begin
+Debug, T4756: RemoveRedundantMatsProcess finished 
+Debug, T4756: OptimizeGraphProcess begin
+Debug, T4756: OptimizeGraphProcess finished
+Debug, T4756: FindDegeneratesProcess begin
+Debug, T4756: FindDegeneratesProcess finished
+Debug, T4756: GenUVCoordsProcess begin
+Debug, T4756: GenUVCoordsProcess finished
+Debug, T4756: TriangulateProcess begin
+Debug, T4756: TriangulateProcess finished. There was nothing to be done.
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: FindInvalidDataProcess begin
+Debug, T4756: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T4756: Skipping OptimizeMeshesProcess
+Debug, T4756: Generate spatially-sorted vertex cache
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Debug, T4756: JoinVerticesProcess begin
+Debug, T4756: Mesh 0 (pCube1) | Verts in: 36 out: 24 | ~33.3333%
+Info,  T4756: JoinVerticesProcess finished | Verts in: 36 out: 24 | ~33.3%
+Info,  T4756: Leaving post processing pipeline
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X/Testwuson.X
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: (Deleting previous scene)
+Info,  T4756: Found a matching importer for this file format: Direct3D XFile Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X\'
+Warn,  T4756: Unknown data object in animation of .x file
+Skipping one or more lines with the same contents
+Warn,  T4756: Unknown data object in frame in x file
+Skipping one or more lines with the same contents
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Entering post processing pipeline
+Debug, T4756: RemoveRedundantMatsProcess begin
+Debug, T4756: RemoveRedundantMatsProcess finished 
+Debug, T4756: OptimizeGraphProcess begin
+Debug, T4756: OptimizeGraphProcess finished
+Debug, T4756: FindDegeneratesProcess begin
+Debug, T4756: FindDegeneratesProcess finished
+Debug, T4756: GenUVCoordsProcess begin
+Debug, T4756: GenUVCoordsProcess finished
+Debug, T4756: TriangulateProcess begin
+Debug, T4756: TriangulateProcess finished. There was nothing to be done.
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: FindInvalidDataProcess begin
+Debug, T4756: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T4756: Skipping OptimizeMeshesProcess
+Debug, T4756: Generate spatially-sorted vertex cache
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Debug, T4756: JoinVerticesProcess begin
+Debug, T4756: Mesh 0 (Wuson) | Verts in: 11196 out: 3205 | ~71.3737%
+Info,  T4756: JoinVerticesProcess finished | Verts in: 11196 out: 3205 | ~71.4%
+Info,  T4756: Leaving post processing pipeline
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X/anim_test.x
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: (Deleting previous scene)
+Info,  T4756: Found a matching importer for this file format: Direct3D XFile Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X\'
+Warn,  T4756: Length of texture file name is zero. Skipping this texture.
+Warn,  T4756: Unknown data object in mesh in x file
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Entering post processing pipeline
+Debug, T4756: RemoveRedundantMatsProcess begin
+Debug, T4756: RemoveRedundantMatsProcess finished 
+Debug, T4756: OptimizeGraphProcess begin
+Debug, T4756: OptimizeGraphProcess finished
+Debug, T4756: FindDegeneratesProcess begin
+Debug, T4756: FindDegeneratesProcess finished
+Debug, T4756: GenUVCoordsProcess begin
+Debug, T4756: GenUVCoordsProcess finished
+Debug, T4756: TriangulateProcess begin
+Debug, T4756: TriangulateProcess finished. There was nothing to be done.
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: FindInvalidDataProcess begin
+Warn,  T4756: Simplified dummy tracks with just one key
+Skipping one or more lines with the same contents
+Debug, T4756: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T4756: Skipping OptimizeMeshesProcess
+Debug, T4756: Generate spatially-sorted vertex cache
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Debug, T4756: JoinVerticesProcess begin
+Debug, T4756: Mesh 0 (pCylinder1) | Verts in: 2520 out: 485 | ~80.754%
+Info,  T4756: JoinVerticesProcess finished | Verts in: 2520 out: 485 | ~80.8%
+Info,  T4756: Leaving post processing pipeline
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X/anim_test.x
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: (Deleting previous scene)
+Info,  T4756: Found a matching importer for this file format: Direct3D XFile Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X\'
+Warn,  T4756: Length of texture file name is zero. Skipping this texture.
+Warn,  T4756: Unknown data object in mesh in x file
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Entering post processing pipeline
+Debug, T4756: RemoveRedundantMatsProcess begin
+Debug, T4756: RemoveRedundantMatsProcess finished 
+Debug, T4756: OptimizeGraphProcess begin
+Debug, T4756: OptimizeGraphProcess finished
+Debug, T4756: FindDegeneratesProcess begin
+Debug, T4756: FindDegeneratesProcess finished
+Debug, T4756: GenUVCoordsProcess begin
+Debug, T4756: GenUVCoordsProcess finished
+Debug, T4756: TriangulateProcess begin
+Debug, T4756: TriangulateProcess finished. There was nothing to be done.
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: FindInvalidDataProcess begin
+Warn,  T4756: Simplified dummy tracks with just one key
+Skipping one or more lines with the same contents
+Debug, T4756: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T4756: Skipping OptimizeMeshesProcess
+Debug, T4756: Generate spatially-sorted vertex cache
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Debug, T4756: JoinVerticesProcess begin
+Debug, T4756: Mesh 0 (pCylinder1) | Verts in: 2520 out: 485 | ~80.754%
+Info,  T4756: JoinVerticesProcess finished | Verts in: 2520 out: 485 | ~80.8%
+Info,  T4756: Leaving post processing pipeline
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X/BCN_Epileptic.X
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: (Deleting previous scene)
+Info,  T4756: Found a matching importer for this file format: Direct3D XFile Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/X\'
+Warn,  T4756: Unknown data object in animation of .x file
+Skipping one or more lines with the same contents
+Warn,  T4756: Unknown data object in frame in x file
+Skipping one or more lines with the same contents
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Entering post processing pipeline
+Debug, T4756: RemoveRedundantMatsProcess begin
+Debug, T4756: RemoveRedundantMatsProcess finished 
+Debug, T4756: OptimizeGraphProcess begin
+Debug, T4756: OptimizeGraphProcess finished
+Debug, T4756: FindDegeneratesProcess begin
+Debug, T4756: FindDegeneratesProcess finished
+Debug, T4756: GenUVCoordsProcess begin
+Debug, T4756: GenUVCoordsProcess finished
+Debug, T4756: TriangulateProcess begin
+Debug, T4756: TriangulateProcess finished. There was nothing to be done.
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 0, Lines: 0, Triangles: 3, Polygons: 0 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: FindInvalidDataProcess begin
+Debug, T4756: FindInvalidDataProcess finished. Everything seems to be OK.
+Debug, T4756: OptimizeMeshesProcess begin
+Debug, T4756: OptimizeMeshesProcess finished
+Debug, T4756: Generate spatially-sorted vertex cache
+Debug, T4756: GenVertexNormalsProcess begin
+Debug, T4756: GenVertexNormalsProcess finished. Normals are already there
+Debug, T4756: JoinVerticesProcess begin
+Debug, T4756: Mesh 0 (Torso) | Verts in: 5898 out: 1170 | ~80.1628%
+Debug, T4756: Mesh 1 (Head) | Verts in: 6108 out: 1196 | ~80.4191%
+Debug, T4756: Mesh 2 (Legs) | Verts in: 3372 out: 648 | ~80.7829%
+Info,  T4756: JoinVerticesProcess finished | Verts in: 15378 out: 3014 | ~80.4%
+Info,  T4756: Leaving post processing pipeline
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/FBX/spider.fbx
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Autodesk FBX Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/FBX\'
+Warn,  T4756: FBX-DOM (TOK_KEY, offset 0x1b544) shading mode not recognized: Phong
+Warn,  T4756: FBX-DOM (TOK_KEY, offset 0x1b96a) shading mode not recognized: Phong
+Warn,  T4756: FBX-DOM (TOK_KEY, offset 0x1bd8d) shading mode not recognized: Phong
+Warn,  T4756: FBX-DOM (TOK_KEY, offset 0x1c1b4) shading mode not recognized: Phong
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/IFC/AC14-FZK-Haus.ifc
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Industry Foundation Classes (IFC) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/IFC\'
+Debug, T4756: IFC: File schema is 'IFC2X3'
+Debug, T4756: STEP: got 82226 object records with 5788 inverse index entries
+Debug, T4756: IFC: got units used for lengths
+Debug, T4756: IFC: got units used for angles
+Debug, T4756: IFC: got world coordinate system
+Debug, T4756: IFC: looking at spatial structure `Gelände`
+Debug, T4756: IFC: selecting this spatial structure as root structure
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing degenerate faces
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: skipping IfcAnnotation entity due to importer settings
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: skipping IfcSpace entity due to importer settings
+Skipping one or more lines with the same contents
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping (IfcBooleanClippingResult)
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping with polygonal bounding (IfcBooleanClippingResult)
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping (IfcBooleanClippingResult)
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Warn,  T4756: IFC: skipping unknown IfcGeometricRepresentationItem entity, type is IfcPolyline
+Debug, T4756: IFC: removing duplicate vertices
+Error, T4756: IFC: failed to generate all window caps
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping with polygonal bounding (IfcBooleanClippingResult)
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping (IfcBooleanClippingResult)
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping (IfcBooleanClippingResult)
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: generating CSG geometry by plane clipping (IfcBooleanClippingResult)
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: generating CSG geometry by plane clipping (IfcBooleanClippingResult)
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Warn,  T4756: IFC: failed to resolve all openings, presumably their topology is not supported by Assimp
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: removing degenerate faces
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: removing duplicate vertices
+Debug, T4756: IFC: generate mesh procedurally by extrusion (IfcExtrudedAreaSolid)
+Debug, T4756: IFC: skipping IfcAnnotation entity due to importer settings
+Skipping one or more lines with the same contents
+Debug, T4756: IFC: skipping IfcSpace entity due to importer settings
+Debug, T4756: IFC: STEP: evaluated 70094 object records
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/HMP/terrain.hmp
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: 3D GameStudio Heightmap (HMP) Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/HMP\'
+Debug, T4756: HMP subtype: 3D GameStudio A7, magic word is HMP7
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF2/BoxTextured-glTF/BoxTextured.gltf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Info,  T4756: Found a matching importer for this file format: glTF2 Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF2/BoxTextured-glTF\'
+Debug, T4756: MakeVerboseFormatProcess begin
+Info,  T4756: MakeVerboseFormatProcess finished. There was much work to do ...
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF2/2CylinderEngine-glTF-Binary/2CylinderEngine.glb
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Info,  T4756: Found a matching importer for this file format: glTF2 Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF2/2CylinderEngine-glTF-Binary\'
+Debug, T4756: MakeVerboseFormatProcess begin
+Info,  T4756: MakeVerboseFormatProcess finished. There was much work to do ...
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF2/BoxTextured-glTF/BoxTextured.gltf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Info,  T4756: Found a matching importer for this file format: glTF2 Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF2/BoxTextured-glTF\'
+Debug, T4756: MakeVerboseFormatProcess begin
+Info,  T4756: MakeVerboseFormatProcess finished. There was much work to do ...
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Debug, T4756: TriangulateProcess begin
+Debug, T4756: TriangulateProcess finished. There was nothing to be done.
+Debug, T4756: SortByPTypeProcess begin
+Info,  T4756: Points: 0, Lines: 0, Triangles: 1, Polygons: 0 (Meshes, X = removed)
+Debug, T4756: SortByPTypeProcess finished
+Debug, T4756: JoinVerticesProcess begin
+Debug, T4756: Mesh 0 (Mesh) | Verts in: 36 out: 24 | ~33.3333%
+Info,  T4756: JoinVerticesProcess finished | Verts in: 36 out: 24 | ~33.3%
+Debug, T4756: SplitLargeMeshesProcess_Triangle begin
+Debug, T4756: SplitLargeMeshesProcess_Triangle finished. There was nothing to do
+Debug, T4756: SplitLargeMeshesProcess_Vertex begin
+Debug, T4756: SplitLargeMeshesProcess_Vertex finished. There was nothing to do
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF/TwoBoxes/TwoBoxes.gltf
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: File extension not known, trying signature-based detection
+Info,  T4756: Found a matching importer for this file format: glTF Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/glTF/TwoBoxes\'
+Debug, T4756: MakeVerboseFormatProcess begin
+Info,  T4756: MakeVerboseFormatProcess finished. There was much work to do ...
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/SMD/triangle.smd
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Valve SMD Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/SMD\'
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/SMD/holy_grailref.smd
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: Valve SMD Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/SMD\'
+Error, T4756: [SMD/VTA] Bone index overflow. The bone index will be ignored, the weight will be assigned to the vertex' parent node
+Skipping one or more lines with the same contents
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end
+Info,  T4756: Load C:/Users/Jacob-SSD/Desktop/bassimp/test/models/LWS/move_x.lws
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: LightWave Scene Importer.
+Info,  T4756: Import root directory is 'C:/Users/Jacob-SSD/Desktop/bassimp/test/models/LWS\'
+Debug, T4756: LWS: Skipping over plugin-specific data
+Skipping one or more lines with the same contents
+Info,  T4756: LWS file format version is 5
+Info,  T4756: %%% BEGIN EXTERNAL FILE %%%
+Info,  T4756: File: simple_cube.lwo
+Info,  T4756: Load simple_cube.lwo
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Info,  T4756: Found a matching importer for this file format: LightWave/Modo Object Importer.
+Info,  T4756: Import root directory is '.\'
+Info,  T4756: LWO file format: LWO2 (>= LightWave 6)
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Info,  T4756: %%% END EXTERNAL FILE %%%
+Debug, T4756: MakeLeftHandedProcess begin
+Debug, T4756: MakeLeftHandedProcess finished
+Debug, T4756: FlipWindingOrderProcess begin
+Debug, T4756: FlipWindingOrderProcess finished
+Debug, T4756: ScenePreprocessor: Dummy rotation track has been generated
+Debug, T4756: ScenePreprocessor: Dummy scaling track has been generated
+Debug, T4756: START `t1`
+Debug, T4756: END   `t1`, dt= 0.000997 s
+Info,  T4756: Load daedae
+Debug, T4756: Assimp 4.1.0 x86 gcc debug shared singlethreaded
+Debug, T4756: Found positive match for header keyword: <collada
+Info,  T4756: Found a matching importer for this file format: Collada Importer.
+Info,  T4756: Import root directory is '.\'
+Debug, T4756: Collada schema version is 1.4.n
+Debug, T4756: ValidateDataStructureProcess begin
+Debug, T4756: ValidateDataStructureProcess end

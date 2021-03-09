@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Jacob-SSD/Desktop/bassimp/revision.h
+
+C:/Users/Jacob-SSD/Desktop/bassimp/tools/assimp_cmd/assimp_cmd.rc
+resource.h
+C:/Users/Jacob-SSD/Desktop/bassimp/tools/assimp_cmd/resource.h
+../../revision.h
+C:/Users/Jacob-SSD/Desktop/bassimp/revision.h
+windows.h
+C:/Users/Jacob-SSD/Desktop/bassimp/tools/assimp_cmd/windows.h
+
+C:/Users/Jacob-SSD/Desktop/bassimp/tools/assimp_cmd/resource.h
+

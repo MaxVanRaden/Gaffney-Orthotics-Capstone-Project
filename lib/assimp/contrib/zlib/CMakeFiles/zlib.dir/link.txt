@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\zlib.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\zlib.dir/objects.a @CMakeFiles\zlib.dir\objects1.rsp
+C:\MinGW\bin\gcc.exe  -fPIC -shared -o ..\..\bin\libzlib.dll -Wl,--out-implib,..\..\lib\libzlib.dll.a -Wl,--major-image-version,0,--minor-image-version,0 -Wl,--whole-archive CMakeFiles\zlib.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\zlib.dir\linklibs.rsp
