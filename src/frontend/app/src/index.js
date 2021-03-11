@@ -7,7 +7,7 @@ class App extends React.Component {
         this.print = this.print.bind(this)
     }
     print(){
-        window.Module.ready.then(api => console.log(api.print(100)))
+        window.Module.ready.then(api => console.log(api.print_hello(100)))
     }
 
     render(){
