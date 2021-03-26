@@ -15,6 +15,16 @@ Carlos Sotello
 
 ### Front End
 
+### Install
+* Navigate to *src/frontend/app* directory and run,
+```
+npm install
+```
+* Launch emscripten from your respective directory
+* Navigate to the root directory and run,
+```
+build
+```
 #### main.html
 
 This is the main HTML page we will be working on. Currently it only has the canvas for rendering and some debug UI like a console output.
@@ -164,4 +174,11 @@ void move_cam_left(Camera cam, f32 units);
 
 //TODO: Other people's emails here
 
-Email: starkcorbin@gmail.com
+Max Van Raden,
+Corbin Stark (starkcorbin@gmail.com),
+Forest Pearson,
+Phillip Chen,
+Stephanie Beagle,
+Christopher Teters (cteters@pdx.edu),
+Jacob Odell,
+Carlos Sotello

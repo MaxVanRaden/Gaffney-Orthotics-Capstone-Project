@@ -13,7 +13,7 @@ set(CMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Ems
 
 # Configure emcc/em++ arguments use \ to escape quotations "
 set(FUNCTIONS "\"_main\",\"_print_hello\",\"_is_ready\"")
-set(OPTIONS "-s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]")
+set(OPTIONS "--post-js ${PWD}/src/frontend/wrapper.js -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]")
 
 # Tell CMake where to look for #include pre-processor directives
 include_directories(${EMSDK}/upstream/emscripten/system/include)
