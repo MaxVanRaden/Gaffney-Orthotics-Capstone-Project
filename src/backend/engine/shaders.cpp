@@ -1,52 +1,6 @@
 #include "shaders.h"
 
 const int FOV = 90;
-
-void OrthoShader::load() {
-    char vShaderStr[] =  
-      "attribute vec4 vPosition;    \n"
-      "void main()                  \n"
-      "{                            \n"
-      "   gl_Position = vPosition;  \n"
-      "}                            \n";
-   
-   char fShaderStr[] =  
-      "precision mediump float;\n"\
-      "void main()                                  \n"
-      "{                                            \n"
-      "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n"
-      "}                                            \n";
-   
-    shader = load_shader_from_strings( vShaderStr, fShaderStr );
-	
-    start_shader(shader);
-	glBindAttribLocation ( shader.ID, 0, "position" );
-    upload_int(shader, "sprite", 0);
-    transform = glGetUniformLocation(shader.ID, "transform");
-    projection = glGetUniformLocation(shader.ID, "projection");
-	
-    glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(FOV, 16.0f / 9.0f, 1.0f, 300.0f).elements));
-    printf("ortho shader constructed\n");
-}
-
-void OrthoShader::dispose() {
-    dispose_shader(shader);
-}
-
-void OrthoShader::bind() {
-    start_shader(shader);
-}
-
-void OrthoShader::set_projection(mat4 proj) {
-    glUniformMatrix4fv(projection, 1, GL_FALSE, proj.elements);
-}
-
-void OrthoShader::set_transform(mat4 tran) {
-    glUniformMatrix4fv(transform, 1, GL_FALSE, tran.elements);
-}
-
-
-
 void PickingShader::load() {
     shader = load_shader("data/shaders/picking_vs.glsl", "data/shaders/picking_fs.glsl");
 
@@ -103,20 +57,32 @@ void StaticShader::load() {
 "attribute vec2 uv;\n"
 "attribute vec3 normal;\n"
 "varying vec3 pass_pos;\n"
+"varying vec3 pass_normal;\n"
 "uniform mat4 projection;\n"
 "uniform mat4 transform;\n"
 "uniform mat4 view;\n"
 "void main() {\n"
 "	 pass_pos = position;\n"
+"    pass_normal = normal;\n"
 "    gl_Position = projection * view * transform * vec4(position, 1.0);\n"
 "}";
    
    char fShaderStr[] =  
       "precision mediump float;\n"\
 	  "varying vec3 pass_pos;\n"
+      "varying vec3 pass_normal;\n"
+      "uniform vec3 lightPos;\n"
+      "uniform vec3 lightColor;\n"
       "void main()                                  \n"
       "{                                            \n"
-      "  gl_FragColor = vec4 ( pass_pos.x, pass_pos.z, pass_pos.y, 1.0 );\n"
+      "   vec3 normal = normalize(pass_normal);\n"
+      "   vec3 ambient = pow( 0.75 * vec3(1.0, 1.0, 1.0), vec3(2.2));\n"
+      "   vec3 lightDir = normalize( lightPos - pass_pos);\n"
+      "   float diff = max(dot(lightDir, normal), 0.0);\n"
+      "   vec3 diffuse = diff * lightColor;\n"
+      "   vec3 lighting = (ambient + diffuse) * lightColor;\n"
+      "   gl_FragColor = vec4 (lighting, 1.0);\n"
+      "   //gl_FragColor = vec4 ( pass_pos.x, pass_pos.z, pass_pos.y, 1.0 );\n"
       "}                                            \n";
 	  
 	shader = load_shader_from_strings( vShaderStr, fShaderStr );
@@ -135,7 +101,7 @@ void StaticShader::load() {
 
     glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(90, 16.0f / 9.0f, 1.0f, 300.0f).elements));
 	
-	set_light_color(1.0, 1.0, 1.0, 1.0);
+	set_light_color(1.0, 1.0, 1.0);
 	set_light_pos(-4, 24, -2);
 	set_transform(identity());
 	set_view(identity());
@@ -157,8 +123,8 @@ void StaticShader::set_shadows_on(bool on) {
 	glUniform1i(shadowsOn, on);
 }
 
-void StaticShader::set_light_color(f32 r, f32 g, f32 b, f32 a) {
-    glUniform4f(lightColor, r, g, b, a);
+void StaticShader::set_light_color(f32 r, f32 g, f32 b) {
+    glUniform3f(lightColor, r, g, b);
 }
 
 void StaticShader::set_light_pos(f32 x, f32 y, f32 z) {

@@ -47,6 +47,7 @@ struct Mesh {
     GLuint vbo;
     GLuint ebo;
 	std::vector<Vertex> vertices;
+	std::vector<GLushort> indices;
     u32 indexcount;
     u32 material;
 };
@@ -65,9 +66,10 @@ void dispose_model(Model* model);
 Mesh create_mesh(std::vector<Vertex> vertices, std::vector<GLushort> indices);
 void load_mesh(Model* model, u32 i, const aiMesh* paiMesh);
 Model load_model(const char* filename);
+Model load_model_string(std::string file);
 void draw_mesh(Mesh mesh);
 void draw_mesh(Mesh mesh, Texture tex);
-void draw_model(Model* model, Texture tex);
+void draw_model(Model* model);
 
 Mesh create_billboard();
 Mesh create_ground_quad(f32 width, f32 height);

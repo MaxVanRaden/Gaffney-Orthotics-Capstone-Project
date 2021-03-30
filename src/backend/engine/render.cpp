@@ -84,6 +84,8 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     model->meshes[i].indexcount = indices.size();
+    model->meshes[i].vertices = vertices;
+    model->meshes[i].indices = indices;
 }
 
 void load_materials(Model* model, const aiScene* pScene, const char* filename) {
@@ -126,6 +128,36 @@ void load_materials(Model* model, const aiScene* pScene, const char* filename) {
     }
 }
 
+#include <assimp/cimport.h>
+Model load_model_string(std::string file) {
+    Model model;
+    model.pos = {0};
+    model.rotate = {0};
+    model.scale = {1, 1, 1};
+
+    Assimp::Importer importer;
+    const aiScene* pScene = importer.ReadFileFromMemory(
+            &file[0], file.size(), aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_Triangulate |aiProcess_FindInvalidData | aiProcess_ValidateDataStructure | 0, ".obj"
+            );
+
+    if(pScene) {
+        model.meshes.resize(pScene->mNumMeshes);
+        model.materials.resize(pScene->mNumMaterials);
+
+        for(u32 i = 0; i < model.meshes.size(); ++i) {
+            aiMesh* paiMesh = pScene->mMeshes[i];
+            load_mesh(&model, i, paiMesh);
+        }
+    }
+    else {
+        printf("Load_model_string: Error loading model %s\n", file.c_str());
+        printf("Error: %s\n", importer.GetErrorString());
+    }
+
+    //load_materials(&model, pScene, filename);
+    return model;
+}
+
 Model load_model(const char* filename) {
     Model model;
     model.pos = {0};
@@ -156,6 +188,7 @@ void draw_mesh(Mesh mesh) {
     //bind VERTEX ARRAY OBJECT
     //and all attributes of it
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)0);                     //position
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(3 * sizeof(GLfloat))); //normals
@@ -184,13 +217,14 @@ void draw_mesh(Mesh mesh, Texture tex) {
 
     bind_texture(tex, 0);
     //draw bound VAO using triangles, up to mesh.indexcount indices
-    glDrawElements(GL_TRIANGLES, mesh.indexcount, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, mesh.indexcount, GL_UNSIGNED_SHORT, &mesh.indices[0]);
+    //glDrawArrays(GL_TRIANGLES, 0, 3000);
 }
 
-void draw_model(Model* model, Texture tex) {
+void draw_model(Model* model) {
         //ONE MATERIAL PER MESH -- DRAW ALL MESHES WITH THEIR MATERIALS (NO TEXTURES IN THESE LOW POLY MODELS, ONLY DIFFUSE COLOR)
         for(Mesh mesh : model->meshes) {
-            draw_mesh(mesh, tex);
+            draw_mesh(mesh);
         }
 }
 

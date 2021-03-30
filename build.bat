@@ -1,6 +1,6 @@
 @echo off
 echo Configuring Emscripten environment variables
-set EMSDK=C:/git/emsdk
+set EMSDK=C:\Users\darkz\Downloads\emsdk-master\emsdk-master
 
 :: Expected to already exist since
 mkdir build
@@ -33,12 +33,6 @@ pushd build
     popd
 popd
 
-::Copy the new files to app
-COPY "build\backend.*" "src\frontend\app\public\"
-
-::Start the app server
-npm start --prefix src/frontend/app
-
 :: Launch python shell and fire up browser to main.html
-REM start python -m http.server
-REM start "" http://localhost:8000/src/frontend/main.html
+start python -m http.server
+start "" http://localhost:8000/src/frontend/main.html

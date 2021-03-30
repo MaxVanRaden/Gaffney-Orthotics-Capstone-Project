@@ -1,7 +1,7 @@
 #TODO: Edit the "Project Working Directory" below
 #TODO: Edit "EMSDK" to point to your emsdk file location
-set(PWD "C:/Users/Jacob-SSD/Desktop/Gaffney-Orthotics-Capstone-Project")
-set(EMSDK "C:/git/emsdk")
+set(PWD "C:/Users/darkz/Downloads/Gaffney-Orthotics-Capstone-Project/Gaffney-Orthotics-Capstone-Project")
+set(EMSDK "C:/Users/darkz/Downloads/emsdk-master/emsdk-master")
 cmake_minimum_required(VERSION 3.17.5)
 
 # Project Name
@@ -13,7 +13,7 @@ set(CMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Ems
 
 # Configure emcc/em++ arguments use \ to escape quotations "
 set(FUNCTIONS "\"_main\",\"_print_hello\",\"_is_ready\"")
-set(OPTIONS "--post-js ${PWD}/src/frontend/wrapper.js -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]")
+set(OPTIONS "-s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]")
 
 # Tell CMake where to look for #include pre-processor directives
 include_directories(${EMSDK}/upstream/emscripten/system/include)
@@ -29,7 +29,7 @@ file(GLOB_RECURSE engine-sources ${PWD}/src/backend/engine/*.cpp)
 file(GLOB_RECURSE engine-headers ${PWD}/src/backend/engine/*.h)
 
 # Define the executable using the sources
-add_executable(backend ${sources} ${engine-sources} ${headers} ${engine-headers})
+add_executable(backend ${sources} ${engine-sources} ${headers} ${engine-headers} src/backend/core/MeshEditor.h src/backend/core/Entity.h src/backend/core/Entity.cpp src/backend/core/MeshEditor.cpp src/backend/core/StairsString.h)
 
 # Link the built library to the project
 target_link_libraries(backend assimp)
