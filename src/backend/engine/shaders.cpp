@@ -1,52 +1,6 @@
 #include "shaders.h"
 
 const int FOV = 90;
-
-void OrthoShader::load() {
-    char vShaderStr[] =  
-      "attribute vec4 vPosition;    \n"
-      "void main()                  \n"
-      "{                            \n"
-      "   gl_Position = vPosition;  \n"
-      "}                            \n";
-   
-   char fShaderStr[] =  
-      "precision mediump float;\n"\
-      "void main()                                  \n"
-      "{                                            \n"
-      "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n"
-      "}                                            \n";
-   
-    shader = load_shader_from_strings( vShaderStr, fShaderStr );
-	
-    start_shader(shader);
-	glBindAttribLocation ( shader.ID, 0, "position" );
-    upload_int(shader, "sprite", 0);
-    transform = glGetUniformLocation(shader.ID, "transform");
-    projection = glGetUniformLocation(shader.ID, "projection");
-	
-    glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(FOV, 16.0f / 9.0f, 1.0f, 300.0f).elements));
-    printf("ortho shader constructed\n");
-}
-
-void OrthoShader::dispose() {
-    dispose_shader(shader);
-}
-
-void OrthoShader::bind() {
-    start_shader(shader);
-}
-
-void OrthoShader::set_projection(mat4 proj) {
-    glUniformMatrix4fv(projection, 1, GL_FALSE, proj.elements);
-}
-
-void OrthoShader::set_transform(mat4 tran) {
-    glUniformMatrix4fv(transform, 1, GL_FALSE, tran.elements);
-}
-
-
-
 void PickingShader::load() {
     shader = load_shader("data/shaders/picking_vs.glsl", "data/shaders/picking_fs.glsl");
 
@@ -95,30 +49,57 @@ void PickingShader::set_transform(mat4 tran) {
 }
 
 
-
 void StaticShader::load() {
-	//for now just put the shader program code in a string
-    char vShaderStr[] =  
-"attribute vec3 position;\n"
-"attribute vec2 uv;\n"
-"attribute vec3 normal;\n"
-"varying vec3 pass_pos;\n"
-"uniform mat4 projection;\n"
-"uniform mat4 transform;\n"
-"uniform mat4 view;\n"
-"void main() {\n"
-"	 pass_pos = position;\n"
-"    gl_Position = projection * view * transform * vec4(position, 1.0);\n"
-"}";
-   
-   char fShaderStr[] =  
-      "precision mediump float;\n"\
-	  "varying vec3 pass_pos;\n"
-      "void main()                                  \n"
-      "{                                            \n"
-      "  gl_FragColor = vec4 ( pass_pos.x, pass_pos.z, pass_pos.y, 1.0 );\n"
-      "}                                            \n";
-	  
+   char vShaderStr[] = R"foo(
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+varying vec3 pass_pos;
+varying vec3 pass_normal;
+
+uniform mat4 projection;
+uniform mat4 transform;
+uniform mat4 view;
+
+void main() {
+    pass_pos = vec3(transform * vec4(position, 1.0));
+    //pass_pos = position;
+    //pass_normal = transpose(inverse(mat3(transform))) * normal;
+    pass_normal = vec3(transform * vec4(normal, 1.0));
+    gl_Position = projection * view * transform * vec4(position, 1.0);
+}
+)foo";
+
+   char fShaderStr[] = R"foo(
+precision mediump float;
+varying vec3 pass_pos;
+varying vec3 pass_normal;
+
+uniform vec3 lightPos;
+uniform vec3 lightColor;
+uniform vec3 cameraPos;
+
+void main() {
+    vec3 normal = normalize(pass_normal);
+    vec3 ambient = pow(0.75 * vec3(1.0, 1.0, 1.0), vec3(2.2));
+
+    vec3 lightDir = normalize(lightPos - pass_pos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(cameraPos - pass_pos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = max(dot(viewDir, reflectDir), 0.0);
+    //spec = spec * spec * spec * spec * spec * spec * spec * spec;
+    spec = spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec;
+    vec3 specular = specularStrength * spec * lightColor;
+
+    vec3 lighting = (ambient + diffuse + specular) * lightColor;
+    gl_FragColor = vec4(lighting, 1.0);
+}
+)foo";
 	shader = load_shader_from_strings( vShaderStr, fShaderStr );
 
 	//none of this (except for projection, view, and transform) is actually used yet, but it will be.
@@ -128,6 +109,7 @@ void StaticShader::load() {
 	shadowsOn = glGetUniformLocation(shader.ID, "shadowsOn");
     lightColor = glGetUniformLocation(shader.ID, "lightColor");
     lightPos = glGetUniformLocation(shader.ID, "lightPos");
+    cameraPos = glGetUniformLocation(shader.ID, "cameraPos");
     projection = glGetUniformLocation(shader.ID, "projection");
     transform = glGetUniformLocation(shader.ID, "transform");
     view = glGetUniformLocation(shader.ID, "view");
@@ -135,8 +117,9 @@ void StaticShader::load() {
 
     glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(90, 16.0f / 9.0f, 1.0f, 300.0f).elements));
 	
-	set_light_color(1.0, 1.0, 1.0, 1.0);
+	set_light_color(1.0, 1.0, 1.0);
 	set_light_pos(-4, 24, -2);
+	set_camera_pos(7, 7, 7);
 	set_transform(identity());
 	set_view(identity());
 	set_lightspace(identity());
@@ -157,12 +140,16 @@ void StaticShader::set_shadows_on(bool on) {
 	glUniform1i(shadowsOn, on);
 }
 
-void StaticShader::set_light_color(f32 r, f32 g, f32 b, f32 a) {
-    glUniform4f(lightColor, r, g, b, a);
+void StaticShader::set_light_color(f32 r, f32 g, f32 b) {
+    glUniform3f(lightColor, r, g, b);
 }
 
 void StaticShader::set_light_pos(f32 x, f32 y, f32 z) {
     glUniform3f(lightPos, x, y, z);
+}
+
+void StaticShader::set_camera_pos(f32 x, f32 y, f32 z) {
+    glUniform3f(cameraPos, x, y, z);
 }
 
 void StaticShader::set_projection(mat4 proj) {
