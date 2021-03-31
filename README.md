@@ -174,7 +174,7 @@ void move_cam_left(Camera cam, f32 units);
 
 //TODO: Other people's emails here
 
-Max Van Raden,
+Max Van Raden (vanraden@pdx.edu,
 Corbin Stark (starkcorbin@gmail.com),
 Forest Pearson,
 Phillip Chen,
