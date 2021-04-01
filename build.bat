@@ -3,7 +3,7 @@ echo Configuring Emscripten environment variables
 set EMSDK=C:/git/emsdk
 
 :: Expected to already exist since
-mkdir build
+mkdir backend
 
 :: Enter the emsdk environment
 call %EMSDK%/emsdk_env.bat
