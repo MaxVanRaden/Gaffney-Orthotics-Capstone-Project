@@ -14,20 +14,63 @@ to call some C++ function the backend team will write.
 <html lang="en-us">
 
   <head>
-    <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Main HTML Page</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css" href="./style.css">
     <link rel="shortcut icon" href="#">
   </head>
-  
+
   <body>
+  <!-- Nav Bar -->
+  <div id="navbar" class="navbar">
+    <p id="title"> OrthoFreeD </p>
+    <ul id = "help">
+      <li><a class ="help" href="">Help</a></li>
+    </ul>
+  </div>
+
+  <!-- Toolbar -->
+  <div class ="toolbar" id ="toolbar">
+    <a href="#" class="backbtn">&#8617;</a>
+    <div class="tool"
+         role="button"
+         tabindex="0">Import
+    </div>
+    <div class="tool"
+         role="button"
+         tabindex="-1">Export
+    </div>
+    <div class="dropdown">
+      <button class="tool">View</button>
+      <div class="menu-items">
+        <a href="#">Item 1</a>
+        <a href="#">Item 2</a>
+        <a href="#">Item 3</a>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="tool">Edit</button>
+      <div class="menu-items">
+        <a href="#">Item 1</a>
+        <a href="#">Item 2</a>
+        <a href="#">Item 3</a>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="tool">Select</button>
+      <div class="menu-items">
+        <a href="#">Item 1</a>
+        <a href="#">Item 2</a>
+        <a href="#">Item 3</a>
+      </div>
+    </div>
+  </div>
+
 	<!-- A progress display to indicate the webassembly code is still being loaded -->
-    <hr/>
-    <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
+    <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><h1>emscripten</h1></figure>
     <div class="emscripten" id="status">Downloading...</div>
     <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>  
+      <progress value="0" max="100" id="progress" hidden></progress>
     </div>
 	
 	<!-- The canvas, the most important tag -->
@@ -40,7 +83,6 @@ to call some C++ function the backend team will write.
     <div class="emscripten">
       <input type="checkbox" id="resize">Resize canvas
       <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-      &nbsp;&nbsp;&nbsp;
       <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, 
                                                                                 document.getElementById('resize').checked)">
     </div>
