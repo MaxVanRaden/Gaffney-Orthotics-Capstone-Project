@@ -3,15 +3,15 @@ echo Configuring Emscripten environment variables
 set EMSDK=C:/emsdk
 
 :: Expected to already exist since
-mkdir build
+mkdir backend
 
 :: Enter the emsdk environment
 call %EMSDK%/emsdk_env.bat
 
-pushd build
+pushd backend
 
-    mkdir backend
-    pushd backend
+    mkdir build
+    pushd build
         :: Because we sourced the Emscripten environment variables, we can use the 'EMSCRIPTEN' var to know where the current SDK can be found, which we need so we can locate the 'Emscripten.cmake' toolchain file.
         set EMSCRIPTEN_CMAKE_PATH=%EMSDK%/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
 
@@ -34,9 +34,11 @@ pushd build
 popd
 
 ::Copy the new files to app
-COPY "build\backend.*" "src\frontend\app\public\"
+COPY "backend\backend.*" "frontend\app\public\"
+
 ::Start the app server
-npm start --prefix src/frontend/app
+npm start --prefix frontend/app
+
 :: Launch python shell and fire up browser to main.html
 REM start python -m http.server
 REM start "" http://localhost:8000/src/frontend/main.html

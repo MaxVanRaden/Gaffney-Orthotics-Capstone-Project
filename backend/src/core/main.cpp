@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <GL/glfw.h>
 #include <emscripten/emscripten.h>
-#include "src/backend/engine/maths.h"
-#include "src/backend/engine/texture.h"
-#include "src/backend/engine/shaders.h"
-#include "src/backend/engine/render.h"
+#include "backend/src/engine/maths.h"
+#include "backend/src/engine/texture.h"
+#include "backend/src/engine/shaders.h"
+#include "backend/src/engine/render.h"
 #include "MeshEditor.h"
 
 int initialize();
