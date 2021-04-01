@@ -16,7 +16,7 @@ Carlos Sotello
 ### Front End
 
 ### Install
-* Navigate to *src/frontend/app* directory and run,
+* Navigate to *frontend/app* directory and run,
 ```
 npm install
 ```
@@ -25,7 +25,7 @@ npm install
 ```
 build
 ```
-#### main.html
+#### index.html
 
 This is the main HTML page we will be working on. Currently it only has the canvas for rendering and some debug UI like a console output.
 It loads the backend code by importing scripts like so:
@@ -49,6 +49,13 @@ It also has some tests that call a function from the backend code as an example.
 	}
 </script>
 ```
+#### index.js
+
+This acts as the entry point for our React code in index.html by rendering our base App component. 
+
+#### App.js
+
+Base React component which contains our React code imported from the components directory. 
 
 ### Back End
 
@@ -181,4 +188,4 @@ Phillip Chen,
 Stephanie Beagle,
 Christopher Teters (cteters@pdx.edu),
 Jacob Odell,
-Carlos Sotello
+Carlos Sotello (csotello@pdx.edu)
