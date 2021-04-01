@@ -1,7 +1,7 @@
 #TODO: Edit the "Project Working Directory" below
 #TODO: Edit "EMSDK" to point to your emsdk file location
-set(PWD "C:/Users/darkz/Downloads/Gaffney-Orthotics-Capstone-Project/Gaffney-Orthotics-Capstone-Project")
-set(EMSDK "C:/Users/darkz/Downloads/emsdk-master/emsdk-master")
+set(PWD "C:/Users/GTango/CLionProjects/Gaffney-Orthotics-Capstone-Project")
+set(EMSDK "C:/emsdk")
 cmake_minimum_required(VERSION 3.17.5)
 
 # Project Name
@@ -12,7 +12,7 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake)
 
 # Configure emcc/em++ arguments use \ to escape quotations "
-set(FUNCTIONS "\"_main\",\"_print_hello\",\"_is_ready\",\"_import_model\",\"_export_model\"")
+set(FUNCTIONS "\"_main\",\"_is_ready\",\"_import_model\",\"_export_model\",\"_print_hello\"")
 set(OPTIONS "--post-js ${PWD}/src/frontend/wrapper.js -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\",\"allocate\",\"intArrayFromString\"]")
 
 # Tell CMake where to look for #include pre-processor directives

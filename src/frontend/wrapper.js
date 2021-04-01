@@ -2,8 +2,12 @@
 
 Module.ready = new Promise(function(resolve, reject) {
     addOnPreMain(function() {
+        // var api = {
+        //     print_hello: Module.cwrap('print_hello', 'number', ['number'])
+        // };
+        // resolve(api);
         var api = {
-            print_hello: Module.cwrap('print_hello', 'number', ['number'])
+            import_model: Module.cwrap('import_model', 'char* str', ['char* str'], 'int_len', ['int_len'], 'target', ['target'])
         };
         resolve(api);
     });

@@ -93,9 +93,20 @@ extern "C" {
         return x;
     }
 
-    void import_model(const char* str) {
-        editor->add_model(str);
+    int import_model(char* str, int len, char target){
+        int i, count = 0;
+        for(i = 0; i < len; i++){
+            if(str[i] == target){
+                count++;
+            }
+        }
+        for(i = 0; i < len; i++){
+            printf("%c", str[i]);
+        }
+        printf("\n");
+        return count;
     }
+
     char* export_model(int ID, const char* fileformat) {
         return editor->export_model(ID, fileformat);
     }
