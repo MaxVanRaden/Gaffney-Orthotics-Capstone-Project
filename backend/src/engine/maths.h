@@ -573,29 +573,6 @@ void operator*=(mat4& a, const mat4 b) {
 }
 #endif
 
-#if 0
-internal inline
-void operator*=(mat4& a, const mat4 b) {
-	f32 data[4 * 4];
-	for (u8 y = 0; y < 4; ++y) {
-		for (u8 x = 0; x < 4; ++x) {
-			f32 sum = 0.0f;
-            printf("a.m%d%d = ", y, x);
-			for (u8 i = 0; i < 4; ++i) {
-				sum += a.elements[x + i * 4] * b.elements[i + y * 4];
-                printf("a.m%d%d * b.m%d%d + ", i, x, y, i);
-			}
-            printf("\n");
-			data[x + y * 4] = sum;
-		}
-	}
-	memcpy(a.elements, data, 16 * sizeof(f32));
-            printf("\n");
-            printf("\n");
-            printf("\n");
-}
-#endif
-
 internal inline
 mat4 translation(const f32 x, const f32 y, const f32 z) {
 	mat4 mat = identity();
@@ -1043,28 +1020,6 @@ vec3 convert_to_spherical_coords(vec3 direction) {
 
     return ret;
 }
-
-/*
-INTERNAL inline
-vec3 rgb_to_xyz(vec3 rgb) {
-	mat3 transform = {
-		0.4124, 0.3576, 0.1805,
-		0.2126, 0.7151, 0.0721,
-		0.0193, 0.1192, 0.9505
-	};
-	return transform * rgb;
-}
-
-INTERNAL inline
-vec3 xyz_to_rgb(vec3 xyz) {
-	mat3 transform = {
-		3.2410, -1.5374, -0.4986,
-		-0.9692, 1.8760, 0.0416,
-		0.0556, -0.2040, 1.0570
-	};
-	return transform * xyz;
-}
-*/
 
 #if 0
 internal inline

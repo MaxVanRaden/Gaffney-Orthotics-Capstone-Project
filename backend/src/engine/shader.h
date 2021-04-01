@@ -83,9 +83,9 @@ Shader load_shader(const char* vertexfile, const char* fragmentfile) {
 	glAttachShader(shader.ID, shader.vertexshaderID);
 	glAttachShader(shader.ID, shader.fragshaderID);
 	//glBindFragDataLocation(shader.ID, 0, "outColor");
-	glBindAttribLocation(shader.ID, 0, "position");
-	glBindAttribLocation(shader.ID, 1, "normal");
-	glBindAttribLocation(shader.ID, 2, "uv");
+    glBindAttribLocation(shader.ID, 0, "position");
+    glBindAttribLocation(shader.ID, 1, "normal");
+    glBindAttribLocation(shader.ID, 2, "uv");
 	glLinkProgram(shader.ID);
 	glValidateProgram(shader.ID);
 
@@ -113,64 +113,10 @@ Shader load_shader_from_strings(const char* vertexstring, const char* fragmentst
 	return shader;
 }
 
-//=============================================
-//
-//      UNIFORM VARIABLE UPLOADING
-//
-//=============================================
-
-internal inline
-void upload_float(Shader shader, const char* name, f32 value) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform1f(location, value);
-}
-
-internal inline
-void upload_float_array(Shader shader, const char* name, f32 arr[], i32 count) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform1fv(location, count, arr);
-}
-
 internal inline
 void upload_int(Shader shader, const char* name, i32 value) {
 	i32 location = get_uniform_location(shader, name);
 	glUniform1i(location, value);
-}
-
-internal inline
-void upload_int_array(Shader shader, const char* name, i32 arr[], i32 count) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform1iv(location, count, arr);
-}
-
-internal inline
-void upload_vec2(Shader shader, const char* name, vec2 vec) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform2f(location, vec.x, vec.y);
-}
-
-internal inline
-void upload_vec3(Shader shader, const char* name, vec3 vec) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform3f(location, vec.x, vec.y, vec.z);
-}
-
-internal inline
-void upload_vec4(Shader shader, const char* name, vec4 vec) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
-}
-
-internal inline
-void upload_bool(Shader shader, const char* name, bool value) {
-	i32 location = get_uniform_location(shader, name);
-	glUniform1f(location, value ? 1 : 0);
-}
-
-internal inline
-void upload_mat4(Shader shader, const char* name, mat4 mat) {
-	i32 location = get_uniform_location(shader, name);
-	glUniformMatrix4fv(location, 1, GL_FALSE, mat.elements);
 }
 
 internal inline

@@ -17,7 +17,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// {{PRE_JSES}}
+
 
 // Sometimes an existing Module object exists with properties
 // meant to overwrite the default module functionality. Here
@@ -1773,6 +1773,121 @@ var ASM_CONSTS = {
       return demangleAll(js);
     }
 
+  function _tzset() {
+      // TODO: Use (malleable) environment variables instead of system settings.
+      if (_tzset.called) return;
+      _tzset.called = true;
+  
+      var currentYear = new Date().getFullYear();
+      var winter = new Date(currentYear, 0, 1);
+      var summer = new Date(currentYear, 6, 1);
+      var winterOffset = winter.getTimezoneOffset();
+      var summerOffset = summer.getTimezoneOffset();
+  
+      // Local standard timezone offset. Local standard time is not adjusted for daylight savings.
+      // This code uses the fact that getTimezoneOffset returns a greater value during Standard Time versus Daylight Saving Time (DST). 
+      // Thus it determines the expected output during Standard Time, and it compares whether the output of the given date the same (Standard) or less (DST).
+      var stdTimezoneOffset = Math.max(winterOffset, summerOffset);
+  
+      // timezone is specified as seconds west of UTC ("The external variable
+      // `timezone` shall be set to the difference, in seconds, between
+      // Coordinated Universal Time (UTC) and local standard time."), the same
+      // as returned by stdTimezoneOffset.
+      // See http://pubs.opengroup.org/onlinepubs/009695399/functions/tzset.html
+      HEAP32[((__get_timezone())>>2)] = stdTimezoneOffset * 60;
+  
+      HEAP32[((__get_daylight())>>2)] = Number(winterOffset != summerOffset);
+  
+      function extractZone(date) {
+        var match = date.toTimeString().match(/\(([A-Za-z ]+)\)$/);
+        return match ? match[1] : "GMT";
+      };
+      var winterName = extractZone(winter);
+      var summerName = extractZone(summer);
+      var winterNamePtr = allocateUTF8(winterName);
+      var summerNamePtr = allocateUTF8(summerName);
+      if (summerOffset < winterOffset) {
+        // Northern hemisphere
+        HEAP32[((__get_tzname())>>2)] = winterNamePtr;
+        HEAP32[(((__get_tzname())+(4))>>2)] = summerNamePtr;
+      } else {
+        HEAP32[((__get_tzname())>>2)] = summerNamePtr;
+        HEAP32[(((__get_tzname())+(4))>>2)] = winterNamePtr;
+      }
+    }
+  function _mktime(tmPtr) {
+      _tzset();
+      var date = new Date(HEAP32[(((tmPtr)+(20))>>2)] + 1900,
+                          HEAP32[(((tmPtr)+(16))>>2)],
+                          HEAP32[(((tmPtr)+(12))>>2)],
+                          HEAP32[(((tmPtr)+(8))>>2)],
+                          HEAP32[(((tmPtr)+(4))>>2)],
+                          HEAP32[((tmPtr)>>2)],
+                          0);
+  
+      // There's an ambiguous hour when the time goes back; the tm_isdst field is
+      // used to disambiguate it.  Date() basically guesses, so we fix it up if it
+      // guessed wrong, or fill in tm_isdst with the guess if it's -1.
+      var dst = HEAP32[(((tmPtr)+(32))>>2)];
+      var guessedOffset = date.getTimezoneOffset();
+      var start = new Date(date.getFullYear(), 0, 1);
+      var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+      var winterOffset = start.getTimezoneOffset();
+      var dstOffset = Math.min(winterOffset, summerOffset); // DST is in December in South
+      if (dst < 0) {
+        // Attention: some regions don't have DST at all.
+        HEAP32[(((tmPtr)+(32))>>2)] = Number(summerOffset != winterOffset && dstOffset == guessedOffset);
+      } else if ((dst > 0) != (dstOffset == guessedOffset)) {
+        var nonDstOffset = Math.max(winterOffset, summerOffset);
+        var trueOffset = dst > 0 ? dstOffset : nonDstOffset;
+        // Don't try setMinutes(date.getMinutes() + ...) -- it's messed up.
+        date.setTime(date.getTime() + (trueOffset - guessedOffset)*60000);
+      }
+  
+      HEAP32[(((tmPtr)+(24))>>2)] = date.getDay();
+      var yday = ((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))|0;
+      HEAP32[(((tmPtr)+(28))>>2)] = yday;
+      // To match expected behavior, update fields from date
+      HEAP32[((tmPtr)>>2)] = date.getSeconds();
+      HEAP32[(((tmPtr)+(4))>>2)] = date.getMinutes();
+      HEAP32[(((tmPtr)+(8))>>2)] = date.getHours();
+      HEAP32[(((tmPtr)+(12))>>2)] = date.getDate();
+      HEAP32[(((tmPtr)+(16))>>2)] = date.getMonth();
+  
+      return (date.getTime() / 1000)|0;
+    }
+  function _asctime_r(tmPtr, buf) {
+      var date = {
+        tm_sec: HEAP32[((tmPtr)>>2)],
+        tm_min: HEAP32[(((tmPtr)+(4))>>2)],
+        tm_hour: HEAP32[(((tmPtr)+(8))>>2)],
+        tm_mday: HEAP32[(((tmPtr)+(12))>>2)],
+        tm_mon: HEAP32[(((tmPtr)+(16))>>2)],
+        tm_year: HEAP32[(((tmPtr)+(20))>>2)],
+        tm_wday: HEAP32[(((tmPtr)+(24))>>2)]
+      };
+      var days = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ];
+      var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+      var s = days[date.tm_wday] + ' ' + months[date.tm_mon] +
+          (date.tm_mday < 10 ? '  ' : ' ') + date.tm_mday +
+          (date.tm_hour < 10 ? ' 0' : ' ') + date.tm_hour +
+          (date.tm_min < 10 ? ':0' : ':') + date.tm_min +
+          (date.tm_sec < 10 ? ':0' : ':') + date.tm_sec +
+          ' ' + (1900 + date.tm_year) + "\n";
+  
+      // asctime_r is specced to behave in an undefined manner if the algorithm would attempt
+      // to write out more than 26 bytes (including the null terminator).
+      // See http://pubs.opengroup.org/onlinepubs/9699919799/functions/asctime.html
+      // Our undefined behavior is to truncate the write to at most 26 bytes, including null terminator.
+      stringToUTF8(s, buf, 26);
+      return buf;
+    }
+  function ___asctime_r(a0,a1
+  ) {
+  return _asctime_r(a0,a1);
+  }
+
   function ___assert_fail(condition, filename, line, func) {
       abort('Assertion failed: ' + UTF8ToString(condition) + ', at: ' + [filename ? UTF8ToString(filename) : 'unknown filename', line, func ? UTF8ToString(func) : 'unknown function']);
     }
@@ -1887,6 +2002,62 @@ var ASM_CONSTS = {
       uncaughtExceptionCount++;
       throw ptr + " - Exception catching is disabled, this exception cannot be caught. Compile with -s DISABLE_EXCEPTION_CATCHING=0 or DISABLE_EXCEPTION_CATCHING=2 to catch.";
     }
+
+  function _gmtime_r(time, tmPtr) {
+      var date = new Date(HEAP32[((time)>>2)]*1000);
+      HEAP32[((tmPtr)>>2)] = date.getUTCSeconds();
+      HEAP32[(((tmPtr)+(4))>>2)] = date.getUTCMinutes();
+      HEAP32[(((tmPtr)+(8))>>2)] = date.getUTCHours();
+      HEAP32[(((tmPtr)+(12))>>2)] = date.getUTCDate();
+      HEAP32[(((tmPtr)+(16))>>2)] = date.getUTCMonth();
+      HEAP32[(((tmPtr)+(20))>>2)] = date.getUTCFullYear()-1900;
+      HEAP32[(((tmPtr)+(24))>>2)] = date.getUTCDay();
+      HEAP32[(((tmPtr)+(36))>>2)] = 0;
+      HEAP32[(((tmPtr)+(32))>>2)] = 0;
+      var start = Date.UTC(date.getUTCFullYear(), 0, 1, 0, 0, 0, 0);
+      var yday = ((date.getTime() - start) / (1000 * 60 * 60 * 24))|0;
+      HEAP32[(((tmPtr)+(28))>>2)] = yday;
+      // Allocate a string "GMT" for us to point to.
+      if (!_gmtime_r.GMTString) _gmtime_r.GMTString = allocateUTF8("GMT");
+      HEAP32[(((tmPtr)+(40))>>2)] = _gmtime_r.GMTString;
+      return tmPtr;
+    }
+  function ___gmtime_r(a0,a1
+  ) {
+  return _gmtime_r(a0,a1);
+  }
+
+  function _localtime_r(time, tmPtr) {
+      _tzset();
+      var date = new Date(HEAP32[((time)>>2)]*1000);
+      HEAP32[((tmPtr)>>2)] = date.getSeconds();
+      HEAP32[(((tmPtr)+(4))>>2)] = date.getMinutes();
+      HEAP32[(((tmPtr)+(8))>>2)] = date.getHours();
+      HEAP32[(((tmPtr)+(12))>>2)] = date.getDate();
+      HEAP32[(((tmPtr)+(16))>>2)] = date.getMonth();
+      HEAP32[(((tmPtr)+(20))>>2)] = date.getFullYear()-1900;
+      HEAP32[(((tmPtr)+(24))>>2)] = date.getDay();
+  
+      var start = new Date(date.getFullYear(), 0, 1);
+      var yday = ((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))|0;
+      HEAP32[(((tmPtr)+(28))>>2)] = yday;
+      HEAP32[(((tmPtr)+(36))>>2)] = -(date.getTimezoneOffset() * 60);
+  
+      // Attention: DST is in December in South, and some regions don't have DST at all.
+      var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+      var winterOffset = start.getTimezoneOffset();
+      var dst = (summerOffset != winterOffset && date.getTimezoneOffset() == Math.min(winterOffset, summerOffset))|0;
+      HEAP32[(((tmPtr)+(32))>>2)] = dst;
+  
+      var zonePtr = HEAP32[(((__get_tzname())+(dst ? 4 : 0))>>2)];
+      HEAP32[(((tmPtr)+(40))>>2)] = zonePtr;
+  
+      return tmPtr;
+    }
+  function ___localtime_r(a0,a1
+  ) {
+  return _localtime_r(a0,a1);
+  }
 
   var PATH={splitPath:function(filename) {
         var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
@@ -2394,6 +2565,13 @@ var ASM_CONSTS = {
         },write:function(stream, buffer, offset, length, position, canOwn) {
           // The data buffer should be a typed array view
           assert(!(buffer instanceof ArrayBuffer));
+          // If the buffer is located in main memory (HEAP), and if
+          // memory can grow, we can't hold on to references of the
+          // memory buffer, as they may get invalidated. That means we
+          // need to do copy its contents.
+          if (buffer.buffer === HEAP8.buffer) {
+            canOwn = false;
+          }
   
           if (!length) return 0;
           var node = stream.node;
@@ -4272,6 +4450,29 @@ var ASM_CONSTS = {
   }
   }
 
+  function ___sys_dup2(oldfd, suggestFD) {try {
+  
+      var old = SYSCALLS.getStreamFromFD(oldfd);
+      if (old.fd === suggestFD) return suggestFD;
+      return SYSCALLS.doDup(old.path, old.flags, suggestFD);
+    } catch (e) {
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
+    return -e.errno;
+  }
+  }
+
+  function ___sys_dup3(fd, suggestFD, flags) {try {
+  
+      var old = SYSCALLS.getStreamFromFD(fd);
+      assert(!flags);
+      if (old.fd === suggestFD) return -28;
+      return SYSCALLS.doDup(old.path, old.flags, suggestFD);
+    } catch (e) {
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
+    return -e.errno;
+  }
+  }
+
   function setErrNo(value) {
       HEAP32[((___errno_location())>>2)] = value;
       return value;
@@ -4501,11 +4702,61 @@ var ASM_CONSTS = {
       return HEAPU8.length;
     }
   
-  function abortOnCannotGrowMemory(requestedSize) {
-      abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with  -s INITIAL_MEMORY=X  with X higher than the current value ' + HEAP8.length + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
+  function emscripten_realloc_buffer(size) {
+      try {
+        // round size grow request up to wasm page size (fixed 64KB per spec)
+        wasmMemory.grow((size - buffer.byteLength + 65535) >>> 16); // .grow() takes a delta compared to the previous size
+        updateGlobalBufferAndViews(wasmMemory.buffer);
+        return 1 /*success*/;
+      } catch(e) {
+        console.error('emscripten_realloc_buffer: Attempted to grow heap from ' + buffer.byteLength  + ' bytes to ' + size + ' bytes, but got error: ' + e);
+      }
+      // implicit 0 return to save code size (caller will cast "undefined" into 0
+      // anyhow)
     }
   function _emscripten_resize_heap(requestedSize) {
-      abortOnCannotGrowMemory(requestedSize);
+      var oldSize = _emscripten_get_heap_size();
+      // With pthreads, races can happen (another thread might increase the size in between), so return a failure, and let the caller retry.
+      assert(requestedSize > oldSize);
+  
+      // Memory resize rules:
+      // 1. Always increase heap size to at least the requested size, rounded up to next page multiple.
+      // 2a. If MEMORY_GROWTH_LINEAR_STEP == -1, excessively resize the heap geometrically: increase the heap size according to 
+      //                                         MEMORY_GROWTH_GEOMETRIC_STEP factor (default +20%),
+      //                                         At most overreserve by MEMORY_GROWTH_GEOMETRIC_CAP bytes (default 96MB).
+      // 2b. If MEMORY_GROWTH_LINEAR_STEP != -1, excessively resize the heap linearly: increase the heap size by at least MEMORY_GROWTH_LINEAR_STEP bytes.
+      // 3. Max size for the heap is capped at 2048MB-WASM_PAGE_SIZE, or by MAXIMUM_MEMORY, or by ASAN limit, depending on which is smallest
+      // 4. If we were unable to allocate as much memory, it may be due to over-eager decision to excessively reserve due to (3) above.
+      //    Hence if an allocation fails, cut down on the amount of excess growth, in an attempt to succeed to perform a smaller allocation.
+  
+      // A limit was set for how much we can grow. We should not exceed that
+      // (the wasm binary specifies it, so if we tried, we'd fail anyhow).
+      // In CAN_ADDRESS_2GB mode, stay one Wasm page short of 4GB: while e.g. Chrome is able to allocate full 4GB Wasm memories, the size will wrap
+      // back to 0 bytes in Wasm side for any code that deals with heap sizes, which would require special casing all heap size related code to treat
+      // 0 specially.
+      var maxHeapSize = 2147483648;
+      if (requestedSize > maxHeapSize) {
+        err('Cannot enlarge memory, asked to go up to ' + requestedSize + ' bytes, but the limit is ' + maxHeapSize + ' bytes!');
+        return false;
+      }
+  
+      // Loop through potential heap size increases. If we attempt a too eager reservation that fails, cut down on the
+      // attempted size and reserve a smaller bump instead. (max 3 times, chosen somewhat arbitrarily)
+      for(var cutDown = 1; cutDown <= 4; cutDown *= 2) {
+        var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown); // ensure geometric growth
+        // but limit overreserving (default to capping at +96MB overgrowth at most)
+        overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296 );
+  
+        var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
+  
+        var replacement = emscripten_realloc_buffer(newSize);
+        if (replacement) {
+  
+          return true;
+        }
+      }
+      err('Failed to grow the heap from ' + oldSize + ' bytes to ' + newSize + ' bytes, not enough memory!');
+      return false;
     }
 
   var Browser={mainLoop:{scheduler:null,method:"",currentlyRunningMainloop:0,func:null,arg:0,timingMode:0,timingValue:0,currentFrameNumber:0,queue:[],pause:function() {
@@ -5750,10 +6001,6 @@ var ASM_CONSTS = {
       GLctx.bindBuffer(target, GL.buffers[buffer]);
     }
 
-  function _glBindTexture(target, texture) {
-      GLctx.bindTexture(target, GL.textures[texture]);
-    }
-
   function _glBufferData(target, size, data, usage) {
   
       if (GL.currentContext.version >= 2) { // WebGL 2 provides new garbage-free entry points to call to WebGL. Use those always when possible.
@@ -5791,6 +6038,26 @@ var ASM_CONSTS = {
       return id;
     }
 
+  function _glDeleteBuffers(n, buffers) {
+      for (var i = 0; i < n; i++) {
+        var id = HEAP32[(((buffers)+(i*4))>>2)];
+        var buffer = GL.buffers[id];
+  
+        // From spec: "glDeleteBuffers silently ignores 0's and names that do not
+        // correspond to existing buffer objects."
+        if (!buffer) continue;
+  
+        GLctx.deleteBuffer(buffer);
+        buffer.name = 0;
+        GL.buffers[id] = null;
+  
+        if (id == GLctx.currentArrayBufferBinding) GLctx.currentArrayBufferBinding = 0;
+        if (id == GLctx.currentElementArrayBufferBinding) GLctx.currentElementArrayBufferBinding = 0;
+        if (id == GLctx.currentPixelPackBufferBinding) GLctx.currentPixelPackBufferBinding = 0;
+        if (id == GLctx.currentPixelUnpackBufferBinding) GLctx.currentPixelUnpackBufferBinding = 0;
+      }
+    }
+
   function _glDeleteShader(id) {
       if (!id) return;
       var shader = GL.shaders[id];
@@ -5804,13 +6071,29 @@ var ASM_CONSTS = {
 
   function _glDepthFunc(x0) { GLctx['depthFunc'](x0) }
 
-  function _glDrawArrays(mode, first, count) {
+  function _glDrawElements(mode, count, type, indices) {
+      var buf;
+      if (!GLctx.currentElementArrayBufferBinding) {
+        var size = GL.calcBufLength(1, type, 0, count);
+        buf = GL.getTempIndexBuffer(size);
+        GLctx.bindBuffer(0x8893 /*GL_ELEMENT_ARRAY_BUFFER*/, buf);
+        GLctx.bufferSubData(0x8893 /*GL_ELEMENT_ARRAY_BUFFER*/,
+                                 0,
+                                 HEAPU8.subarray(indices, indices + size));
+        // the index is now 0
+        indices = 0;
+      }
+  
       // bind any client-side buffers
-      GL.preDrawHandleClientVertexAttribBindings(first + count);
+      GL.preDrawHandleClientVertexAttribBindings(count);
   
-      GLctx.drawArrays(mode, first, count);
+      GLctx.drawElements(mode, count, type, indices);
   
-      GL.postDrawHandleClientVertexAttribBindings();
+      GL.postDrawHandleClientVertexAttribBindings(count);
+  
+      if (!GLctx.currentElementArrayBufferBinding) {
+        GLctx.bindBuffer(0x8893 /*GL_ELEMENT_ARRAY_BUFFER*/, null);
+      }
     }
 
   function _glEnable(x0) { GLctx['enable'](x0) }
@@ -5837,11 +6120,6 @@ var ASM_CONSTS = {
     }
   function _glGenBuffers(n, buffers) {
       __glGenObject(n, buffers, 'createBuffer', GL.buffers
-        );
-    }
-
-  function _glGenTextures(n, textures) {
-      __glGenObject(n, textures, 'createTexture', GL.textures
         );
     }
 
@@ -5968,18 +6246,12 @@ var ASM_CONSTS = {
       GLctx.shaderSource(GL.shaders[shader], source);
     }
 
-  function _glTexParameteri(x0, x1, x2) { GLctx['texParameteri'](x0, x1, x2) }
-
   function _glUniform1i(location, v0) {
       GLctx.uniform1i(GL.uniforms[location], v0);
     }
 
   function _glUniform3f(location, v0, v1, v2) {
       GLctx.uniform3f(GL.uniforms[location], v0, v1, v2);
-    }
-
-  function _glUniform4f(location, v0, v1, v2, v3) {
-      GLctx.uniform4f(GL.uniforms[location], v0, v1, v2, v3);
     }
 
   var miniTempWebGLFloatBuffers=[];
@@ -7253,9 +7525,19 @@ var ASM_CONSTS = {
       writeArrayToMemory(bytes, s);
       return bytes.length-1;
     }
+
   function _strftime_l(s, maxsize, format, tm) {
       return _strftime(s, maxsize, format, tm); // no locale support yet
     }
+
+  function _time(ptr) {
+      var ret = (Date.now()/1000)|0;
+      if (ptr) {
+        HEAP32[((ptr)>>2)] = ret;
+      }
+      return ret;
+    }
+
 var FSNode = /** @constructor */ function(parent, name, mode, rdev) {
     if (!parent) {
       parent = this;  // root node sets parent to itself
@@ -7301,7 +7583,7 @@ var FSNode = /** @constructor */ function(parent, name, mode, rdev) {
    }
   });
   FS.FSNode = FSNode;
-  FS.staticInit();;
+  FS.staticInit();Module["FS_createPath"] = FS.createPath;Module["FS_createDataFile"] = FS.createDataFile;Module["FS_createPreloadedFile"] = FS.createPreloadedFile;Module["FS_createLazyFile"] = FS.createLazyFile;Module["FS_createDevice"] = FS.createDevice;Module["FS_unlink"] = FS.unlink;;
 Module["requestFullscreen"] = function Module_requestFullscreen(lockPointer, resizeCanvas) { Browser.requestFullscreen(lockPointer, resizeCanvas) };
   Module["requestFullScreen"] = function Module_requestFullScreen() { Browser.requestFullScreen() };
   Module["requestAnimationFrame"] = function Module_requestAnimationFrame(func) { Browser.requestAnimationFrame(func) };
@@ -7346,12 +7628,17 @@ function intArrayToString(array) {
 
 
 var asmLibraryArg = {
+  "__asctime_r": ___asctime_r,
   "__assert_fail": ___assert_fail,
   "__cxa_allocate_exception": ___cxa_allocate_exception,
   "__cxa_atexit": ___cxa_atexit,
   "__cxa_rethrow": ___cxa_rethrow,
   "__cxa_throw": ___cxa_throw,
+  "__gmtime_r": ___gmtime_r,
+  "__localtime_r": ___localtime_r,
   "__sys_chdir": ___sys_chdir,
+  "__sys_dup2": ___sys_dup2,
+  "__sys_dup3": ___sys_dup3,
   "__sys_fcntl64": ___sys_fcntl64,
   "__sys_fstat64": ___sys_fstat64,
   "__sys_ioctl": ___sys_ioctl,
@@ -7377,30 +7664,27 @@ var asmLibraryArg = {
   "glAttachShader": _glAttachShader,
   "glBindAttribLocation": _glBindAttribLocation,
   "glBindBuffer": _glBindBuffer,
-  "glBindTexture": _glBindTexture,
   "glBufferData": _glBufferData,
   "glClear": _glClear,
   "glClearColor": _glClearColor,
   "glCompileShader": _glCompileShader,
   "glCreateProgram": _glCreateProgram,
   "glCreateShader": _glCreateShader,
+  "glDeleteBuffers": _glDeleteBuffers,
   "glDeleteShader": _glDeleteShader,
   "glDepthFunc": _glDepthFunc,
-  "glDrawArrays": _glDrawArrays,
+  "glDrawElements": _glDrawElements,
   "glEnable": _glEnable,
   "glEnableVertexAttribArray": _glEnableVertexAttribArray,
   "glGenBuffers": _glGenBuffers,
-  "glGenTextures": _glGenTextures,
   "glGetShaderInfoLog": _glGetShaderInfoLog,
   "glGetShaderiv": _glGetShaderiv,
   "glGetString": _glGetString,
   "glGetUniformLocation": _glGetUniformLocation,
   "glLinkProgram": _glLinkProgram,
   "glShaderSource": _glShaderSource,
-  "glTexParameteri": _glTexParameteri,
   "glUniform1i": _glUniform1i,
   "glUniform3f": _glUniform3f,
-  "glUniform4f": _glUniform4f,
   "glUniformMatrix4fv": _glUniformMatrix4fv,
   "glUseProgram": _glUseProgram,
   "glValidateProgram": _glValidateProgram,
@@ -7415,7 +7699,9 @@ var asmLibraryArg = {
   "glfwSwapInterval": _glfwSwapInterval,
   "glfwTerminate": _glfwTerminate,
   "setTempRet0": _setTempRet0,
-  "strftime_l": _strftime_l
+  "strftime": _strftime,
+  "strftime_l": _strftime_l,
+  "time": _time
 };
 var asm = createWasm();
 /** @type {function(...*):?} */
@@ -7423,6 +7709,12 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 
 /** @type {function(...*):?} */
 var _print_hello = Module["_print_hello"] = createExportWrapper("print_hello");
+
+/** @type {function(...*):?} */
+var _import_model = Module["_import_model"] = createExportWrapper("import_model");
+
+/** @type {function(...*):?} */
+var _export_model = Module["_export_model"] = createExportWrapper("export_model");
 
 /** @type {function(...*):?} */
 var _is_ready = Module["_is_ready"] = createExportWrapper("is_ready");
@@ -7485,6 +7777,9 @@ var ___cxa_demangle = Module["___cxa_demangle"] = createExportWrapper("__cxa_dem
 var dynCall_viijii = Module["dynCall_viijii"] = createExportWrapper("dynCall_viijii");
 
 /** @type {function(...*):?} */
+var dynCall_iijii = Module["dynCall_iijii"] = createExportWrapper("dynCall_iijii");
+
+/** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
 /** @type {function(...*):?} */
@@ -7502,13 +7797,13 @@ var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall
 
 // === Auto-generated postamble setup entry stuff ===
 
-if (!Object.getOwnPropertyDescriptor(Module, "intArrayFromString")) Module["intArrayFromString"] = function() { abort("'intArrayFromString' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+Module["intArrayFromString"] = intArrayFromString;
 if (!Object.getOwnPropertyDescriptor(Module, "intArrayToString")) Module["intArrayToString"] = function() { abort("'intArrayToString' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 Module["ccall"] = ccall;
 Module["cwrap"] = cwrap;
 if (!Object.getOwnPropertyDescriptor(Module, "setValue")) Module["setValue"] = function() { abort("'setValue' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "getValue")) Module["getValue"] = function() { abort("'getValue' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
-if (!Object.getOwnPropertyDescriptor(Module, "allocate")) Module["allocate"] = function() { abort("'allocate' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
+Module["allocate"] = allocate;
 if (!Object.getOwnPropertyDescriptor(Module, "UTF8ArrayToString")) Module["UTF8ArrayToString"] = function() { abort("'UTF8ArrayToString' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "UTF8ToString")) Module["UTF8ToString"] = function() { abort("'UTF8ToString' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "stringToUTF8Array")) Module["stringToUTF8Array"] = function() { abort("'stringToUTF8Array' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
@@ -7523,16 +7818,16 @@ if (!Object.getOwnPropertyDescriptor(Module, "addOnPostRun")) Module["addOnPostR
 if (!Object.getOwnPropertyDescriptor(Module, "writeStringToMemory")) Module["writeStringToMemory"] = function() { abort("'writeStringToMemory' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "writeArrayToMemory")) Module["writeArrayToMemory"] = function() { abort("'writeArrayToMemory' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "writeAsciiToMemory")) Module["writeAsciiToMemory"] = function() { abort("'writeAsciiToMemory' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
-if (!Object.getOwnPropertyDescriptor(Module, "addRunDependency")) Module["addRunDependency"] = function() { abort("'addRunDependency' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
-if (!Object.getOwnPropertyDescriptor(Module, "removeRunDependency")) Module["removeRunDependency"] = function() { abort("'removeRunDependency' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+Module["addRunDependency"] = addRunDependency;
+Module["removeRunDependency"] = removeRunDependency;
 if (!Object.getOwnPropertyDescriptor(Module, "FS_createFolder")) Module["FS_createFolder"] = function() { abort("'FS_createFolder' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
-if (!Object.getOwnPropertyDescriptor(Module, "FS_createPath")) Module["FS_createPath"] = function() { abort("'FS_createPath' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
-if (!Object.getOwnPropertyDescriptor(Module, "FS_createDataFile")) Module["FS_createDataFile"] = function() { abort("'FS_createDataFile' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
-if (!Object.getOwnPropertyDescriptor(Module, "FS_createPreloadedFile")) Module["FS_createPreloadedFile"] = function() { abort("'FS_createPreloadedFile' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
-if (!Object.getOwnPropertyDescriptor(Module, "FS_createLazyFile")) Module["FS_createLazyFile"] = function() { abort("'FS_createLazyFile' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+Module["FS_createPath"] = FS.createPath;
+Module["FS_createDataFile"] = FS.createDataFile;
+Module["FS_createPreloadedFile"] = FS.createPreloadedFile;
+Module["FS_createLazyFile"] = FS.createLazyFile;
 if (!Object.getOwnPropertyDescriptor(Module, "FS_createLink")) Module["FS_createLink"] = function() { abort("'FS_createLink' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
-if (!Object.getOwnPropertyDescriptor(Module, "FS_createDevice")) Module["FS_createDevice"] = function() { abort("'FS_createDevice' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
-if (!Object.getOwnPropertyDescriptor(Module, "FS_unlink")) Module["FS_unlink"] = function() { abort("'FS_unlink' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ). Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you") };
+Module["FS_createDevice"] = FS.createDevice;
+Module["FS_unlink"] = FS.unlink;
 if (!Object.getOwnPropertyDescriptor(Module, "getLEB")) Module["getLEB"] = function() { abort("'getLEB' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "getFunctionTables")) Module["getFunctionTables"] = function() { abort("'getFunctionTables' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "alignFunctionTables")) Module["alignFunctionTables"] = function() { abort("'alignFunctionTables' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
@@ -7552,7 +7847,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "callMain")) Module["callMain"] = f
 if (!Object.getOwnPropertyDescriptor(Module, "abort")) Module["abort"] = function() { abort("'abort' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "stringToNewUTF8")) Module["stringToNewUTF8"] = function() { abort("'stringToNewUTF8' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "setFileTime")) Module["setFileTime"] = function() { abort("'setFileTime' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
-if (!Object.getOwnPropertyDescriptor(Module, "abortOnCannotGrowMemory")) Module["abortOnCannotGrowMemory"] = function() { abort("'abortOnCannotGrowMemory' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "emscripten_realloc_buffer")) Module["emscripten_realloc_buffer"] = function() { abort("'emscripten_realloc_buffer' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "ENV")) Module["ENV"] = function() { abort("'ENV' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
 if (!Object.getOwnPropertyDescriptor(Module, "ERRNO_CODES")) Module["ERRNO_CODES"] = function() { abort("'ERRNO_CODES' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)") };
@@ -7938,3 +8232,17 @@ run();
 
 
 
+//--post-js file creates a promise allowing us to safely use it in other files
+
+Module.ready = new Promise(function(resolve, reject) {
+    addOnPreMain(function() {
+        // var api = {
+        //     print_hello: Module.cwrap('print_hello', 'number', ['number'])
+        // };
+        // resolve(api);
+        var api = {
+            import_model: Module.cwrap('import_model', 'char* str', ['char* str'], 'int_len', ['int_len'], 'target', ['target'])
+        };
+        resolve(api);
+    });
+});

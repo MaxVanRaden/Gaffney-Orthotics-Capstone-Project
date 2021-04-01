@@ -4,23 +4,6 @@
 #include "shader.h"
 #include "texture.h"
 
-class OrthoShader {
-    public:
-        void load();
-		void dispose();
-		
-        void bind();
-
-        void set_projection(mat4 proj);
-        void set_transform(mat4 tran);
-
-    private:
-        Shader shader;
-		
-        GLint projection;
-        GLint transform;
-};
-
 class PickingShader {
     public:
         void load();
@@ -54,8 +37,9 @@ class StaticShader {
         void bind();
         
 		void set_shadows_on(bool on);
-        void set_light_color(f32 r, f32 g, f32 b, f32 a);
+        void set_light_color(f32 r, f32 g, f32 b);
         void set_light_pos(f32 x, f32 y, f32 z);
+        void set_camera_pos(f32 x, f32 y, f32 z);
         void set_projection(mat4 proj);
         void set_transform(mat4 tran);
         void set_view(mat4 view);
@@ -67,6 +51,7 @@ class StaticShader {
 		GLint shadowsOn;
         GLint lightColor;
         GLint lightPos;
+        GLint cameraPos;
         GLint projection;
         GLint transform;
         GLint lightspace;
