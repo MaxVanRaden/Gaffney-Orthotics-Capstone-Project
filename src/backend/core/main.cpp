@@ -103,4 +103,7 @@ extern "C" {
     bool is_ready() {
         return initialized;
     }
+	void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
+		editor->set_camera(zoom, x, y ,z ,yaw, pitch, roll);
+	}
 }
