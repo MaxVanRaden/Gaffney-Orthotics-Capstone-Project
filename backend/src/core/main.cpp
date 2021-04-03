@@ -110,6 +110,10 @@ extern "C" {
     char* export_model(int ID, const char* fileformat) {
         return editor->export_model(ID, fileformat);
     }
+    
+	void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
+		editor->set_camera(zoom, x, y ,z ,yaw, pitch, roll);
+	}
 
     bool is_ready() {
         return initialized;

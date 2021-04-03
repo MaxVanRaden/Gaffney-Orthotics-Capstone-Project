@@ -26,6 +26,10 @@ void MeshEditor::run() {
     }
 }
 
+void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
+    camera = {x, y, z, pitch, yaw, roll};
+}
+
 void MeshEditor::add_model(const char* str) {
     entities.emplace_back(str);
 }

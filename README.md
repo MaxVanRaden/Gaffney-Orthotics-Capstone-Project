@@ -183,7 +183,7 @@ void move_cam_left(Camera cam, f32 units);
 
 Max Van Raden (vanraden@pdx.edu),
 Corbin Stark (starkcorbin@gmail.com),
-Forest Pearson,
+Forest Pearson(fpearson@pdx.edu),
 Phillip Chen,
 Stephanie Beagle,
 Christopher Teters (cteters@pdx.edu),
