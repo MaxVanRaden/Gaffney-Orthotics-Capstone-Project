@@ -7717,6 +7717,9 @@ var _import_model = Module["_import_model"] = createExportWrapper("import_model"
 var _export_model = Module["_export_model"] = createExportWrapper("export_model");
 
 /** @type {function(...*):?} */
+var _set_camera = Module["_set_camera"] = createExportWrapper("set_camera");
+
+/** @type {function(...*):?} */
 var _is_ready = Module["_is_ready"] = createExportWrapper("is_ready");
 
 /** @type {function(...*):?} */

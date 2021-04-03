@@ -48,8 +48,6 @@ const ImportFile = () => {
 
         // array of bytes (8-bit unsigned int) representing the string
         var converted_str    = new Uint8Array(ToUTF8Array(content));
-        // byte representing the target (8-bit unsigned int)
-        var converted_target = ToUTF8Array(target)[0];
 
         // alloc memory
         var input_ptr = window.Module.ready.cache = [len * 1];
@@ -58,7 +56,7 @@ const ImportFile = () => {
         window.Module.HEAPU8.set(converted_str, input_ptr);
 
         // calls the c++ to do magic
-        window.Module.ready.then(api => console.log(api.import_model(input_ptr, len, converted_target)));
+        window.Module.ready.then(api => console.log(api.import_model(input_ptr, len)));
     };
 
     const handleFileChosen = (file) => {

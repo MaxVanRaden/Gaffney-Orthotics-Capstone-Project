@@ -93,18 +93,11 @@ extern "C" {
         return x;
     }
 
-    int import_model(char* str, int len, char target){
-        int i, count = 0;
-        for(i = 0; i < len; i++){
-            if(str[i] == target){
-                count++;
-            }
-        }
-        for(i = 0; i < len; i++){
-            printf("%c", str[i]);
-        }
-        printf("\n");
-        return count;
+    void import_model(char* str, int len){
+//        for(i = 0; i < len; i++){
+//            printf("%c", str[i]);
+//        }
+        printf("import success\n");
     }
 
     char* export_model(int ID, const char* fileformat) {
