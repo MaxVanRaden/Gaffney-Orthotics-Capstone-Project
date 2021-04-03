@@ -11,20 +11,20 @@ Chris Teters,
 Jacob Odell,
 Carlos Sotello
 
+## Installation
+* Navigate to *frontend/app* directory and run:
+```
+npm install
+```
+* Navigate to the root directory and run:
+```
+build
+```
+
 ## Documentation
 
 ### Front End
 
-### Install
-* Navigate to *frontend/app* directory and run,
-```
-npm install
-```
-* Launch emscripten from your respective directory
-* Navigate to the root directory and run,
-```
-build
-```
 #### index.html
 
 This is the main HTML page we will be working on. Currently it only has the canvas for rendering and some debug UI like a console output.
