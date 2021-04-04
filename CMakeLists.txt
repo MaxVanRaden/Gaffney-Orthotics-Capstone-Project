@@ -1,7 +1,7 @@
 #TODO: Edit the "Project Working Directory" below
 #TODO: Edit "EMSDK" to point to your emsdk file location
-set(PWD "C:/Users/Jacob-SSD/Desktop/Gaffney-Orthotics-Capstone-Project")
-set(EMSDK "C:/git/emsdk")
+set(PWD "C:/Users/GTango/CLionProjects/Gaffney-Orthotics-Capstone-Project")
+set(EMSDK "C:/emsdk")
 cmake_minimum_required(VERSION 3.17.5)
 
 # Project Name
@@ -12,8 +12,9 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake)
 
 # Configure emcc/em++ arguments use \ to escape quotations "
-set(FUNCTIONS "\"_main\",\"_print_hello\",\"_is_ready\"")
-set(OPTIONS "--post-js ${PWD}/src/frontend/wrapper.js -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\"]")
+set(FUNCTIONS "\"_main\",\"_is_ready\",\"_import_model\",\"_set_camera\",\"_export_model\",\"_print_hello\"")
+set(OPTIONS "--post-js ${PWD}/frontend/wrapper.js -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\",\"allocate\",\"intArrayFromString\"]")
+
 
 # Tell CMake where to look for #include pre-processor directives
 include_directories(${EMSDK}/upstream/emscripten/system/include)
@@ -23,10 +24,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} lib/assimp/include)
 add_subdirectory(lib/assimp)
 
 # Define sources (variable) to add to executable
-file(GLOB_RECURSE sources ${PWD}/src/backend/core/*.cpp)
-file(GLOB_RECURSE headers ${PWD}/src/backend/core/*.h)
-file(GLOB_RECURSE engine-sources ${PWD}/src/backend/engine/*.cpp)
-file(GLOB_RECURSE engine-headers ${PWD}/src/backend/engine/*.h)
+file(GLOB_RECURSE sources ${PWD}/backend/src/core/*.cpp)
+file(GLOB_RECURSE headers ${PWD}/backend/src/core/*.h)
+file(GLOB_RECURSE engine-sources ${PWD}/backend/src/engine/*.cpp)
+file(GLOB_RECURSE engine-headers ${PWD}/backend/src/engine/*.h)
 
 # Define the executable using the sources
 add_executable(backend ${sources} ${engine-sources} ${headers} ${engine-headers})
