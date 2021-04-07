@@ -26,6 +26,7 @@ const Export = () => {
             //save data with selected file format
             saveAs(new Blob([data]),'file'+format)
         })
+            .catch(e => console.log("Failed to export model"))
     }
     return (
         <div>
