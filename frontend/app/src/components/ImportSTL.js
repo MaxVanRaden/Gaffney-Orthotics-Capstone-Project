@@ -28,6 +28,12 @@ const ToUTF8Array = (str) => {
     return utf8;
 }
 
+//Test for utf-8 control characters
+const isASCII = (str) => {
+    // eslint-disable-next-line
+    return /^[\x00-\x7F]*$/.test(str);
+}
+
 const ImportFile = () => {
     let fileReader;
 
@@ -44,10 +50,17 @@ const ImportFile = () => {
         // console.log(fs.readFileSync('/temp.stl', 'binary'));
 
         var target = "e";
-        var len = content.length;
+        //var len = content.length;
 
         // array of bytes (8-bit unsigned int) representing the string
-        var converted_str    = new Uint8Array(ToUTF8Array(content));
+        var converted_str;
+        //var converted_str    = new Uint8Array(ToUTF8Array(content));
+        if(isASCII(content))
+            converted_str    = new Uint8Array(ToUTF8Array(content));
+        else
+            converted_str    = new TextEncoder("ISO-8859-1",{NONSTANDARD_allowLegacyEncoding: true}).encode(content);
+
+        var len = converted_str.length;
 
         // alloc memory
         var input_ptr = window.Module.ready.cache = [len * 1];
@@ -62,7 +75,7 @@ const ImportFile = () => {
     const handleFileChosen = (file) => {
         fileReader = new FileReader();
         fileReader.onloadend = handleFileRead;
-        fileReader.readAsText(file);
+        fileReader.readAsText(file, 'ISO-8859-1');
     };
 
     return (
