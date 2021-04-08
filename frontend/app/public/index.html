@@ -18,6 +18,11 @@ to call some C++ function the backend team will write.
     <title>Main HTML Page</title>
     <link rel="stylesheet" type="text/css" href="./style.css">
     <link rel="shortcut icon" href="#">
+
+    <!-- Override default encoding to support binary files-->
+    <script>TextEncoder = TextDecoder = null</script>
+    <script src="https://cdn.jsdelivr.net/gh/inexorabletash/text-encoding@master/lib/encoding-indexes.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/inexorabletash/text-encoding@master/lib/encoding.js"></script>
   </head>
 
   <body>
