@@ -43,7 +43,7 @@ const ImportFile = () => {
         // console.log('Reading file to memfs');
         // console.log(fs.readFileSync('/temp.stl', 'binary'));
 
-        var target = "e";
+        //var target = "e"; // commented this because it is unused
         var len = content.length;
 
         // array of bytes (8-bit unsigned int) representing the string
@@ -64,16 +64,22 @@ const ImportFile = () => {
         fileReader.onloadend = handleFileRead;
         fileReader.readAsText(file);
     };
-
-    return (
-
+    // event listener for file import
+    const importElement = document.getElementById('file');
+    importElement.addEventListener("change", handleImport, false);
+    function handleImport() {
+        const file = this.files[0];
+        handleFileChosen(file);
+    }
+    return (null)
+    /*
         <input type='file'
                id='file'
                className='input-file'
                accept='.stl, .obj'
                onChange={e => handleFileChosen(e.target.files[0])}
         />
-    );
+    );*/
 };
 
 export const ImportStuff = () => {

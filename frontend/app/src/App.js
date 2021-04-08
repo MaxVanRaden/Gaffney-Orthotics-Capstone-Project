@@ -20,3 +20,11 @@ function App() {
 
 export default App;
 ReactDOM.render(<App/>, document.getElementById("root"))
+
+var canvas_element = document.getElementById('canvas');
+canvas_element.onmousemove = function(e) {
+    var x = e.pageX - this.offsetLeft;
+    var y = e.pageY - this.offsetTop;
+    document.getElementById('xcoord').innerHTML = x;
+    document.getElementById('ycoord').innerHTML = y;
+};
