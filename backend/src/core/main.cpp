@@ -108,6 +108,14 @@ extern "C" {
 		editor->set_camera(zoom, x, y ,z ,yaw, pitch, roll);
 	}
 
+	// Scale every vertex in every mesh in every entity by the factor passed in
+	void scale(float factor){
+        printf("backend scale got factor %f and attempted to scale\n", factor);
+        if(initialized){
+            editor->scale_all_entities(factor);
+        }
+    }
+
     bool is_ready() {
         return initialized;
     }
