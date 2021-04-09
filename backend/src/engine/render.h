@@ -44,7 +44,7 @@ struct Material {
 
 struct Mesh {
     GLuint vao;
-    GLuint vbo;
+    GLuint vbo; //vertex buffer object
     GLuint ebo;
 	std::vector<Vertex> vertices;
 	std::vector<GLushort> indices;
