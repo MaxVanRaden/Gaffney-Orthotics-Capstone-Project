@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ImportStuff } from './components/ImportSTL';
+//import { ImportStuff } from './components/ImportSTL';
+import {Toolbar} from "./components/Toolbar";
+import {NavBar} from "./components/NavBar";
 import './App.css';
 
 
@@ -13,7 +15,9 @@ function App() {
     return (
         <>
             {/*<button onClick={print}> Print 100 </button>*/}
-            <ImportStuff />
+            {/*<ImportStuff />*/}
+            <NavBar/>
+            <Toolbar/>
         </>
     );
 }
@@ -28,5 +32,7 @@ canvasElement.onmousemove = function(e) {
     var y = e.pageY - this.offsetTop;
     document.getElementById('xcoord').innerHTML = x;
     document.getElementById('ycoord').innerHTML = y;
+    document.getElementById('xcoord2').innerHTML = x;
+    document.getElementById('ycoord2').innerHTML = y;
 };
 

@@ -71,22 +71,29 @@ const ImportFile = () => {
     importElement.onchange = function() {
         handleFileChosen(importElement.files[0]);
     };
-    return (null)
-    /*
-        <input type='file'
-               id='file'
-               className='input-file'
-               accept='.stl, .obj'
-               onChange={e => handleFileChosen(e.target.files[0])}
-        />
-    );*/
+    //return (null)
+    return (
+        // <label className="tool">
+        <label >
+            <input type='file'
+                   id='file'
+                   className='input-file'
+                   style={{display:"none"}}
+                   accept='.stl, .obj'
+                   onChange={ e => handleFileChosen(e.target.files[0])}
+            />
+            Import file
+        </label>
+
+    );
 };
 
 
 export const ImportStuff = () => {
-    const styles = { display: 'flex', justifyContent: 'center'};
+    //const styles = { display: 'flex', justifyContent: 'center'};
+    const styles = {}
     return (
-        < div style={styles} >
+        < div className="tool"  style={styles} >
         < ImportFile / >
         < /div>
 )};
