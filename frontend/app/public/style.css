@@ -114,12 +114,19 @@ div.toolbar {
 }
 #import {
     width: 80px;
+    opacity: 0;
 }
 .input-file{
     font-family: sans-serif;
     margin-right: 0px;
+    opacity: 0;
 }
-.tool:hover {border-color: #259c9c;}
+#overlay {
+    position: absolute;
+    left: 45px;
+    bottom: 4px;
+}
+.tool:hover {border-color: #259c9c; cursor: pointer;}
 .dropdown:hover {border-color: #259c9c;}
 .dropdown {
     position: relative;
@@ -159,6 +166,7 @@ div.toolbar {
     width: 15px;
     background-color: #eee;
 }
+.rtoggle:hover {cursor:pointer;}
 .coords {
     display: flex;
     flex-flow: row wrap;

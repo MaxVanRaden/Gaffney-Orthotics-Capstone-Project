@@ -26,7 +26,7 @@ const ToUTF8Array = (str) => {
         }
     }
     return utf8;
-}
+};
 
 const ImportFile = () => {
     let fileReader;
@@ -59,18 +59,18 @@ const ImportFile = () => {
         window.Module.ready.then(api => console.log(api.import_model(input_ptr, len)));
     };
 
-    const handleFileChosen = (file) => {
+        const handleFileChosen = (file) => {
         fileReader = new FileReader();
         fileReader.onloadend = handleFileRead;
         fileReader.readAsText(file);
     };
+
+
     // event listener for file import
     const importElement = document.getElementById('file');
-    importElement.addEventListener("change", handleImport, false);
-    function handleImport() {
-        const file = this.files[0];
-        handleFileChosen(file);
-    }
+    importElement.onchange = function() {
+        handleFileChosen(importElement.files[0]);
+    };
     return (null)
     /*
         <input type='file'
@@ -82,11 +82,14 @@ const ImportFile = () => {
     );*/
 };
 
+
 export const ImportStuff = () => {
     const styles = { display: 'flex', justifyContent: 'center'};
     return (
-        <div style={styles}>
-            <ImportFile />
-        </div>
-    );
-};
+        < div style={styles} >
+        < ImportFile / >
+        < /div>
+)};
+
+
+

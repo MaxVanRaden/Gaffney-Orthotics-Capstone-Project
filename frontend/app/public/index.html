@@ -41,7 +41,11 @@ to call some C++ function the backend team will write.
          accept='.stl, .obj'
          />
   </div>
-    <div class="tool" id='export'
+  <div class="tool"
+        id="overlay"
+        onclick="document.getElementById('file').click()"
+  >Import file</div>
+  <div class="tool" id='export'
        role="button"
        >Export file
   </div>
@@ -111,7 +115,6 @@ to call some C++ function the backend team will write.
   <textarea class="emscripten" id="output" rows="8"></textarea>
   <hr>
 </div>
-
 <!-- The backend scripts -->
 <script type='text/javascript' src="debug_elements.js"></script>
 <script type="text/javascript" src="backend.js"></script>
