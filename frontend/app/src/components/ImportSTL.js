@@ -105,9 +105,9 @@ export const ImportStuff = () => {
     //const styles = { display: 'flex', justifyContent: 'center'};
     const styles = {}
     return (
-        < div className="tool"  style={styles} >
-        < ImportFile / >
-        < /div>
+        <div className="tool"  style={styles} >
+        < ImportFile />
+        </div>
 )};
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+//import ReactDOM from 'react-dom';
 //import { ImportStuff } from './components/ImportSTL';
 import {Toolbar} from "./components/Toolbar";
 import {NavBar} from "./components/NavBar";
@@ -23,7 +23,7 @@ function App() {
 }
 
 export default App;
-ReactDOM.render(<App/>, document.getElementById("root"))
+//ReactDOM.render(<App/>, document.getElementById("root"))
 
 // Event handler for mouse coordinates
 var canvasElement = document.getElementById('canvas');
