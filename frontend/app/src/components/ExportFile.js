@@ -2,9 +2,10 @@ import {saveAs} from 'file-saver'
 import {useState} from 'react'
 
 const Export = () => {
-    const [format, setFormat] = useState('.obj');
+    // const [format, setFormat] = useState('.obj'); // setFormat assigned but not used
+    const [format] = useState('.obj');
 
-    const handleChange = (e) => {setFormat(e.target.value);}
+    // const handleChange = (e) => {setFormat(e.target.value);} //assigned but not used
 
     const handleClick = () => {
         window.Module.ready.then(api => {

@@ -1,5 +1,5 @@
 import React from 'react';
-//import { fs } from 'memfs';
+import {useState} from 'react'
 
 const ToUTF8Array = (str) => {
     var utf8 = [];
@@ -26,7 +26,7 @@ const ToUTF8Array = (str) => {
         }
     }
     return utf8;
-};
+}
 
 //Test for utf-8 control characters
 const isASCII = (str) => {
@@ -34,12 +34,12 @@ const isASCII = (str) => {
     return /^[\x00-\x7F]*$/.test(str);
 }
 
-const ImportFile = () => {
+const Import = () => {
     let fileReader;
 
     const handleFileRead = (e) => {
 
-        console.log('Reading file to DOM');
+//        console.log('Reading file to DOM');
         const content = fileReader.result;
 //        console.log(content);
 
@@ -49,7 +49,7 @@ const ImportFile = () => {
         // console.log('Reading file to memfs');
         // console.log(fs.readFileSync('/temp.stl', 'binary'));
 
-        //var target = "e"; // commented this because it is unused
+        //var target = "e";
         //var len = content.length;
 
         // array of bytes (8-bit unsigned int) representing the string
@@ -72,12 +72,21 @@ const ImportFile = () => {
         window.Module.ready.then(api => console.log(api.import_model(input_ptr, len)));
     };
 
-        const handleFileChosen = (file) => {
+    // const handleFileChosen = (file) => {
+    //     fileReader = new FileReader();
+    //     fileReader.onloadend = handleFileRead;
+    //     fileReader.readAsText(file, 'ISO-8859-1');
+    // };
+
+
+    const [uploadedFileName, setUploadedFileName] = useState(null);
+
+    const handleFileChosen = ({target: {files}}) => {
+        setUploadedFileName(files[0].name);
         fileReader = new FileReader();
         fileReader.onloadend = handleFileRead;
-        fileReader.readAsText(file, 'ISO-8859-1');
-    };
-
+        fileReader.readAsText(files[0], 'ISO-8859-1');
+    }
 
     // event listener for file import
     const importElement = document.getElementById('file');
@@ -85,30 +94,33 @@ const ImportFile = () => {
         handleFileChosen(importElement.files[0]);
     };
     //return (null)
-    return (
-        // <label className="tool">
-        <label >
-            <input type='file'
-                   id='file'
-                   className='input-file'
-                   style={{display:"none"}}
-                   accept='.stl, .obj'
-                   onChange={ e => handleFileChosen(e.target.files[0])}
-            />
-            Import file
-        </label>
 
+    return (
+        <div>
+            <label htmlFor="upload-file">
+                Import file
+                <input
+                    type="file"
+                    id="upload-file"
+                    name="upload-file"
+                    style={{display:"none"}}
+                    accept='.stl, .obj'
+                    data-testid='import-file'
+                    onChange={handleFileChosen}
+
+                />
+                {/*{uploadedFileName}*/}
+            </label>
+        </div>
     );
 };
 
 export const ImportStuff = () => {
-    //const styles = { display: 'flex', justifyContent: 'center'};
-    const styles = {}
+    // const styles = { display: 'flex', justifyContent: 'center'};
+    const styles = {};
     return (
         <div className="tool"  style={styles} >
-        < ImportFile />
+            <Import />
         </div>
-)};
-
-
-
+    );
+};
