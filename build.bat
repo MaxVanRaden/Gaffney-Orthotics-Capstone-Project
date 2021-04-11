@@ -33,8 +33,8 @@ pushd backend
     popd
 popd
 
-::Copy the new files to app
-COPY "backend\backend.*" "frontend\app\public\"
+::Move the new files to app (have to delete after every backend change otherwise)
+MOVE "backend\backend.*" "frontend\app\public\"
 
 ::Start the app server
 npm start --prefix frontend/app
