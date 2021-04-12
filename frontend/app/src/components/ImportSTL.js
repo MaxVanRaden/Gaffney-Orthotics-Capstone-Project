@@ -39,18 +39,8 @@ const Import = () => {
 
     const handleFileRead = (e) => {
 
-//        console.log('Reading file to DOM');
+        // console.log('Reading file to DOM');
         const content = fileReader.result;
-//        console.log(content);
-
-        // // memfs stuff in case we need it later
-        // console.log('Writing file for memfs');
-        // fs.writeFileSync('/temp.stl', content);
-        // console.log('Reading file to memfs');
-        // console.log(fs.readFileSync('/temp.stl', 'binary'));
-
-        //var target = "e";
-        //var len = content.length;
 
         // array of bytes (8-bit unsigned int) representing the string
         var converted_str;
@@ -72,12 +62,6 @@ const Import = () => {
         window.Module.ready.then(api => console.log(api.import_model(input_ptr, len)));
     };
 
-    // const handleFileChosen = (file) => {
-    //     fileReader = new FileReader();
-    //     fileReader.onloadend = handleFileRead;
-    //     fileReader.readAsText(file, 'ISO-8859-1');
-    // };
-
 
     const [uploadedFileName, setUploadedFileName] = useState(null);
 
@@ -86,13 +70,16 @@ const Import = () => {
         fileReader = new FileReader();
         fileReader.onloadend = handleFileRead;
         fileReader.readAsText(files[0], 'ISO-8859-1');
-    }
-
-    // event listener for file import
-    const importElement = document.getElementById('file');
-    importElement.onchange = function() {
-        handleFileChosen(importElement.files[0]);
     };
+
+
+    // // event listener for file import
+    // const importElement = document.getElementById('file');
+    // importElement.onchange = function() {
+    //     handleFileChosen(importElement.files[0]);
+    // };
+
+
     //return (null)
 
     return (
@@ -107,7 +94,6 @@ const Import = () => {
                     accept='.stl, .obj'
                     data-testid='import-file'
                     onChange={handleFileChosen}
-
                 />
                 {/*{uploadedFileName}*/}
             </label>
