@@ -11,7 +11,7 @@ MeshEditor::MeshEditor() {
 void MeshEditor::run() {
     local float rotation = 0.0f;
     rotation+=0.2f;
-    local float zoom = 7.0f;
+    local float zoom = 5.0f;
     //zoom-=0.025f;
 
     shader.bind();
@@ -44,6 +44,13 @@ char* MeshEditor::export_model(int ID, const char* fileformat) {
     scene->mMeshes[0] = &mesh;
     const aiExportDataBlob* blob = exporter.ExportToBlob(scene, "obj", 0);
     return (char*)blob->data;
+}
+
+// Scale every vertex in every mesh in every entity by the factor passed in
+void MeshEditor::scale_all_entities(float factor) {
+    for(Entity& e: entities) {
+        e.scale_entity(factor);
+    }
 }
 
 MeshEditor::~MeshEditor() {

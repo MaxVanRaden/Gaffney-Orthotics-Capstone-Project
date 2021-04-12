@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ImportStuff } from './components/ImportSTL';
+// import { ExportFile  } from "./components/ExportFile";
 import './App.css';
 
 
@@ -14,6 +15,7 @@ function App() {
         <>
             {/*<button onClick={print}> Print 100 </button>*/}
             <ImportStuff />
+            {/*<ExportFile />*/}
         </>
     );
 }

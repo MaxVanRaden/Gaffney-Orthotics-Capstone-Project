@@ -12,8 +12,8 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake)
 
 # Configure emcc/em++ arguments use \ to escape quotations "
-set(FUNCTIONS "\"_main\",\"_is_ready\",\"_import_model\",\"_set_camera\",\"_export_model\",\"_print_hello\"")
-set(OPTIONS "--post-js ${PWD}/frontend/wrapper.js -s ALLOW_MEMORY_GROWTH=1 -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\",\"allocate\",\"intArrayFromString\"]")
+set(FUNCTIONS "\"_main\",\"_is_ready\",\"_import_model\",\"_set_camera\",\"_export_model\",\"_print_hello\",\"_scale\"")
+set(OPTIONS "--post-js ${PWD}/frontend/wrapper.js -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=1900MB -s MAXIMUM_MEMORY=4GB -s TOTAL_STACK=1GB -s SAFE_HEAP -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\",\"allocate\",\"intArrayFromString\"]")
 
 
 # Tell CMake where to look for #include pre-processor directives

@@ -11,13 +11,18 @@ to call some C++ function the backend team will write.
 
 -->
 
-<html lang="en-us">
+<html lang="en-us" xmlns="http://www.w3.org/1999/html">
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Main HTML Page</title>
     <link rel="stylesheet" type="text/css" href="./style.css">
     <link rel="shortcut icon" href="#">
+
+    <!-- Override default encoding to support binary files-->
+    <script>TextEncoder = TextDecoder = null</script>
+    <script src="https://cdn.jsdelivr.net/gh/inexorabletash/text-encoding@master/lib/encoding-indexes.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/inexorabletash/text-encoding@master/lib/encoding.js"></script>
   </head>
 
   <body>
@@ -112,5 +117,9 @@ to call some C++ function the backend team will write.
 		}, 1);
 		}
 	</script>
+
+    <!-- Initialization check is done on backend -->
+    <input type='number' id='scale_entity' value=100>Scale by %</input>
+    <button onclick='_scale(document.getElementById("scale_entity").value / 100)'>Scale</button>
   </body>
 </html>
