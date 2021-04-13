@@ -95,7 +95,7 @@ const Import = () => {
     );
 };
 
-export const ImportStuff = () => {
+export const ImportFile = () => {
     return (
         <div className="tool">
             <Import />

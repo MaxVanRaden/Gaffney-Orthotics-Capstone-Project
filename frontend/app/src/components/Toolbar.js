@@ -1,5 +1,5 @@
 import {ExportFile} from "./ExportFile";
-import {ImportStuff} from "./ImportSTL";
+import {ImportFile} from "./ImportFile";
 import {ViewMenu} from "./ViewMenu";
 import {EditMenu} from "./EditMenu";
 import {SelectMenu} from "./SelectMenu";
@@ -10,7 +10,7 @@ export const Toolbar = () => {
     return(
         <div id ="toolbar" className="toolbar">
             <a href="./" className="backbtn">&#8617;</a>
-            <ImportStuff/>
+            <ImportFile/>
             <ExportFile/>
             <ViewMenu/>
             <EditMenu/>
