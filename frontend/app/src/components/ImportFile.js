@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useEffect} from 'react';
 
 const ToUTF8Array = (str) => {
     let utf8 = [];
@@ -71,11 +71,14 @@ const Import = () => {
     }
 
     // event listener for file import
-    const importElement = document.getElementById('file');
-    importElement.onchange = function() {
-        handleFileChosen(importElement.files[0]);
-    };
-    //return (null)
+    useEffect(() => {
+        window.addEventListener('file', handleFileChosen);
+
+        // cleanup this component
+        return () => {
+            window.removeEventListener('file', handleFileChosen);
+        };
+    }, []);
 
     return (
         <div>
