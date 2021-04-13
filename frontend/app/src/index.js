@@ -11,12 +11,18 @@ ReactDOM.render(
 ReactDOM.render(<App/>, document.getElementById("root"));
 
 // Event handler for mouse coordinates
-var canvasElement = document.getElementById('canvas');
+let canvasElement = document.getElementById('canvas');
 canvasElement.onmousemove = function(e) {
-    var x = e.pageX - this.offsetLeft;
-    var y = e.pageY - this.offsetTop;
+    let x = e.pageX - this.offsetLeft;
+    let y = e.pageY - this.offsetTop;
+    // document.getElementById('xcoord').innerHTML = x;
+    // document.getElementById('ycoord').innerHTML = y;
     document.getElementById('xcoord').innerHTML = x;
     document.getElementById('ycoord').innerHTML = y;
-    document.getElementById('xcoord2').innerHTML = x;
-    document.getElementById('ycoord2').innerHTML = y;
 };
+
+// // // event listener for file import
+// const importElement = document.getElementById('file');
+// importElement.onchange = function() {
+//     handleFileChosen(importElement.files[0]);
+// };

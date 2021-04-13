@@ -1,10 +1,10 @@
 import React from 'react';
-import {useState} from 'react'
+import {useState, useEffect} from 'react';
 
 const ToUTF8Array = (str) => {
-    var utf8 = [];
-    for (var i=0; i < str.length; i++) {
-        var charcode = str.charCodeAt(i);
+    let utf8 = [];
+    for (let i=0; i < str.length; i++) {
+        let charcode = str.charCodeAt(i);
         if (charcode < 0x80) utf8.push(charcode);
         else if (charcode < 0x800) {
             utf8.push(
@@ -37,23 +37,22 @@ const isASCII = (str) => {
 const Import = () => {
     let fileReader;
 
-    const handleFileRead = (e) => {
+    const handleFileRead = () => {
 
-        // console.log('Reading file to DOM');
         const content = fileReader.result;
 
         // array of bytes (8-bit unsigned int) representing the string
-        var converted_str;
+        let converted_str;
         //var converted_str    = new Uint8Array(ToUTF8Array(content));
         if(isASCII(content))
             converted_str    = new Uint8Array(ToUTF8Array(content));
         else
             converted_str    = new TextEncoder("ISO-8859-1",{NONSTANDARD_allowLegacyEncoding: true}).encode(content);
 
-        var len = converted_str.length;
+        const len = converted_str.length;
 
         // alloc memory
-        var input_ptr = window.Module.ready.cache = [len * 1];
+        const input_ptr = window.Module.ready.cache = [len * 1];
 
         // write WASM memory calling the set method of the Uint8Array
         window.Module.HEAPU8.set(converted_str, input_ptr);
@@ -62,50 +61,43 @@ const Import = () => {
         window.Module.ready.then(api => console.log(api.import_model(input_ptr, len)));
     };
 
-
-    const [uploadedFileName, setUploadedFileName] = useState(null);
+    //const [uploadedFileName, setUploadedFileName] = useState(null);
 
     const handleFileChosen = ({target: {files}}) => {
-        setUploadedFileName(files[0].name);
+        //setUploadedFileName(files[0].name);
         fileReader = new FileReader();
         fileReader.onloadend = handleFileRead;
         fileReader.readAsText(files[0], 'ISO-8859-1');
+    }
+
+    // event listener for file import
+    const importElement = document.getElementById('file');
+    importElement.onchange = function() {
+        handleFileChosen(importElement.files[0]);
     };
-
-
-    // // event listener for file import
-    // const importElement = document.getElementById('file');
-    // importElement.onchange = function() {
-    //     handleFileChosen(importElement.files[0]);
-    // };
-
-
     //return (null)
 
     return (
         <div>
-            <label htmlFor="upload-file">
-                Import file
-                <input
-                    type="file"
-                    id="upload-file"
-                    name="upload-file"
-                    style={{display:"none"}}
-                    accept='.stl, .obj'
-                    data-testid='import-file'
-                    onChange={handleFileChosen}
-                />
-                {/*{uploadedFileName}*/}
-            </label>
+            <label htmlFor="upload-file">Upload File</label>
+
+            <input
+                id="upload-file"
+                name="upload-file"
+                style={{display:"none"}}
+                accept='.stl, .obj'
+                data-testid='import-file'
+                onChange={handleFileChosen}
+                type="file"
+            />
+            {/*{uploadedFileName}*/}
         </div>
     );
 };
 
 export const ImportStuff = () => {
-    // const styles = { display: 'flex', justifyContent: 'center'};
-    const styles = {};
     return (
-        <div className="tool"  style={styles} >
+        <div className="tool">
             <Import />
         </div>
     );
