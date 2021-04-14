@@ -1,9 +1,36 @@
-.emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
-textarea.emscripten { font-family: monospace; width: 80%; }
-div.emscripten { text-align: center; }
-div.emscripten_border { border: 1px solid black; }
+
+.emscripten {
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    display: block;
+    color: #d5d5d5;
+    border: none;
+}
+textarea.emscripten {
+    font-family: monospace;
+    color: #d5d5d5;
+    width: 80%;
+    background-color: transparent;
+    margin-top: 0;
+}
+div.emscripten {
+    text-align: center;
+    font-family: sans-serif;
+    background-color: transparent;
+    border: none;
+}
+div.emscripten_border {
+    border: 1px solid #2c2c2c;
+    background-color: #d5d5d5;
+}
 /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
 canvas.emscripten { border: 0px none; background-color: black; }
+#dev_stuff {
+    background-color: #2c2c2c;
+    border: none;
+}
 
 .navbar {
     height: 65px;
@@ -47,10 +74,17 @@ a.help {
 a.help:hover {
     color: #259c9c;
 }
+.container {
+    position:relative;
+    width: 100%;
+}
 div.toolbar {
     height: 35px;
+    width: 100%;
     background-color: #2c2c2c;
     display: flex;
+    flex-flow: row wrap;
+    justify-content: start;
 }
 .backbtn {
     display: inline-block;
@@ -67,8 +101,10 @@ div.toolbar {
 .tool {
     font-family: sans-serif;
     font-weight: bold;
-    display: inline-block;
+    display: inline-flex;
     margin: 5px;
+    margin-top: auto;
+    margin-bottom: auto;
     padding: 2px;
     font-size: 16px;
     color: #d5d5d5;
@@ -76,8 +112,27 @@ div.toolbar {
     border: 2px solid;
     border-left: none;
 }
-.tool:hover {border-color: #259c9c;}
-.dropdown {position: relative; display: inline-block;}
+#import {
+    width: 80px;
+    opacity: 0;
+}
+.input-file{
+    font-family: sans-serif;
+    margin-right: 0px;
+    opacity: 0;
+}
+#overlay {
+    position: absolute;
+    left: 45px;
+    bottom: 4px;
+}
+.tool:hover {border-color: #259c9c; cursor: pointer;}
+.dropdown:hover {border-color: #259c9c;}
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: auto;
+    margin-bottom: auto;}
 .menu-items {
     display: none;
     position: absolute;
@@ -94,6 +149,40 @@ div.toolbar {
 }
 .menu-items a:hover {background-color: #ddd;}
 .dropdown:hover .menu-items {display: block;}
+.rotate {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}
+#rlabel {
+    color: #d5d5d5;
+    font-size: 14px;
+    font-family: sans-serif;
+    display: inline-block;
+    line-height: 30px;
+}
+.rtoggle{
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+}
+.rtoggle:hover {cursor:pointer;}
+.coords {
+    display: flex;
+    flex-flow: row wrap;
+    line-height: 35px;
+    margin-right: 5px;
+    margin-left: auto;
+}
+.coords label {
+    color: #d5d5d5;
+    font-family: sans-serif;
+}
+.xycoords {
+    color: #d5d5d5;
+    font-family: sans-serif;
+    margin-right: 5px;
+}
 
 .spinner {
     height: 50px;
