@@ -8,7 +8,8 @@ Module.ready = new Promise(function(resolve, reject) {
         // resolve(api);
         var api = {
             import_model: Module.cwrap('import_model', 'char* str', ['char* str'], 'int_len', ['int_len'], 'target', ['target']),
-            export_model: Module.cwrap('export_model', 'number', ['number','string'])
+            export_model: Module.cwrap('export_model', 'number', ['number','string']),
+            scale: Module.cwrap('scale',null,['number'])
         };
         resolve(api);
     });
