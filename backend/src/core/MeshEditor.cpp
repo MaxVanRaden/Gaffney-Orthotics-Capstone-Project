@@ -6,6 +6,8 @@ MeshEditor::MeshEditor() {
     shader.load();
     camera = {0};
     entities.emplace_back(staircaseobjhardcoded);
+    projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
+    move_cam_backwards(&camera, 10);
 }
 
 void MeshEditor::run() {
@@ -14,11 +16,31 @@ void MeshEditor::run() {
     local float zoom = 5.0f;
     //zoom-=0.025f;
 
+    Rect viewport = {0, 0, 1000, 640};
+    vec2 mouse;
+    int x;
+    int y;
+    glfwGetMousePos(&x, &y);
+    mouse.x = x;
+    mouse.y = y;
+
+    vec3 raydirection = raycast(projection, camera, mouse, viewport);
+    vec3 rayposition = {camera.x, camera.y, camera.z};
+    //printf("ray direction: (%f, %f, %f)\n", raydirection.x, raydirection.y, raydirection.z);
+
+    for(int i = 0; i < entities.size(); ++i) {
+        if(entities[i].is_mouse_over(rayposition, raydirection)) {
+            printf("mouse is over a mesh\n");
+        } else {
+            printf("mouse is not over a mesh\n");
+        }
+    }
+
     shader.bind();
     shader.set_light_pos(14, 14, 14);
     shader.set_light_color(147.0f/255.0f, 108.0f/255.0f,95.0f/255.0f);
-    shader.set_camera_pos(zoom, zoom, zoom);
-    shader.set_view(look_at({zoom, zoom, zoom}, {0, 0, 0}));
+    shader.set_camera_pos(camera.x, camera.y, camera.z);
+    shader.set_view(create_view_matrix(camera));
 
     for(Entity& e : entities) {
         e.draw(shader);

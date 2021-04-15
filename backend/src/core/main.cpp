@@ -25,7 +25,7 @@ int main(void)
 		glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
 		editor = new MeshEditor();
 		initialized = true;
-		emscripten_set_main_loop(mainloop, 60, 1);
+		emscripten_set_main_loop(mainloop, 0, 1);
 	}
 
 	glfwTerminate();

@@ -14,6 +14,7 @@ public:
     explicit Entity(std::string file);
     ~Entity();
 
+    bool is_mouse_over(vec3 o, vec3 d);
     void draw(StaticShader& shader);
     void set_position(vec3 pos);
     void set_rotation(vec3 rotate);

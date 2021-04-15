@@ -63,11 +63,12 @@ uniform mat4 transform;
 uniform mat4 view;
 
 void main() {
-    pass_pos = vec3(transform * vec4(position, 1.0));
+    pass_pos = vec3(vec4(position, 1.0) * transform);
     //pass_pos = position;
     //pass_normal = transpose(inverse(mat3(transform))) * normal;
     pass_normal = vec3(transform * vec4(normal, 1.0));
-    gl_Position = projection * view * transform * vec4(position, 1.0);
+    //gl_Position = projection * view * transform * vec4(position, 1.0);
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
 }
 )foo";
 

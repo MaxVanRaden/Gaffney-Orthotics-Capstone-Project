@@ -21,6 +21,7 @@ public:
 private:
     std::vector<Entity> entities;
 
+    mat4 projection;
     StaticShader shader{};
     Camera camera{};
     Model stairs;
