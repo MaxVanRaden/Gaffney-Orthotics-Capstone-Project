@@ -17,6 +17,7 @@ public:
     char* export_model(int ID, const char* fileformat);
     void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll);
     void scale_all_entities(float factor);
+    std::string export_new(int ID, const char* fileformat);
 
 private:
     std::vector<Entity> entities;

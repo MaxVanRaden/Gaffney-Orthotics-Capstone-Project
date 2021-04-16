@@ -19,6 +19,9 @@ public:
     void set_rotation(vec3 rotate);
     void set_scale(vec3 scale);
     void scale_entity(float factor);
+    Model get_current() {
+        return current;
+    }
 
 private:
     Model current; //current model
