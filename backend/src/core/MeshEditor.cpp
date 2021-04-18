@@ -150,34 +150,40 @@ char* MeshEditor::export_new(int ID, const char *fileformat) {
 
             j = 0;
             //texture coordinates
-            for (Vertex v: m.vertices) {
-                float texturesX = m.vertices[j].uv.x;
-                float texturesY = m.vertices[j].uv.y;
-                std::string line = "vt " + std::to_string(texturesX) + " " + std::to_string(texturesY) + "\n";
-                modelData.append(line);
-                j++;
-            }
-            j = 0;
-
-            //vertex normals
-            for (Vertex v: m.vertices) {
-                float normalsX = m.vertices[j].normal.x;
-                float normalsY = m.vertices[j].normal.y;
-                float normalsZ = m.vertices[j].normal.z;
-                std::string line = "vn " + std::to_string(normalsX) + " " + std::to_string(normalsY) + " " + std::to_string(normalsZ) + "\n";
-                modelData.append(line);
-                j++;
-            }
-
+//            for (Vertex v: m.vertices) {
+//                float texturesX = m.vertices[j].uv.x;
+//                float texturesY = m.vertices[j].uv.y;
+//                std::string line = "vt " + std::to_string(texturesX) + " " + std::to_string(texturesY) + "\n";
+//                modelData.append(line);
+//                j++;
+//            }
+//            j = 0;
+//
+//            //vertex normals
+//            for (Vertex v: m.vertices) {
+//                float normalsX = m.vertices[j].normal.x;
+//                float normalsY = m.vertices[j].normal.y;
+//                float normalsZ = m.vertices[j].normal.z;
+//                std::string line = "vn " + std::to_string(normalsX) + " " + std::to_string(normalsY) + " " + std::to_string(normalsZ) + "\n";
+//                modelData.append(line);
+//                j++;
+//            }
+//
             //now the faces, which needs work
             for (j = 0; j < m.indices.size(); j+=3) {
-                int face1 = m.indices[j];
-                int face2 = m.indices[j + 1];
-                int face3 = m.indices[j + 2];
+                int face1 = m.indices[j] + 1;
+                int face2 = m.indices[j + 1] + 1;
+                int face3 = m.indices[j + 2] + 1;
+//                std::string line =
+//                        "f " + std::to_string(face1) + "//" + std::to_string(face1) +
+//                        " " + std::to_string(face2) +  "//" + std::to_string(face2) +
+//                        " " + std::to_string(face3) + "//" + std::to_string(face3) + "\n";
                 std::string line = "f " + std::to_string(face1) + " " + std::to_string(face2) + " " + std::to_string(face3) + "\n";
                 modelData.append(line);
-                j++;
             }
+//            for (int k = 0; k < m.indices.size(); ++k){
+//                std::cout << m.indices[k] << std::endl;
+//            }
         }
     }
 
