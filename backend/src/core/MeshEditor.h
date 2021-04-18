@@ -21,8 +21,12 @@ public:
 private:
     std::vector<Entity> entities;
 
+    Mesh billboard;
+    Texture circle;
+
     mat4 projection;
     StaticShader shader{};
+    BillboardShader bshader{};
     Camera camera{};
     Model stairs;
 };

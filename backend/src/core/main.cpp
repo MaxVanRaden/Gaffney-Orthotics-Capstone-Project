@@ -98,6 +98,7 @@ extern "C" {
 //        for(i = 0; i < len; i++){
 //            printf("%c", str[i]);
 //        }
+        editor->add_model(str);
         printf("import success\n");
     }
 

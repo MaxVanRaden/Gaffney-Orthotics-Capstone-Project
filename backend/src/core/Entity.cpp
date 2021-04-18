@@ -1,12 +1,21 @@
 #include "Entity.h"
 
 Entity::Entity() {
-
+    current.scale = current.rotate = current.pos = {0};
+    current.materials.clear();
+    current.meshes.clear();
+    start = current;
 }
 
 Entity::Entity(std::string file) {
+    //current = load_model_string(file);
+    //start = load_model_string(file);
+}
+
+void Entity::load(std::string file) {
+    file[file.size()] = 0;
     current = load_model_string(file);
-    start = load_model_string(file);
+    //start = current;
 }
 
 void Entity::draw(StaticShader& shader) {
@@ -14,6 +23,34 @@ void Entity::draw(StaticShader& shader) {
     shader.set_transform(transform);
 
     draw_model(&current);
+}
+
+void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos) {
+    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+
+    //glDisable(GL_DEPTH_TEST);
+    //glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+
+    bind_texture(circle, 0);
+    for(Mesh& mesh : current.meshes) {
+        for(Vertex& vertex : mesh.vertices) {
+            vec3 pos = (transform * V4(vertex.position.x, vertex.position.y, vertex.position.z, 1.0)).xyz;
+
+            //move the circle a little towards the camera so it's not stuck in the mesh and you can see it clearly
+            vec3 dir = normalize(campos - pos);
+            pos = pos + (0.05*dir);
+
+            //shader.set_transform(create_transformation_matrix(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1,1 ));
+            shader.set_transform(billboard_transform(pos.x, pos.y, pos.z, {0.10, 0.10, 0.10}, view));
+
+            draw_billboard_unordered(billboard);
+        }
+    }
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
 }
 
 // Scale every vertex in every mesh in the entity by the factor passed in
@@ -74,6 +111,6 @@ void Entity::set_scale(vec3 scale) {
 }
 
 Entity::~Entity() {
-    dispose_model(&current);
-    dispose_model(&start);
+    //dispose_model(&current);
+    //dispose_model(&start);
 }
