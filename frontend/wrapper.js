@@ -2,13 +2,13 @@
 
 Module.ready = new Promise(function(resolve, reject) {
     addOnPreMain(function() {
-        // var api = {
-        //     print_hello: Module.cwrap('print_hello', 'number', ['number'])
-        // };
-        // resolve(api);
+        // Refer to the below for documentation on cwrap arguments
+        // https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-compiled-c-functions-from-javascript-using-ccall-cwrap
         var api = {
             import_model: Module.cwrap('import_model', 'char* str', ['char* str'], 'int_len', ['int_len'], 'target', ['target']),
-            export_model: Module.cwrap('export_model', 'number', ['number','string'])
+            export_model: Module.cwrap('export_model', 'number', ['number','number']),
+            export_new: Module.cwrap('export_new', 'number', ['number', 'number']),
+            get_export_strlen: Module.cwrap('get_export_strlen', 'number')
         };
         resolve(api);
     });
