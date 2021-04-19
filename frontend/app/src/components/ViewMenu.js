@@ -5,9 +5,9 @@ export const ViewMenu = () => {
         <div className="dropdown">
             <button className="tool">View</button>
             <div className="menu-items">
-                <a href="#">Item 1</a>
-                <a href="#">Item 2</a>
-                <a href="#">Item 3</a>
+                <a href="#">Zoom</a>
+                <a href="#">Perspective</a>
+                <a href="#">Fullscreen</a>
             </div>
         </div>
     )
