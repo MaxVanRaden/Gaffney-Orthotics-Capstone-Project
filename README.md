@@ -55,7 +55,13 @@ This acts as the entry point for our React code in index.html by rendering our b
 
 #### App.js
 
-Base React component which contains our React code imported from the components directory. 
+Base React component which contains our React code imported from the components directory.
+
+## Testing
+* Navigate to *frontend/app* directory and run:
+```
+npm test
+```
 
 ### Back End
 

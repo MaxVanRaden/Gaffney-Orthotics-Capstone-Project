@@ -94,6 +94,7 @@ extern "C" {
     }
 
     void import_model(char* str, int len){
+//        int i;
 //        for(i = 0; i < len; i++){
 //            printf("%c", str[i]);
 //        }

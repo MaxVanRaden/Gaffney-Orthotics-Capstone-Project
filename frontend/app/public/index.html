@@ -25,81 +25,108 @@ to call some C++ function the backend team will write.
     <script src="https://cdn.jsdelivr.net/gh/inexorabletash/text-encoding@master/lib/encoding.js"></script>
   </head>
 
-  <body>
-  <!-- Nav Bar -->
-  <div id="navbar" class="navbar">
-    <p id="title"> OrthoFreeD </p>
-    <ul id = "help">
-      <li><a class ="help" href="">Help</a></li>
-    </ul>
-  </div>
+<body>
+<!--<p align="left">HTML</p>-->
+<!--<div class='container'>-->
+<!--&lt;!&ndash; Nav Bar &ndash;&gt;-->
+<!--<div id="navbar" class="navbar">-->
+<!--  <p id="title"> OrthoFreeD </p>-->
+<!--  <ul id = "help">-->
+<!--    <li><a class ="help" href="">Help</a></li>-->
+<!--  </ul>-->
+<!--</div>-->
 
-  <!-- Toolbar -->
-  <div class ="toolbar" id ="toolbar">
-    <a href="#" class="backbtn">&#8617;</a>
-    <div class="tool"
-         role="button"
-         tabindex="0">Import
-    </div>
-    <div class="tool"
-         role="button"
-         tabindex="-1">Export
-    </div>
-    <div class="dropdown">
-      <button class="tool">View</button>
-      <div class="menu-items">
-        <a href="#">Item 1</a>
-        <a href="#">Item 2</a>
-        <a href="#">Item 3</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="tool">Edit</button>
-      <div class="menu-items">
-        <a href="#">Item 1</a>
-        <a href="#">Item 2</a>
-        <a href="#">Item 3</a>
-      </div>
-    </div>
-    <div class="dropdown">
-      <button class="tool">Select</button>
-      <div class="menu-items">
-        <a href="#">Item 1</a>
-        <a href="#">Item 2</a>
-        <a href="#">Item 3</a>
-      </div>
-    </div>
-  </div>
+<!-- Toolbar -->
+<!--<div class ="toolbar" id ="toolbar">-->
+<!--  <a href="#" class="backbtn">&#8617;</a>-->
+  <!-- Input file button -->
+<!--  <div class="tool" id='import'>-->
+  <input type='file'
+         id='file'
+         class='input-file'
+         accept='.stl, .obj'
+         />
+<!--  </div>-->
+<!--  <div class="tool"-->
+<!--        id="overlay"-->
+<!--        onclick="document.getElementById('file').click()"-->
+<!--  >Import file</div>-->
+<!--  <div class="tool" id='export'-->
+<!--       role="button"-->
+<!--       >Export file-->
+<!--  </div>-->
+<!--  <div class="dropdown">-->
+<!--    <button class="tool">View</button>-->
+<!--    <div class="menu-items">-->
+<!--      <a href="#">Item 1</a>-->
+<!--      <a href="#">Item 2</a>-->
+<!--      <a href="#">Item 3</a>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="dropdown">-->
+<!--    <button class="tool">Edit</button>-->
+<!--    <div class="menu-items">-->
+<!--      <a href="#">Item 1</a>-->
+<!--      <a href="#">Item 2</a>-->
+<!--      <a href="#">Item 3</a>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class="dropdown">-->
+<!--    <button class="tool">Select</button>-->
+<!--    <div class="menu-items">-->
+<!--      <a href="#">Item 1</a>-->
+<!--      <a href="#">Item 2</a>-->
+<!--      <a href="#">Item 3</a>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div class='rotate'>-->
+<!--    <input type='checkbox' id='rtoggle' class='rtoggle'>-->
+<!--    <label for='rtoggle' id='rlabel'>Rotate</label >-->
+<!--  </div>-->
+<!--  <div class='coords'>-->
+<!--    <label for='xcoord'>X:</label>-->
+<!--    <div id='xcoord' class='xycoords'></div>-->
+<!--    <label for='ycoord'>Y:</label>-->
+<!--    <div id='ycoord' class='xycoords'></div>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<p align="left">React</p>-->
+<div id="root"></div>
+<!-- A progress display to indicate the webassembly code is still being loaded -->
+<figure style="overflow:visible;" id="spinner"><div class="spinner"></div><h1>emscripten</h1></figure>
+<div class="emscripten" id="status">Downloading...</div>
+<div class="emscripten">
+  <progress value="0" max="100" id="progress" hidden></progress>
+</div>
 
-	<!-- A progress display to indicate the webassembly code is still being loaded -->
-    <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><h1>emscripten</h1></figure>
-    <div class="emscripten" id="status">Downloading...</div>
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden></progress>
-    </div>
-	
-	<!-- The canvas, the most important tag -->
-    <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-    </div>
-	
-	<!-- Debug Buttons to mess with the canvas -->
-    <hr/>
-    <div class="emscripten">
-      <input type="checkbox" id="resize">Resize canvas
-      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-      <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, 
+<!-- The canvas, the most important tag -->
+<div class="emscripten_border">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+</div>
+
+<!-- Debug Buttons to mess with the canvas -->
+<div id='dev_stuff'>
+  <hr/>
+  <div class="emscripten">
+    <!-- Initialization check is done on backend -->
+    <input type='number' id='scale_entity' value=100>Scale by %</input>
+    <button onclick='_scale(document.getElementById("scale_entity").value / 100)'>Scale</button>
+    <input type="checkbox" id="resize">Resize canvas
+    <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
+    <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,
                                                                                 document.getElementById('resize').checked)">
     </div>
 
-    <!--root React component-->
-    <div id="root"></div>
+
+<!--    &lt;!&ndash;root React component&ndash;&gt;-->
+<!--    <div id="root"></div>-->
     
 	<!-- Debug panel, basically cout. -->
     <hr/>
     <textarea class="emscripten" id="output" rows="8"></textarea>
     <hr>
-	
+</div>
 	<!-- The backend scripts -->
     <script type='text/javascript' src="debug_elements.js"></script>
     <script type="text/javascript" src="backend.js"></script>
@@ -118,8 +145,6 @@ to call some C++ function the backend team will write.
 		}
 	</script>
 
-    <!-- Initialization check is done on backend -->
-    <input type='number' id='scale_entity' value=100>Scale by %</input>
-    <button onclick='_scale(document.getElementById("scale_entity").value / 100)'>Scale</button>
+
   </body>
 </html>
