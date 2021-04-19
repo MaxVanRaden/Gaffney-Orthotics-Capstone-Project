@@ -30,8 +30,8 @@ export const EditMenu = () => {
                     <span style={{...styles, paddingLeft:2}}>%</span>
                     <button onClick={Scale}>Scale</button>
                 </div>
-                <a href="#">Item 2</a>
-                <a href="#">Item 3</a>
+                <a href="#">Extend</a>
+                <a href="#">Bend/Twist</a>
             </div>
         </div>
     )
