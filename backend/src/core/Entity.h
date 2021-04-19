@@ -23,6 +23,9 @@ public:
     void set_scale(vec3 scale);
     void scale_entity(float factor);
     void select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport);
+    Model get_current() {
+        return current;
+    }
 
 private:
     Model current; //current model

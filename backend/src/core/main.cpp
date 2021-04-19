@@ -105,6 +105,14 @@ extern "C" {
     char* export_model(int ID, const char* fileformat) {
         return editor->export_model(ID, fileformat);
     }
+
+    char* export_new(int ID, const char* fileformat) {
+        return editor->export_new(ID, fileformat);
+    }
+
+    uint32_t get_export_strlen() {
+        return editor->get_export_strlen();
+    }
     
 	void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
 		editor->set_camera(zoom, x, y ,z ,yaw, pitch, roll);
@@ -112,7 +120,7 @@ extern "C" {
 
 	// Scale every vertex in every mesh in every entity by the factor passed in
 	void scale(float factor){
-        printf("backend scale got factor %f and attempted to scale\n", factor);
+        printf("backend scale got factor %f and attempted to scale by %f%\n", factor, factor*100);
         if(initialized){
             editor->scale_all_entities(factor);
         }
