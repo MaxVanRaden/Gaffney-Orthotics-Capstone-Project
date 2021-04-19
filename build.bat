@@ -1,6 +1,6 @@
 @echo off
 echo Configuring Emscripten environment variables
-set EMSDK=C:/emsdk
+set EMSDK=C:/Users/darkz/Downloads/emsdk-master/emsdk-master
 
 :: Expected to already exist since
 mkdir backend

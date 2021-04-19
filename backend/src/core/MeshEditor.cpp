@@ -99,7 +99,7 @@ void MeshEditor::run() {
     bshader.bind();
     bshader.set_view(view);
     for(Entity& e : entities) {
-        //e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+        e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
     }
 }
 
@@ -123,6 +123,12 @@ char* MeshEditor::export_model(int ID, const char* fileformat) {
     scene->mMeshes[0] = &mesh;
     const aiExportDataBlob* blob = exporter.ExportToBlob(scene, "obj", 0);
     return (char*)blob->data;
+}
+
+void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
+    for(Entity& e: entities) {
+        e.select(x, y, x2, y2, camera, projection, {0, 0, 1000, 640});
+    }
 }
 
 // Scale every vertex in every mesh in every entity by the factor passed in

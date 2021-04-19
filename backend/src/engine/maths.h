@@ -595,33 +595,45 @@ void operator*=(mat4& a, const mat4 b) {
 internal inline
 mat4 operator*(const mat4 a, const mat4 b) {
     mat4 c = {};
-    f32 data[4 * 4];
-    for (u8 y = 0; y < 4; ++y) {
-        for (u8 x = 0; x < 4; ++x) {
-            f32 sum = 0.0f;
-            for (u8 i = 0; i < 4; ++i) {
-                sum += a.elements[x * 4 + i] * b.elements[i * 4 + y];
-            }
-            data[x * 4 + y] = sum;
-        }
-    }
-    memcpy(c.elements, data, 16 * sizeof(f32));
+    c.m00 = a.m00 * b.m00 + a.m01 * b.m10 + a.m02 * b.m20 + a.m03 * b.m30;
+    c.m10 = a.m10 * b.m00 + a.m11 * b.m10 + a.m12 * b.m20 + a.m13 * b.m30;
+    c.m20 = a.m20 * b.m00 + a.m21 * b.m10 + a.m22 * b.m20 + a.m23 * b.m30;
+    c.m30 = a.m30 * b.m00 + a.m31 * b.m10 + a.m32 * b.m20 + a.m33 * b.m30;
+    c.m01 = a.m00 * b.m01 + a.m01 * b.m11 + a.m02 * b.m21 + a.m03 * b.m31;
+    c.m11 = a.m10 * b.m01 + a.m11 * b.m11 + a.m12 * b.m21 + a.m13 * b.m31;
+    c.m21 = a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21 + a.m23 * b.m31;
+    c.m31 = a.m30 * b.m01 + a.m31 * b.m11 + a.m32 * b.m21 + a.m33 * b.m31;
+    c.m02 = a.m00 * b.m02 + a.m01 * b.m12 + a.m02 * b.m22 + a.m03 * b.m32;
+    c.m12 = a.m10 * b.m02 + a.m11 * b.m12 + a.m12 * b.m22 + a.m13 * b.m32;
+    c.m22 = a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22 + a.m23 * b.m32;
+    c.m32 = a.m30 * b.m02 + a.m31 * b.m12 + a.m32 * b.m22 + a.m33 * b.m32;
+    c.m03 = a.m00 * b.m03 + a.m01 * b.m13 + a.m02 * b.m23 + a.m03 * b.m33;
+    c.m13 = a.m10 * b.m03 + a.m11 * b.m13 + a.m12 * b.m23 + a.m13 * b.m33;
+    c.m23 = a.m20 * b.m03 + a.m21 * b.m13 + a.m22 * b.m23 + a.m23 * b.m33;
+    c.m33 = a.m30 * b.m03 + a.m31 * b.m13 + a.m32 * b.m23 + a.m33 * b.m33;
     return c;
 }
 
 internal inline
 void operator*=(mat4& a, const mat4 b) {
-    f32 data[4 * 4];
-    for (u8 y = 0; y < 4; ++y) {
-        for (u8 x = 0; x < 4; ++x) {
-            f32 sum = 0.0f;
-            for (u8 i = 0; i < 4; ++i) {
-                sum += a.elements[x * 4 + i] * b.elements[i * 4 + y];
-            }
-            data[x * 4 + y] = sum;
-        }
-    }
-    memcpy(a.elements, data, 16 * sizeof(f32));
+    mat4 c;
+    c.m00 = a.m00 * b.m00 + a.m01 * b.m10 + a.m02 * b.m20 + a.m03 * b.m30;
+    c.m10 = a.m10 * b.m00 + a.m11 * b.m10 + a.m12 * b.m20 + a.m13 * b.m30;
+    c.m20 = a.m20 * b.m00 + a.m21 * b.m10 + a.m22 * b.m20 + a.m23 * b.m30;
+    c.m30 = a.m30 * b.m00 + a.m31 * b.m10 + a.m32 * b.m20 + a.m33 * b.m30;
+    c.m01 = a.m00 * b.m01 + a.m01 * b.m11 + a.m02 * b.m21 + a.m03 * b.m31;
+    c.m11 = a.m10 * b.m01 + a.m11 * b.m11 + a.m12 * b.m21 + a.m13 * b.m31;
+    c.m21 = a.m20 * b.m01 + a.m21 * b.m11 + a.m22 * b.m21 + a.m23 * b.m31;
+    c.m31 = a.m30 * b.m01 + a.m31 * b.m11 + a.m32 * b.m21 + a.m33 * b.m31;
+    c.m02 = a.m00 * b.m02 + a.m01 * b.m12 + a.m02 * b.m22 + a.m03 * b.m32;
+    c.m12 = a.m10 * b.m02 + a.m11 * b.m12 + a.m12 * b.m22 + a.m13 * b.m32;
+    c.m22 = a.m20 * b.m02 + a.m21 * b.m12 + a.m22 * b.m22 + a.m23 * b.m32;
+    c.m32 = a.m30 * b.m02 + a.m31 * b.m12 + a.m32 * b.m22 + a.m33 * b.m32;
+    c.m03 = a.m00 * b.m03 + a.m01 * b.m13 + a.m02 * b.m23 + a.m03 * b.m33;
+    c.m13 = a.m10 * b.m03 + a.m11 * b.m13 + a.m12 * b.m23 + a.m13 * b.m33;
+    c.m23 = a.m20 * b.m03 + a.m21 * b.m13 + a.m22 * b.m23 + a.m23 * b.m33;
+    c.m33 = a.m30 * b.m03 + a.m31 * b.m13 + a.m32 * b.m23 + a.m33 * b.m33;
+    memcpy(a.elements, c.elements, 16 * sizeof(f32));
 }
 #endif
 
@@ -1119,13 +1131,42 @@ bool ray_tri_collision(vec3 o, vec3 d, vec3 tri0, vec3 tri1, vec3 tri2, vec3* in
 
     float t = f * dot(edge2, q);
     if(t > EPSILON) {
-        *intersectionPoint = o + d * t;
+        if(intersectionPoint != NULL)
+            *intersectionPoint = o + d * t;
         return true;
     } else {
         return false;
     }
 
     return true;
+}
+
+internal inline
+bool ray_aabb_collision(vec3 o, vec3 d, vec3 min, vec3 max, vec3* intersectionPoint) {
+    float t1 = (min.x -o.x) / d.x;
+    float t2 = (max.x -o.x) / d.x;
+    float t3 = (min.y -o.y) / d.y;
+    float t4 = (max.y -o.y) / d.y;
+    float t5 = (min.z -o.z) / d.z;
+    float t6 = (max.z -o.z) / d.z;
+
+    float tmin = fmax(fmax(fmin(t1, t2), fmin(t3, t4)), fmin(t5, t6));
+    float tmax = fmin(fmin(fmax(t1, t2), fmax(t3, t4)), fmax(t5, t6));
+
+    // if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+    if (tmax < 0) {
+        return false;
+    }
+
+    // if tmin > tmax, ray doesn't intersect AABB
+    if (tmin > tmax) {
+        return false;
+    }
+
+    if (tmin < 0.0f) {
+        return true;
+    }
+    return tmin;
 }
 
 internal inline
