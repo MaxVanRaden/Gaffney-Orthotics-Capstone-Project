@@ -2,13 +2,10 @@
 
 Module.ready = new Promise(function(resolve, reject) {
     addOnPreMain(function() {
-        // var api = {
-        //     print_hello: Module.cwrap('print_hello', 'number', ['number'])
-        // };
-        // resolve(api);
         var api = {
-            import_model: Module.cwrap('import_model', 'char* str', ['char* str'], 'int_len', ['int_len'], 'target', ['target']),
-            export_model: Module.cwrap('export_model', 'number', ['number','string'])
+            import_model: Module.cwrap('import_model', null, ['number','number']),
+            export_model: Module.cwrap('export_model', 'number', ['number','number']),
+            on_mouse_up: Module.cwrap('on_mouse_up', null, ['number'])
         };
         resolve(api);
     });
