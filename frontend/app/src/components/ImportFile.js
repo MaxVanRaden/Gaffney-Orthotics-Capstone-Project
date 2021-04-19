@@ -78,7 +78,7 @@ const Import = () => {
         return () => {
             window.removeEventListener('file', handleFileChosen);
         };
-    }, []);
+    }, );
 
     return (
         <div>

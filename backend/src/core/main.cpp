@@ -121,4 +121,8 @@ extern "C" {
     bool is_ready() {
         return initialized;
     }
+
+    void on_mouse_up(int x, int y, int x2, int y2){
+        printf("(%d,%d),(%d,%d)\n", x, y, x2, y2);
+    }
 }
