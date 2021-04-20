@@ -158,22 +158,26 @@ to call some C++ function the backend team will write.
 
         // Query selectors for elements which will be used as boundaries for the selection.
         boundaries: ['#canvas'],
+      })
+      //disable selection when moving camera
+      .on('beforestart', e => {
+        return !document.getElementById('rtoggle2').checked
       });
 
-      let canvasElement = document.getElementById('canvas');
-      let x = 0;
-      let y = 0;
-
-      canvasElement.onmousedown = function mouseDown(e) {
-        x = e.pageX - this.offsetLeft;
-        y = e.pageY - this.offsetTop;
-      };
-
-      canvasElement.onmouseup = function mouseUp(e) {
-        let x2 = e.pageX - this.offsetLeft;
-        let y2 = e.pageY - this.offsetTop;
-        window.Module.ready.then(api => console.log(api.on_mouse_up(x, y, x2, y2)));
-      };
+      // let canvasElement = document.getElementById('canvas');
+      // let x = 0;
+      // let y = 0;
+      //
+      // canvasElement.onmousedown = function mouseDown(e) {
+      //   x = e.pageX - this.offsetLeft;
+      //   y = e.pageY - this.offsetTop;
+      // };
+      //
+      // canvasElement.onmouseup = function mouseUp(e) {
+      //   let x2 = e.pageX - this.offsetLeft;
+      //   let y2 = e.pageY - this.offsetTop;
+      //   window.Module.ready.then(api => console.log(api.on_mouse_up(x, y, x2, y2)));
+      // };
     </script>
 
 
