@@ -19,6 +19,8 @@ export const Camera = (props) => {
             this.onmousemove = (e) => {
                 let curX = e.pageX - this.offsetLeft;
                 let curY = e.pageY - this.offsetTop;
+                document.getElementById('xcoord').innerHTML = curX;
+                document.getElementById('ycoord').innerHTML = curY;
                 let deltaX = curX - canvasX
                 let deltaY = canvasY - curY
                 if (e.ctrlKey) {
@@ -43,7 +45,12 @@ export const Camera = (props) => {
         let y2 = e.pageY - this.offsetTop;
         if(!props.checked)
             window.Module.ready.then(api => console.log(api.on_mouse_up(canvasX, canvasY, x2, y2)));
-        this.onmousemove = null
+        this.onmousemove = function(e){
+            let curX = e.pageX - this.offsetLeft;
+            let curY = e.pageY - this.offsetTop;
+            document.getElementById('xcoord').innerHTML = curX;
+            document.getElementById('ycoord').innerHTML = curY;
+        }
     }
     canvasElement.onwheel = function onwheel(e){
         if(props.checked) {
