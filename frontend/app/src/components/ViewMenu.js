@@ -10,11 +10,11 @@ export const ViewMenu = (props) => {
                     Zoom
                     <br/>
                     <div style={{paddingRight:5, display:"inline", paddingLeft:5}}>
-                        <button onClick={() => props.setZoom(prev => prev - 1)}>-</button>
+                        <button onClick={() => props.setZoom(prev => prev > -100 ? prev - 1 : prev)}>-</button>
                     </div>
                     <input type="number" min="-100" max="100" step="1" style={{maxWidth:50}}
                            value={props.zoom} onChange={e => props.setZoom(Number(e.target.value))}/>%
-                    <button onClick={() => props.setZoom(prev => prev + 1)}>+</button>
+                    <button onClick={() => props.setZoom(prev => prev < 100 ? prev + 1 : prev)}>+</button>
                 </div>
                 <a href="#">Perspective</a>
                 <a href="#">Fullscreen</a>
