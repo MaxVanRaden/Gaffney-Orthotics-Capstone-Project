@@ -7,7 +7,7 @@ export const Camera = (props) => {
     const [yaw, setYaw] = useState(0)
     const [roll, setRoll] = useState(0)
     const [pitch, setPitch] = useState(0)
-
+    const zoom = props.zoom
     let canvasElement = document.getElementById('canvas');
     let canvasX = 0
     let canvasY = 0
@@ -22,17 +22,17 @@ export const Camera = (props) => {
                 let deltaX = curX - canvasX
                 let deltaY = canvasY - curY
                 if (e.ctrlKey) {
-                    let newPitch = Math.min(Math.max(-360, pitch - deltaY), 360)
-                    let newYaw = Math.min(Math.max(-360, yaw + deltaX), 360)
+                    let newPitch = Math.min(Math.max(-360, Number(pitch - deltaY)), 360)
+                    let newYaw = Math.min(Math.max(-360, Number(yaw + deltaX)), 360)
                     setPitch(newPitch)
                     setYaw(newYaw)
-                    window.Module.ready.then(api => api.set_camera(0, x, y, z, newYaw, newPitch, roll))
+                    window.Module.ready.then(api => api.set_camera(zoom, x, y, z, newYaw, newPitch, roll))
                 } else {
-                    let newX = Math.min(Math.max(-100, x + deltaX), 100)
-                    let newY = Math.min(Math.max(-100, y + deltaY), 100)
+                    let newX = Math.min(Math.max(-100, Number(x + deltaX)), 100)
+                    let newY = Math.min(Math.max(-100, Number(y + deltaY)), 100)
                     setX(newX)
                     setY(newY)
-                    window.Module.ready.then(api => api.set_camera(0, newX, newY, z, yaw, pitch, roll))
+                    window.Module.ready.then(api => api.set_camera(zoom, newX, newY, z, yaw, pitch, roll))
                 }
             }
         }
@@ -51,18 +51,18 @@ export const Camera = (props) => {
             if(e.ctrlKey){
                 let val = Math.min(Math.max(-360,  (e.deltaY * 0.1) + roll), 360)
                 setRoll(val)
-                window.Module.ready.then(api => api.set_camera(0, x, y, z, yaw, pitch, roll))
+                window.Module.ready.then(api => api.set_camera(zoom, x, y, z, yaw, pitch, roll))
             }
             else{
                 let val = Math.min(Math.max(-100,  (e.deltaY * 0.01) + z), 100)
                 setZ(val)
-                window.Module.ready.then(api => api.set_camera(0, x, y, z, yaw, pitch, roll))
+                window.Module.ready.then(api => api.set_camera(zoom, x, y, z, yaw, pitch, roll))
             }
         }
     }
 
     const handleChange = (e) => {
-        let val = e.target.value
+        let val = Number(e.target.value)
         switch(e.target.className){
             case "x-inp":
                 setX(val)
@@ -85,7 +85,7 @@ export const Camera = (props) => {
             default:
                 console.log("unexpected input class")
         }
-        window.Module.ready.then(api => api.set_camera(0, x, y, z, yaw, pitch, roll))
+        window.Module.ready.then(api => api.set_camera(zoom, x, y, z, yaw, pitch, roll))
     }
 
     return(
