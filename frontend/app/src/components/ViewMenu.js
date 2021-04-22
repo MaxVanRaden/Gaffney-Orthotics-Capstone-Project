@@ -12,7 +12,7 @@ export const ViewMenu = (props) => {
                     <div style={{paddingRight:5, display:"inline", paddingLeft:5}}>
                         <button onClick={() => props.setZoom(prev => prev > -100 ? prev - 1 : prev)}>-</button>
                     </div>
-                    <input type="number" min="-100" max="100" step="1" style={{maxWidth:50}}
+                    <input type="number" min="0" max="100" step="1" style={{maxWidth:50}}
                            value={props.zoom} onChange={e => props.setZoom(Number(e.target.value))}/>%
                     <button onClick={() => props.setZoom(prev => prev < 100 ? prev + 1 : prev)}>+</button>
                 </div>

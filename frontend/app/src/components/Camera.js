@@ -7,7 +7,7 @@ export const Camera = (props) => {
     const [yaw, setYaw] = useState(0)
     const [roll, setRoll] = useState(0)
     const [pitch, setPitch] = useState(0)
-    const zoom = props.zoom
+    const zoom = props.zoom / 100
     let canvasElement = document.getElementById('canvas');
     let canvasX = 0
     let canvasY = 0
