@@ -25,7 +25,7 @@ int main(void)
 		glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
 		editor = new MeshEditor();
 		initialized = true;
-		emscripten_set_main_loop(mainloop, 60, 1);
+		emscripten_set_main_loop(mainloop, 0, 1);
 	}
 
 	glfwTerminate();
@@ -98,11 +98,20 @@ extern "C" {
 //        for(i = 0; i < len; i++){
 //            printf("%c", str[i]);
 //        }
+        editor->add_model(str);
         printf("import success\n");
     }
 
     char* export_model(int ID, const char* fileformat) {
         return editor->export_model(ID, fileformat);
+    }
+
+    char* export_new(int ID, const char* fileformat) {
+        return editor->export_new(ID, fileformat);
+    }
+
+    uint32_t get_export_strlen() {
+        return editor->get_export_strlen();
     }
     
 	void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
@@ -111,7 +120,7 @@ extern "C" {
 
 	// Scale every vertex in every mesh in every entity by the factor passed in
 	void scale(float factor){
-        printf("backend scale got factor %f and attempted to scale\n", factor);
+        printf("backend scale got factor %f and attempted to scale by %f%\n", factor, factor*100);
         if(initialized){
             editor->scale_all_entities(factor);
         }
@@ -119,5 +128,10 @@ extern "C" {
 
     bool is_ready() {
         return initialized;
+    }
+
+    void on_mouse_up(int x, int y, int x2, int y2){
+        printf("(%d,%d),(%d,%d)\n", x, y, x2, y2);
+        editor->on_mouse_up(x, y, x2, y2);
     }
 }

@@ -5,7 +5,12 @@
 void dispose_mesh(Mesh* mesh) {
     glDeleteBuffers(1, &mesh->vbo);
     glDeleteBuffers(1, &mesh->ebo);
+    mesh->vbo = mesh->ebo = 0;
+    mesh->vertices.clear();
+    mesh->indices.clear();
     mesh->indexcount = mesh->material = 0;
+    mesh->selected.clear();
+    printf("dispose mesh\n");
 }
 
 void dispose_model(Model* model) {
@@ -43,6 +48,7 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
 
     std::vector<Vertex> vertices;
     std::vector<GLushort> indices;
+    std::vector<bool> selected;
 
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -58,6 +64,7 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
         };
 
         vertices.push_back(v);
+        selected.push_back(true);
     }
 
     for(u32 i = 0; i < paiMesh->mNumFaces; ++i) {
@@ -85,6 +92,7 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
 
     model->meshes[i].indexcount = indices.size();
     model->meshes[i].vertices = vertices;
+    model->meshes[i].selected = selected;
     model->meshes[i].indices = indices;
 }
 
@@ -143,8 +151,11 @@ Model load_model_string(std::string file) {
     if(pScene) {
         model.meshes.resize(pScene->mNumMeshes);
         model.materials.resize(pScene->mNumMaterials);
+        //for(int i = 0; i < pScene->mNumMeshes+1; i++){
+        //    model.meshes.push_back({0});
+        //}
 
-        for(u32 i = 0; i < model.meshes.size(); ++i) {
+        for(u32 i = 0; i < pScene->mNumMeshes; ++i) {
             aiMesh* paiMesh = pScene->mMeshes[i];
             load_mesh(&model, i, paiMesh);
         }
@@ -188,7 +199,10 @@ void draw_mesh(Mesh mesh) {
     //bind VERTEX ARRAY OBJECT
     //and all attributes of it
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.vertices.size(), &mesh.vertices[0], GL_STATIC_DRAW);
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * mesh.indices.size(), &mesh.indices[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)0);                     //position
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(3 * sizeof(GLfloat))); //normals
@@ -204,12 +218,12 @@ void draw_mesh(Mesh mesh) {
 
 void draw_model(Model* model) {
         //ONE MATERIAL PER MESH -- DRAW ALL MESHES WITH THEIR MATERIALS (NO TEXTURES IN THESE LOW POLY MODELS, ONLY DIFFUSE COLOR)
-        for(Mesh mesh : model->meshes) {
+        for(const Mesh& mesh : model->meshes) {
             draw_mesh(mesh);
         }
 }
 
-void draw_billboard_unordered(Mesh* mesh, Texture texture) {
+void draw_billboard_unordered(Mesh* mesh) {
     //bind attributes and VAO  
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
 
@@ -218,7 +232,6 @@ void draw_billboard_unordered(Mesh* mesh, Texture texture) {
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(5 * sizeof(GLfloat))); //tex coords
     glEnableVertexAttribArray(0); //0 = Position
 
-    bind_texture(texture, 0);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
@@ -235,26 +248,6 @@ Mesh create_billboard() {
     return create_mesh(vertices, indices);
 }
 
-Mesh create_ground_quad(f32 width, f32 height) {
-    std::vector<Vertex>   vertices;
-    std::vector<GLushort> indices;
-
-    vec3 normal = {0, 1, 0};
-    vertices.push_back({ {-width, 0, -height}, normal, {0, 0}  });
-    vertices.push_back({ {-width, 0, height},  normal, {0, 1}  });
-    vertices.push_back({ {width, 0, height},   normal, {1, 1}  });
-    vertices.push_back({ {width, 0, -height},  normal, {1, 0}  });
-
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(2);
-    indices.push_back(3);
-    indices.push_back(0);
-
-    return create_mesh(vertices, indices);
-}
-
 mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
 	mat4 mat = identity();
 	mat *= translation(x, y, z);
@@ -266,40 +259,11 @@ mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
     mat.m12 = view.m21;
     mat.m20 = view.m02;
     mat.m22 = view.m22;
+    //transpose scale component
+    mat.m11 = view.m11;
+    mat.m33 = view.m33;
 
     //mat *= rotation(rot, 0, 0, 1);
-    mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);
-
-	return mat;
-}
-
-mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, vec3 rotation, mat4& view) {
-	mat4 mat = identity();
-	mat *= translation(x, y, z);
-
-    //transpose rotation component of model matrix with view matrix
-    mat *= rotateX(rotation.x);
-    mat *= rotateY(rotation.y);
-    mat *= rotateZ(rotation.z);
-
-    mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);
-
-	return mat;
-}
-
-mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, f32 rotation, mat4& view) {
-	mat4 mat = identity();
-	mat *= translation(x, y, z);
-
-    //transpose rotation component of model matrix with view matrix
-    mat.m00 = view.m00;
-    mat.m02 = view.m20;
-    mat.m10 = view.m01;
-    mat.m12 = view.m21;
-    mat.m20 = view.m02;
-    mat.m22 = view.m22;
-
-    mat *= rotateZ(rotation);
     mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);
 
 	return mat;

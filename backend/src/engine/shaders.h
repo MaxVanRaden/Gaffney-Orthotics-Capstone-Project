@@ -56,6 +56,27 @@ class StaticShader {
         GLint transform;
         GLint lightspace;
         GLint view;
-};  
+};
+
+class BillboardShader {
+public:
+    void load();
+    void dispose();
+
+    void bind();
+
+    void set_projection(mat4 proj);
+    void set_view(mat4 view);
+    void set_transform(mat4 transform);
+    void set_tint(vec4 tint);
+
+private:
+    Shader shader;
+
+    GLint projection;
+    GLint view;
+    GLint transform;
+    GLint tint;
+};
 
 #endif 

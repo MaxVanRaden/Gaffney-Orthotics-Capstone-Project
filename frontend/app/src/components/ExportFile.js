@@ -16,10 +16,13 @@ const Export = () => {
             api.export_model(id)
             */
             //TODO:get actual length of byte array
-            const len = 5;
+            // const len = 5;
 
             //get pointer to byte array
-            let addr = api.export_model(0, format);
+            // let addr = api.export_model(0, format);
+            let addr = api.export_new(0, format);
+            let len = api.get_export_strlen();
+
 
             //read array from wasm heap
             const data = new Uint8Array(window.Module.HEAP8.subarray(addr, addr+len));

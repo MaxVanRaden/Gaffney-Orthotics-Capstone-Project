@@ -1,7 +1,7 @@
 #TODO: Edit the "Project Working Directory" below
 #TODO: Edit "EMSDK" to point to your emsdk file location
-set(PWD "C:/Users/GTango/CLionProjects/Gaffney-Orthotics-Capstone-Project")
-set(EMSDK "C:/emsdk")
+set(PWD "D:/git/Gaffney-Orthotics-Capstone-Project")
+set(EMSDK "C:/git/emsdk")
 cmake_minimum_required(VERSION 3.17.5)
 
 # Project Name
@@ -12,9 +12,8 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_TOOLCHAIN_FILE=${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake)
 
 # Configure emcc/em++ arguments use \ to escape quotations "
-set(FUNCTIONS "\"_main\",\"_is_ready\",\"_import_model\",\"_set_camera\",\"_export_model\",\"_print_hello\",\"_scale\"")
-set(OPTIONS "--post-js ${PWD}/frontend/wrapper.js -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=1900MB -s MAXIMUM_MEMORY=4GB -s TOTAL_STACK=1GB -s SAFE_HEAP -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\",\"allocate\",\"intArrayFromString\"]")
-
+set(FUNCTIONS "\"_main\",\"_is_ready\",\"_import_model\",\"_set_camera\",\"_export_model\",\"_print_hello\",\"_scale\",\"_get_export_strlen\",\"_on_mouse_up\"")
+set(OPTIONS "--post-js ${PWD}/frontend/wrapper.js -g -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=1900MB -s MAXIMUM_MEMORY=4GB -s TOTAL_STACK=1GB -s SAFE_HEAP -s FORCE_FILESYSTEM=1 -s MAX_WEBGL_VERSION=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS=[${FUNCTIONS}] -s EXPORTED_RUNTIME_METHODS=[\"ccall\",\"cwrap\",\"allocate\",\"intArrayFromString\"]")
 
 # Tell CMake where to look for #include pre-processor directives
 include_directories(${EMSDK}/upstream/emscripten/system/include)
@@ -36,5 +35,5 @@ add_executable(backend ${sources} ${engine-sources} ${headers} ${engine-headers}
 target_link_libraries(backend assimp)
 
 # Set the linker flags to use when compiling the projects
-set_target_properties(backend PROPERTIES LINK_FLAGS "-s DEMANGLE_SUPPORT=1 ${OPTIONS} -s LLD_REPORT_UNDEFINED")
+set_target_properties(backend PROPERTIES LINK_FLAGS "-s DEMANGLE_SUPPORT=1 ${OPTIONS}") # add '-s LLD_REPORT_UNDEFINED' for dbg info
 set_target_properties(assimp PROPERTIES LINKER_LANGUAGE CXX) # help CMake determine what language assimp is written in

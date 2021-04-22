@@ -63,11 +63,12 @@ uniform mat4 transform;
 uniform mat4 view;
 
 void main() {
-    pass_pos = vec3(transform * vec4(position, 1.0));
+    pass_pos = vec3(vec4(position, 1.0) * transform);
     //pass_pos = position;
     //pass_normal = transpose(inverse(mat3(transform))) * normal;
     pass_normal = vec3(transform * vec4(normal, 1.0));
-    gl_Position = projection * view * transform * vec4(position, 1.0);
+    //gl_Position = projection * view * transform * vec4(position, 1.0);
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
 }
 )foo";
 
@@ -166,4 +167,82 @@ void StaticShader::set_view(mat4 view) {
 
 void StaticShader::set_lightspace(mat4 LSM) {
     glUniformMatrix4fv(lightspace, 1, GL_FALSE, LSM.elements);
+}
+
+
+//BILLBOARDS
+
+void BillboardShader::load() {
+    char vShaderStr[] = R"foo(
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+varying vec2 pass_uv;
+
+uniform mat4 projection;
+uniform mat4 transform;
+uniform mat4 view;
+
+void main() {
+    pass_uv = position.xy + vec2(0.5, 0.5);
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
+}
+)foo";
+
+    char fShaderStr[] = R"foo(
+precision mediump float;
+varying vec2 pass_uv;
+uniform sampler2D tex;
+uniform vec4 tint;
+
+void main() {
+    vec4 tex = texture2D(tex, pass_uv);
+    if(tex.a < 0.45)
+        discard;
+
+    gl_FragColor = tex * tint;
+    //gl_FragColor = vec4(1, 1, 0, 1);
+}
+)foo";
+    shader = load_shader_from_strings( vShaderStr, fShaderStr );
+
+    start_shader(shader);
+    upload_int(shader, "tex", 0);
+    projection = glGetUniformLocation(shader.ID, "projection");
+    transform = glGetUniformLocation(shader.ID, "transform");
+    view = glGetUniformLocation(shader.ID, "view");
+    tint = glGetUniformLocation(shader.ID, "tint");
+
+    glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(90, 16.0f / 9.0f, 1.0f, 300.0f).elements));
+
+    set_transform(identity());
+    set_view(identity());
+    set_tint({25.0f/255.0f, 25.0f/255.0f, 25.0f/255.0f, 255.0f/255.0f});
+
+    printf("billboard shader constructed\n");
+}
+
+void BillboardShader::dispose() {
+    dispose_shader(shader);
+}
+
+void BillboardShader::bind() {
+    start_shader(shader);
+}
+
+void BillboardShader::set_projection(mat4 proj) {
+    glUniformMatrix4fv(projection, 1, GL_FALSE, proj.elements);
+}
+
+void BillboardShader::set_view(mat4 view) {
+    glUniformMatrix4fv(this->view, 1, GL_FALSE, view.elements);
+}
+
+void BillboardShader::set_transform(mat4 transform) {
+    glUniformMatrix4fv(this->transform, 1, GL_FALSE, transform.elements);
+}
+
+void BillboardShader::set_tint(vec4 tint) {
+    glUniform4f(this->tint, tint.x, tint.y, tint.z, tint.w);
 }

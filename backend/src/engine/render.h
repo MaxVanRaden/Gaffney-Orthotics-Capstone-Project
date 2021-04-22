@@ -48,6 +48,7 @@ struct Mesh {
     GLuint ebo;
 	std::vector<Vertex> vertices;
 	std::vector<GLushort> indices;
+	std::vector<bool> selected;
     u32 indexcount;
     u32 material;
 };
@@ -71,10 +72,7 @@ void draw_mesh(Mesh mesh);
 void draw_model(Model* model);
 
 Mesh create_billboard();
-Mesh create_ground_quad(f32 width, f32 height);
-void draw_billboard_unordered(Mesh* mesh, Texture texture);
-mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, vec3 rotation, mat4& view);
+void draw_billboard_unordered(Mesh* mesh);
 mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view);
-mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, f32 rotation, mat4& view);
 
 #endif

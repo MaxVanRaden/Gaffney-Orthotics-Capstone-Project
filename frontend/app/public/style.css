@@ -28,6 +28,7 @@ div.emscripten_border {
 /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
 canvas.emscripten { border: 0px none; background-color: black; }
 #dev_stuff {
+    /*visibility: hidden;*/
     background-color: #2c2c2c;
     border: none;
 }
@@ -136,12 +137,13 @@ div.toolbar {
 .menu-items {
     display: none;
     position: absolute;
+    text-align: left;
     background-color: #d5d5d5;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
-.menu-items a {
+.menu-items a, .menu-items div {
     color: #2c2c2c;
     padding: 12px 16px;
     text-decoration: none;
@@ -214,4 +216,11 @@ div.toolbar {
 @keyframes rotation {
     from {transform: rotate(0deg);}
     to {transform: rotate(360deg);}
+}
+
+/* Marquee selector tool */
+.selection-area {
+    background: rgba(46, 115, 252, 0.11);
+    border: 2px solid rgba(98, 155, 255, 0.81);
+    border-radius: 0.1em;
 }

@@ -1,6 +1,6 @@
 @echo off
 echo Configuring Emscripten environment variables
-set EMSDK=C:/emsdk
+set EMSDK=C:/git/emsdk
 
 :: Expected to already exist since
 mkdir backend
