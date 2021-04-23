@@ -93,13 +93,10 @@ extern "C" {
         return x;
     }
 
-    void import_model(char* str, int len){
-//        int i;
-//        for(i = 0; i < len; i++){
-//            printf("%c", str[i]);
-//        }
+    void import_model(char* str, int fileFormat){
+        // fileformat 0: obj
+        //            1: stl
         editor->add_model(str);
-        printf("import success\n");
     }
 
     char* export_model(int ID, const char* fileformat) {
