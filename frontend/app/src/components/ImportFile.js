@@ -43,11 +43,13 @@ const Import = () => {
 
         const content = fileReader.result;
 
-        if (/^[a-zA-Z0-9]+\.[.obj|.OBJ]+$/.test(fileName)) {
+
+        if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
             fileFormat = 0;
-        } else if (/^[a-zA-Z0-9]+\.[.stl|.STL]+$/.test(fileName)) {
+        } else if (/^[a-zA-Z0-9_-]+\.[.stl|.STL]+$/.test(fileName)) {
             fileFormat = 1;
         }
+
 
         // array of bytes (8-bit unsigned int) representing the string
         let converted_str;
@@ -73,7 +75,7 @@ const Import = () => {
 
     const handleFileChosen = ({target: {files}}) => {
         fileName = files[0].name;
-        if (/^[a-zA-Z0-9]+\.[.obj|.OBJ|.stl|.STL]+$/.test(fileName)) {
+        if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ|.stl|.STL]+$/.test(fileName)) {
             //setUploadedFileName(files[0].name);
             fileReader = new FileReader();
             fileReader.onloadend = handleFileRead;
