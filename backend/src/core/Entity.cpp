@@ -12,8 +12,8 @@ Entity::Entity(std::string file) {
     //start = load_model_string(file);
 }
 
-void Entity::load(std::string file) {
-    current = load_model_string(file);
+void Entity::load(std::string file, int fileformat) {
+    current = load_model_string(file, fileformat);
     //start = current;
 }
 

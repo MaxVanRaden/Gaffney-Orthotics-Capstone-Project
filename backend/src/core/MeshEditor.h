@@ -13,7 +13,7 @@ public:
     ~MeshEditor();
 
     void run();
-    void add_model(const char* str);
+    void add_model(const char* str, int fileformat);
     char* export_model(const char* fileformat);
     void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll);
     void scale_all_entities(float factor);

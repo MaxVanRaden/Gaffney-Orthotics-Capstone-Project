@@ -14,7 +14,7 @@ public:
     explicit Entity(std::string file);
     ~Entity();
 
-    void load(std::string file);
+    void load(std::string file, int fileformat);
     bool is_mouse_over(vec3 o, vec3 d);
     void draw(StaticShader& shader);
     void draw_vertices(BillboardShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos);

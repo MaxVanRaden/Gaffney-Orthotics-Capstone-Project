@@ -11,7 +11,7 @@ MeshEditor::MeshEditor() {
     camera = {0};
 
     entities.emplace_back();
-    entities.back().load(staircaseobjhardcoded);
+    entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
@@ -99,9 +99,9 @@ void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, fl
     camera = {x, y, z, pitch, yaw, roll};
 }
 
-void MeshEditor::add_model(const char* str) {
+void MeshEditor::add_model(const char* str, int fileformat) {
     entities.emplace_back();
-    entities.back().load(str);
+    entities.back().load(str, fileformat);
     printf("added model\n");
 }
 
