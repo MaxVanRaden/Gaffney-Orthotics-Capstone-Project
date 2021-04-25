@@ -19,8 +19,7 @@ const Export = () => {
             // const len = 5;
 
             //get pointer to byte array
-            // let addr = api.export_model(0, format);
-            let addr = api.export_new(0, format);
+            let addr = api.export_model(format);
             let len = api.get_export_strlen();
 
 
