@@ -102,13 +102,13 @@ extern "C" {
         printf("import success\n");
     }
 
-    char* export_model(int ID, const char* fileformat) {
-        return editor->export_model(ID, fileformat);
+    char* export_model(const char* fileformat) {
+        return editor->export_model(fileformat);
     }
 
-    char* export_new(int ID, const char* fileformat) {
+    /*char* export_new(int ID, const char* fileformat) {
         return editor->export_new(ID, fileformat);
-    }
+    }*/
 
     uint32_t get_export_strlen() {
         return editor->get_export_strlen();
