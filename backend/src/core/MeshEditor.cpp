@@ -48,7 +48,7 @@ MeshEditor::MeshEditor() {
 
 void MeshEditor::run() {
     local float rotation = 0.0f;
-    rotation+=0.2f;
+    //rotation+=0.2f;
     local float zoom = 5.0f;
     //zoom-=0.025f;
 

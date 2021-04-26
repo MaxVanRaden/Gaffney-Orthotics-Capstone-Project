@@ -99,13 +99,9 @@ extern "C" {
         editor->add_model(str, fileformat);
     }
 
-    char* export_model(int ID, const char* fileformat) {
-//        return editor->export_model(ID, fileformat);
+    char* export_model(const char* fileformat) {
+        return editor->export_model(".obj"); //.obj hard coded for now
     }
-//
-//    char* export_new(int ID, const char* fileformat) {
-//        return editor->export_new(ID, fileformat);
-//    }
 
     uint32_t get_export_strlen() {
         return editor->get_export_strlen();
