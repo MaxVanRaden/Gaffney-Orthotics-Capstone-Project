@@ -53,7 +53,6 @@ const Import = () => {
 
         // array of bytes (8-bit unsigned int) representing the string
         let converted_str;
-        //var converted_str    = new Uint8Array(ToUTF8Array(content));
         if(isASCII(content))
             converted_str    = new Uint8Array(ToUTF8Array(content));
         else

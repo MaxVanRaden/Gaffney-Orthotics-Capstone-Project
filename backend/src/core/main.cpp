@@ -95,7 +95,7 @@ extern "C" {
 
     void import_model(char* str, int fileformat){
         // fileformat 0: obj
-        //            1: stl
+        //            1: stl (ascii only)
         editor->add_model(str, fileformat);
     }
 

@@ -11,7 +11,7 @@ MeshEditor::MeshEditor() {
     camera = {0};
 
     entities.emplace_back();
-    entities.back().load(staircaseobjhardcoded, 0);
+//    entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
