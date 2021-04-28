@@ -13,6 +13,7 @@ export const Toolbar = () => {
     return(
         <div id ="toolbar" className="toolbar">
             <a href="./" className="backbtn">&#8617;</a>
+            <a href="./" className="backbtn">&#8618;</a>
             <ImportFile/>
             <ExportFile/>
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
