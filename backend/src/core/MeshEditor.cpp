@@ -192,6 +192,27 @@ uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
 }
 
+void MeshEditor::translate_vertex() {
+    std::cout << "translate_vertex() called\n";
+
+    for (Entity& e : entities) {
+        for (Mesh &m : e.get_current().meshes) {
+            int i = 0;
+            for(Vertex &v : m.vertices) {
+                if (m.selected[i]) {
+                    std::cout << "We are moving vertex: " << i << std::endl;
+                    m.vertices[i].position.x += 1;
+
+                }
+                ++i;
+            }
+            glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[i], GL_STATIC_DRAW);
+        }
+    }
+    return;
+}
+
 MeshEditor::~MeshEditor() {
     shader.dispose();
     bshader.dispose();

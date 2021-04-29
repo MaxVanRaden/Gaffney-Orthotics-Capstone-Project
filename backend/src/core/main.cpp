@@ -130,4 +130,8 @@ extern "C" {
         printf("(%d,%d),(%d,%d)\n", x, y, x2, y2);
         editor->on_mouse_up(x, y, x2, y2);
     }
+
+    void translate_vertex(){
+        editor->translate_vertex();
+    }
 }
