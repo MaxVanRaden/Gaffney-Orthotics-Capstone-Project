@@ -12,7 +12,7 @@ public:
     MeshEditor();
     ~MeshEditor();
 
-    void run();
+    void run(int width, int height);
     void add_model(const char* str, int fileformat);
     char* export_model(const char* fileformat);
     void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll);
@@ -26,11 +26,14 @@ private:
 
     Mesh billboard;
     Texture circle;
+    Rect viewport;
 
     mat4 projection;
     uint32_t export_strlen;
+    PickingShader pshader{};
     StaticShader shader{};
     BillboardShader bshader{};
+    Framebuffer pickbuffer;
     Camera camera{};
     Model stairs;
 };

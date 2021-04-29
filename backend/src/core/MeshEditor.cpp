@@ -8,6 +8,7 @@ MeshEditor::MeshEditor() {
     export_strlen = 0;
     shader.load();
     bshader.load();
+    pshader.load();
     camera = {0};
 
     entities.emplace_back();
@@ -44,16 +45,19 @@ MeshEditor::MeshEditor() {
     }
     circle = load_texture(pixels, 64, 64, GL_LINEAR);
     delete[] pixels;
+
+    pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
 }
 
-void MeshEditor::run() {
+void MeshEditor::run(int width, int height) {
+    viewport = {0, 0, (float)width, (float)height};
+
     local float rotation = 0.0f;
     //rotation+=0.2f;
     local float zoom = 5.0f;
     //zoom-=0.025f;
 
 #if 0
-    Rect viewport = {0, 0, 1000, 640};
     vec2 mouse;
     int x;
     int y;
@@ -172,10 +176,46 @@ char* MeshEditor::export_model(const char* fileformat) {
 }
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
-    for(Entity& e: entities) {
-        e.select(x, y, x2, y2, camera, projection, {0, 0, 1000, 640});
+    //for(Entity& e: entities) {
+    //e.select(x, y, x2, y2, camera, projection, viewport);
+    //}
+
+    int width = x2-x;
+    int height = y2-y;
+
+    mat4 view = create_view_matrix(camera);
+    bind_framebuffer(pickbuffer);
+    glClearColor(u32_to_rgba(NULL_PICK).x,u32_to_rgba(NULL_PICK).y, u32_to_rgba(NULL_PICK).z, u32_to_rgba(NULL_PICK).w);
+    glClear(GL_COLOR_BUFFER_BIT);
+    pshader.bind();
+    pshader.set_view(view);
+    for (Entity &e : entities) {
+        e.reset_selected_vertices();
+        e.draw_vertices(pshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+
+        u32 pick = NULL_PICK;
+
+        u8 res[width*height*4];
+        vec2 mouse;
+        int mousex;
+        int mousey;
+        glfwGetMousePos(&mousex, &mousey);
+        mouse.x = mousex;
+        mouse.y = mousey;
+        glReadPixels(x, y, x2, y2, GL_RGBA, GL_UNSIGNED_BYTE, &res);
+
+        for(int i = 0; i < width*height*4; i+=4) {
+            pick = rgba_to_u32(res[i+0], res[i+1], res[i+2], res[i+3]);
+            printf("pick: %u\n", pick);
+
+            e.set_vertex_ID_selected(pick);
+        }
+
+        unbind_framebuffer();
     }
+    glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
 }
+
 
 // Scale every vertex in every mesh in every entity by the factor passed in
 void MeshEditor::scale_all_entities(float factor) {
