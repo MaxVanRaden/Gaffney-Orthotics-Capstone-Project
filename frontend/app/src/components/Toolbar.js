@@ -1,3 +1,4 @@
+import {TranslateVertex} from "./Translate";
 import {ExportFile} from "./ExportFile";
 import {ImportFile} from "./ImportFile";
 import {ViewMenu} from "./ViewMenu";
@@ -15,6 +16,7 @@ export const Toolbar = () => {
             <a href="./" className="backbtn">&#8617;</a>
             <ImportFile/>
             <ExportFile/>
+            <TranslateVertex/>
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu/>

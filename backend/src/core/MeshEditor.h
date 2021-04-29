@@ -19,6 +19,7 @@ public:
     void scale_all_entities(float factor);
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;
+    void translate_vertex();
 
 private:
     std::vector<Entity> entities;
