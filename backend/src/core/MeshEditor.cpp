@@ -1,5 +1,6 @@
 #include "MeshEditor.h"
 #include "StairsString.h"
+#include "CylinderString.h"
 #include "assimp/Exporter.hpp"
 
 MeshEditor::MeshEditor() {
@@ -54,7 +55,15 @@ MeshEditor::MeshEditor() {
     circle = load_texture(pixels, 64, 64, GL_LINEAR);
     delete[] pixels;
 
-    pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
+    cylinderModel = load_model_string(cylinderHardcoded);
+
+    camera.x -= 5;
+    camera.y -= 5;
+
+    //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
+
+    //std::thread test(thread_test);
+    //test.join();
 }
 
 void MeshEditor::run(int width, int height) {
@@ -85,6 +94,8 @@ void MeshEditor::run(int width, int height) {
     }
 #endif
 
+    camera.x+=0.02f;
+    camera.y+=0.02f;
     mat4 view = create_view_matrix(camera);
 
     shader.bind();
@@ -100,6 +111,20 @@ void MeshEditor::run(int width, int height) {
         e.draw(shader);
         e.set_rotation( {rotation, rotation, rotation} );
     }
+
+    //Draw lines to show the axis of the 3d grid
+    shader.set_light_color(1.0f, 0.3f, 0.3f);
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {100, 0.04, 0.04}, view));
+    draw_model(&cylinderModel);
+
+    shader.set_light_color(0.3f, 1.0f, 0.3f);
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 100}, view));
+    draw_model(&cylinderModel);
+
+    shader.set_light_color(0.3f, 0.3f, 1.0f);
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 100, 0.04}, view));
+    draw_model(&cylinderModel);
+
     bshader.bind();
     bshader.set_view(view);
     for(Entity& e : entities) {
@@ -130,10 +155,12 @@ char* MeshEditor::export_model(int ID, const char* fileformat) {
 }
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
-    //for(Entity& e: entities) {
-    //e.select(x, y, x2, y2, camera, projection, viewport);
-    //}
+    printf("mosue up\n");
+    for(Entity& e: entities) {
+        e.select(x, y, x2, y2, camera, projection, viewport);
+    }
 
+#if 0
     int width = x2-x;
     int height = y2-y;
 
@@ -168,6 +195,8 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
         unbind_framebuffer();
     }
     glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
+
+#endif
 }
 
 

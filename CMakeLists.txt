@@ -30,7 +30,7 @@ file(GLOB_RECURSE engine-sources ${PWD}/backend/src/engine/*.cpp)
 file(GLOB_RECURSE engine-headers ${PWD}/backend/src/engine/*.h)
 
 # Define the executable using the sources
-add_executable(backend ${sources} ${engine-sources} ${headers} ${engine-headers})
+add_executable(backend ${sources} ${engine-sources} ${headers} ${engine-headers} backend/src/core/CylinderString.h)
 
 # Link the built library to the project
 target_link_libraries(backend assimp)
