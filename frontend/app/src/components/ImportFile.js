@@ -58,21 +58,26 @@ const Import = () => {
         else
             converted_str    = new TextEncoder("ISO-8859-1",{NONSTANDARD_allowLegacyEncoding: true}).encode(content);
 
-        const len = converted_str.length;
+        //const len = converted_str.length;
 
         // alloc memory
-        const input_ptr = window.Module.ready.cache = [len * 1];
+        //const input_ptr = window.Module.ready.cache = [len * 1];
+        const input_ptr = window.Module._malloc(converted_str.BYTES_PER_ELEMENT*converted_str.length);
 
         // write WASM memory calling the set method of the Uint8Array
         window.Module.HEAPU8.set(converted_str, input_ptr);
 
         // calls the c++ to do magic
-        window.Module.ready.then(api => console.log(api.import_model(input_ptr, fileFormat)));
+        window.Module.ready.then(api => {
+            api.import_model(input_ptr, fileFormat);
+            window.Module._free(input_ptr);
+        });
     };
 
     //const [uploadedFileName, setUploadedFileName] = useState(null);
 
     const handleFileChosen = ({target: {files}}) => {
+        if(!files[0]) return
         fileName = files[0].name;
         if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ|.stl|.STL]+$/.test(fileName)) {
             //setUploadedFileName(files[0].name);

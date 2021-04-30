@@ -5,12 +5,13 @@ import {ViewMenu} from "./ViewMenu";
 import {EditMenu} from "./EditMenu";
 import {SelectMenu} from "./SelectMenu";
 import {Coords} from "./Coords";
-import {Rotate} from "./Rotate";
 import {Camera} from "./Camera";
 import {useState} from 'react'
+import {ToolGroup} from "./ToolGroup";
+
 export const Toolbar = () => {
-    const [checked, setChecked] = useState(false)
-    const [zoom, setZoom] = useState(0)
+    const [tool, setTool] = useState('select');
+    const [zoom, setZoom] = useState(0);
     return(
         <div id ="toolbar" className="toolbar">
             <a href="./" className="backbtn">&#8617;</a>
@@ -21,8 +22,8 @@ export const Toolbar = () => {
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu/>
-            <Camera checked={checked} zoom={zoom}/>
-            <Rotate checked={checked} setChecked={setChecked}/>
+            <Camera tool={tool} zoom={zoom}/>
+            <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
         </div>
     )

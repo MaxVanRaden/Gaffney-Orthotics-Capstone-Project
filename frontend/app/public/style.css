@@ -148,27 +148,28 @@ div.toolbar {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+
 }
-.menu-items a:hover {background-color: #ddd;}
+.menu-items a:hover {background-color: #ddd; cursor:pointer;}
 .dropdown:hover .menu-items {display: block;}
-.rotate {
+.toolGroup {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
 }
-#rlabel {
+.toggleLabel {
     color: #d5d5d5;
     font-size: 14px;
     font-family: sans-serif;
     display: inline-block;
     line-height: 30px;
 }
-.rtoggle{
+.toggle{
     height: 15px;
     width: 15px;
     background-color: #eee;
 }
-.rtoggle:hover {cursor:pointer;}
+.toggle:hover {cursor:pointer;}
 .coords {
     display: flex;
     flex-flow: row wrap;
