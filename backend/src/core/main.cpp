@@ -16,8 +16,8 @@ void mainloop();
 global MeshEditor* editor;
 global bool initialized = false;
 
-static const int width = 1000;
-static const int height = 640;
+static const int width = 800;
+static const int height = 600;
 
 int main(void) 
 {
@@ -39,7 +39,7 @@ void mainloop()
     //set the viewport to the same as the windows resolution (feel free to mess around with the numbers if you want to see what it does)
     glViewport(0, 0, width, height);
 
-    editor->run();
+    editor->run(width, height);
 
     glfwSwapBuffers();
     glfwPollEvents();
