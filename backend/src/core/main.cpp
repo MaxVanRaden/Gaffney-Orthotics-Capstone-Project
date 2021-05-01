@@ -16,8 +16,8 @@ void mainloop();
 global MeshEditor* editor;
 global bool initialized = false;
 
-static const int width = 1000;
-static const int height = 640;
+static const int width = 1920;
+static const int height = 1080;
 
 int main(void) 
 {
@@ -39,7 +39,7 @@ void mainloop()
     //set the viewport to the same as the windows resolution (feel free to mess around with the numbers if you want to see what it does)
     glViewport(0, 0, width, height);
 
-    editor->run();
+    editor->run(width, height);
 
     glfwSwapBuffers();
     glfwPollEvents();
@@ -93,13 +93,10 @@ extern "C" {
         return x;
     }
 
-    void import_model(char* str, int len){
-//        int i;
-//        for(i = 0; i < len; i++){
-//            printf("%c", str[i]);
-//        }
-        editor->add_model(str);
-        printf("import success\n");
+    void import_model(char* str, int fileformat){
+        // fileformat 0: obj
+        //            1: stl (ascii only)
+        editor->add_model(str, fileformat);
     }
 
     char* export_model(const char* fileformat) {
@@ -129,5 +126,9 @@ extern "C" {
     void on_mouse_up(int x, int y, int x2, int y2){
         printf("(%d,%d),(%d,%d)\n", x, y, x2, y2);
         editor->on_mouse_up(x, y, x2, y2);
+    }
+
+    void translate_vertex(){
+        editor->translate_vertex();
     }
 }

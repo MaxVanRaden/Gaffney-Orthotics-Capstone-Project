@@ -114,7 +114,7 @@ to call some C++ function the backend team will write.
     <button onclick='_scale(document.getElementById("scale_entity").value / 100)'>Scale</button>
     <input type="checkbox" id="resize">Resize canvas
     <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-    <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,
+    <input type="button" value="Fullscreen" id="fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,
                                                                                 document.getElementById('resize').checked)">
     </div>
 
@@ -161,7 +161,7 @@ to call some C++ function the backend team will write.
       })
       //disable selection when moving camera
       .on('beforestart', e => {
-        return !document.getElementById('rtoggle2').checked
+        return document.getElementById('selectToggle').checked
       });
 
       // let canvasElement = document.getElementById('canvas');

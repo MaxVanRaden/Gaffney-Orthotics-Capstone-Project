@@ -8,6 +8,7 @@ Module.ready = new Promise(function(resolve, reject) {
             set_camera: Module.cwrap('set_camera',null,['number','number','number','number','number','number']),
             on_mouse_up: Module.cwrap('on_mouse_up', null, ['number']),
             get_export_strlen: Module.cwrap('get_export_strlen', 'number', ['number']),
+            translate_vertex: Module.cwrap('translate_vertex', null, null),
             scale: Module.cwrap('scale',null,['number'])
         };
         resolve(api);

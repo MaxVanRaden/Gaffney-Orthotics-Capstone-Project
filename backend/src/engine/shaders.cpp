@@ -2,10 +2,43 @@
 
 const int FOV = 90;
 void PickingShader::load() {
-    shader = load_shader("data/shaders/picking_vs.glsl", "data/shaders/picking_fs.glsl");
+    char vShaderStr[] = R"foo(
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+varying vec2 pass_uv;
+
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 transform;
+uniform int flip;
+
+void main(void) {
+    pass_uv = position.xy + vec2(0.5, 0.5);
+    pass_uv.y = 1.0 - pass_uv.y;
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
+}
+
+)foo";
+
+    char fShaderStr[] = R"foo(
+precision mediump float;
+varying vec2 pass_uv;
+
+uniform sampler2D sprite;
+uniform vec4 pickID;
+
+void main() {
+    if(texture2D(sprite, pass_uv).a < 0.5) {
+        discard;
+    }
+    gl_FragColor = vec4(pickID.r / 255.0, pickID.g / 255.0, pickID.b / 255.0, pickID.a / 255.0);
+}
+)foo";
+    shader = load_shader_from_strings( vShaderStr, fShaderStr );
 
     start_shader(shader);
-    alpha = glGetUniformLocation(shader.ID, "alpha");
     pickID = glGetUniformLocation(shader.ID, "pickID");
     projection = glGetUniformLocation(shader.ID, "projection");
     view = glGetUniformLocation(shader.ID, "view");

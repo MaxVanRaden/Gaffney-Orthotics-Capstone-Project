@@ -148,27 +148,28 @@ div.toolbar {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+
 }
-.menu-items a:hover {background-color: #ddd;}
+.menu-items a:hover {background-color: #ddd; cursor:pointer;}
 .dropdown:hover .menu-items {display: block;}
-.rotate {
+.toolGroup {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
 }
-#rlabel {
+.toggleLabel {
     color: #d5d5d5;
     font-size: 14px;
     font-family: sans-serif;
     display: inline-block;
     line-height: 30px;
 }
-.rtoggle{
+.toggle{
     height: 15px;
     width: 15px;
     background-color: #eee;
 }
-.rtoggle:hover {cursor:pointer;}
+.toggle:hover {cursor:pointer;}
 .coords {
     display: flex;
     flex-flow: row wrap;
@@ -223,4 +224,30 @@ div.toolbar {
     background: rgba(46, 115, 252, 0.11);
     border: 2px solid rgba(98, 155, 255, 0.81);
     border-radius: 0.1em;
+}
+
+/* help.html text styles */
+.help_container {
+    margin: 10px;
+}
+.help_text {
+    font-family: sans-serif;
+}
+.help_container h2{
+    color: #2c2c2c;
+    font-family: sans-serif;
+    text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+    0px 8px 13px rgba(0,0,0,0.1),
+    0px 18px 23px rgba(0,0,0,0.1);
+}
+.subhead {
+    font-family: sans-serif;
+    font-weight: bolder;
+    color: #259c9c;
+}
+.help_img {
+    max-width: 200px;
+    height: auto;
+    margin-left: 20px;
+    box-shadow: 2px 2px #259c9c;
 }

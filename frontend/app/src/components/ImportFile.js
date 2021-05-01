@@ -1,5 +1,5 @@
 import React from 'react';
-import {useEffect} from 'react';
+import { useEffect } from 'react';
 
 const ToUTF8Array = (str) => {
     let utf8 = [];
@@ -36,38 +36,57 @@ const isASCII = (str) => {
 
 const Import = () => {
     let fileReader;
+    let fileName;
+    let fileFormat;
 
     const handleFileRead = () => {
 
         const content = fileReader.result;
 
+
+        if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
+            fileFormat = 0;
+        } else if (/^[a-zA-Z0-9_-]+\.[.stl|.STL]+$/.test(fileName)) {
+            fileFormat = 1;
+        }
+
+
         // array of bytes (8-bit unsigned int) representing the string
         let converted_str;
-        //var converted_str    = new Uint8Array(ToUTF8Array(content));
         if(isASCII(content))
             converted_str    = new Uint8Array(ToUTF8Array(content));
         else
             converted_str    = new TextEncoder("ISO-8859-1",{NONSTANDARD_allowLegacyEncoding: true}).encode(content);
 
-        const len = converted_str.length;
+        //const len = converted_str.length;
 
         // alloc memory
-        const input_ptr = window.Module.ready.cache = [len * 1];
+        //const input_ptr = window.Module.ready.cache = [len * 1];
+        const input_ptr = window.Module._malloc(converted_str.BYTES_PER_ELEMENT*converted_str.length);
 
         // write WASM memory calling the set method of the Uint8Array
         window.Module.HEAPU8.set(converted_str, input_ptr);
 
         // calls the c++ to do magic
-        window.Module.ready.then(api => console.log(api.import_model(input_ptr, len)));
+        window.Module.ready.then(api => {
+            api.import_model(input_ptr, fileFormat);
+            window.Module._free(input_ptr);
+        });
     };
 
     //const [uploadedFileName, setUploadedFileName] = useState(null);
 
     const handleFileChosen = ({target: {files}}) => {
-        //setUploadedFileName(files[0].name);
-        fileReader = new FileReader();
-        fileReader.onloadend = handleFileRead;
-        fileReader.readAsText(files[0], 'ISO-8859-1');
+        if(!files[0]) return
+        fileName = files[0].name;
+        if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ|.stl|.STL]+$/.test(fileName)) {
+            //setUploadedFileName(files[0].name);
+            fileReader = new FileReader();
+            fileReader.onloadend = handleFileRead;
+            fileReader.readAsText(files[0], 'ISO-8859-1');
+        } else{
+            alert("wrong file format");
+        }
     }
 
     // event listener for file import

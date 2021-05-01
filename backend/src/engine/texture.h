@@ -183,7 +183,7 @@ Framebuffer create_framebuffer(u32 width, u32 height, u16 param, u8 buffertype) 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, buffer.texture.ID, 0);
     else if (buffertype == DEPTHBUFFER) {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, buffer.texture.ID, 0);
-        glDrawBuffer(GL_NONE);
+        //glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
     }
 

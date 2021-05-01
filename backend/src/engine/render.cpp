@@ -137,30 +137,39 @@ void load_materials(Model* model, const aiScene* pScene, const char* filename) {
 }
 
 #include <assimp/cimport.h>
-Model load_model_string(std::string file) {
+Model load_model_string(std::string file, int fileformat) {
     Model model;
     model.pos = {0};
     model.rotate = {0};
     model.scale = {1, 1, 1};
 
     Assimp::Importer importer;
-    const aiScene* pScene = importer.ReadFileFromMemory(
-            (void*)&file[0], file.size(), aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_Triangulate |aiProcess_FindInvalidData | aiProcess_ValidateDataStructure | 0, ".obj"
-            );
 
-    if(pScene) {
+    if (fileformat == 0) {
+        const aiScene *pScene = importer.ReadFileFromMemory(
+                (void *) &file[0], file.size(), aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_Triangulate |
+                                                aiProcess_FindInvalidData | aiProcess_ValidateDataStructure | 0, ".obj"
+        );
         model.meshes.resize(pScene->mNumMeshes);
         model.materials.resize(pScene->mNumMaterials);
-        //for(int i = 0; i < pScene->mNumMeshes+1; i++){
-        //    model.meshes.push_back({0});
-        //}
 
         for(u32 i = 0; i < pScene->mNumMeshes; ++i) {
             aiMesh* paiMesh = pScene->mMeshes[i];
             load_mesh(&model, i, paiMesh);
         }
-    }
-    else {
+    } else if (fileformat == 1) {
+        const aiScene *pScene = importer.ReadFileFromMemory(
+                (void *) &file[0], file.size(), aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_Triangulate |
+                                                aiProcess_FindInvalidData | aiProcess_ValidateDataStructure | 0, ".stl"
+        );
+        model.meshes.resize(pScene->mNumMeshes);
+        model.materials.resize(pScene->mNumMaterials);
+
+        for(u32 i = 0; i < pScene->mNumMeshes; ++i) {
+            aiMesh* paiMesh = pScene->mMeshes[i];
+            load_mesh(&model, i, paiMesh);
+        }
+    } else {
         printf("Load_model_string: Error loading model %s\n", file.c_str());
         printf("Error: %s\n", importer.GetErrorString());
     }
