@@ -263,16 +263,14 @@ uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
 }
 
+//TODO: Naive translate moves in x direction by one unit
 void MeshEditor::translate_vertex() {
-    std::cout << "translate_vertex() called\n";
-
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
             int i = 0;
             for(Vertex &v : m.vertices) {
                 if (m.selected[i]) {
-                    std::cout << "We are moving vertex: " << i << std::endl;
-                    m.vertices[i].position.x += 1;
+                    v.position.x += 1;
                 }
                 ++i;
             }

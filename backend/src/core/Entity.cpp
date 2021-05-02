@@ -215,14 +215,6 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
             v3Screen.y = viewport.height-v3Screen.y;
             v4Screen.y = viewport.height-v4Screen.y;
 
-            if(i > 10 && i <= 11) {
-                printf("vertexOne: %f %f\n", v1Screen.x, v1Screen.y);
-                printf("vertexTwo: %f %f\n", v2Screen.x, v2Screen.y);
-                printf("vertexThree: %f %f\n", v3Screen.x, v3Screen.y);
-                printf("vertexFour: %f %f\n", v4Screen.x, v4Screen.y);
-//                m.selected[i] = true;
-            }
-
             //now they are on screen, so check if they are in the rectangle
             if(v1Screen.x > xIn && v1Screen.y > yIn && v1Screen.x <= x2 && v1Screen.y <= y2) {
                 //printf("vertexOne is inside the rectangle\n");
