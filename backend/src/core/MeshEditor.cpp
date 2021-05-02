@@ -10,10 +10,12 @@ MeshEditor::MeshEditor() {
     shader.load();
     bshader.load();
     pshader.load();
-    camera = {0};
+    //TODO: [DEV] Change back to 0
+    camera = {3, 6, 0, 0, 0, 0};
 
     entities.emplace_back();
-//    entities.back().load(staircaseobjhardcoded, 0);
+    //TODO: [DEV] Comment out staircaseobj
+    entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
@@ -47,7 +49,7 @@ MeshEditor::MeshEditor() {
     circle = load_texture(pixels, 64, 64, GL_LINEAR);
     delete[] pixels;
 
-    cylinderModel = load_model_string(cylinderHardcoded);
+    cylinderModel = load_model_string(cylinderHardcoded, 0);
 
     camera.x -= 5;
     camera.y -= 5;
@@ -86,8 +88,8 @@ void MeshEditor::run(int width, int height) {
     }
 #endif
 
-    camera.x+=0.02f;
-    camera.y+=0.02f;
+//    camera.x+=0.02f;
+//    camera.y+=0.02f;
     mat4 view = create_view_matrix(camera);
 
     shader.bind();
@@ -271,12 +273,11 @@ void MeshEditor::translate_vertex() {
                 if (m.selected[i]) {
                     std::cout << "We are moving vertex: " << i << std::endl;
                     m.vertices[i].position.x += 1;
-
                 }
                 ++i;
             }
             glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[i], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
         }
     }
     return;

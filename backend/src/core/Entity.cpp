@@ -220,7 +220,7 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
                 printf("vertexTwo: %f %f\n", v2Screen.x, v2Screen.y);
                 printf("vertexThree: %f %f\n", v3Screen.x, v3Screen.y);
                 printf("vertexFour: %f %f\n", v4Screen.x, v4Screen.y);
-                m.selected[i] = true;
+//                m.selected[i] = true;
             }
 
             //now they are on screen, so check if they are in the rectangle
@@ -300,6 +300,10 @@ void Entity::set_rotation(vec3 rotate) {
 
 void Entity::set_scale(vec3 scale) {
     current.scale = scale;
+}
+
+Model& Entity::get_current() {
+    return current;
 }
 
 Entity::~Entity() {
