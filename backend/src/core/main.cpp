@@ -16,8 +16,8 @@ void mainloop();
 global MeshEditor* editor;
 global bool initialized = false;
 
-static const int width = 1505;
-static const int height = 800;
+static int width = 1505;
+static int height = 800;
 
 int main(void) 
 {
@@ -38,7 +38,6 @@ void mainloop()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //set the viewport to the same as the windows resolution (feel free to mess around with the numbers if you want to see what it does)
     glViewport(0, 0, width, height);
-
     editor->run(width, height);
 
     glfwSwapBuffers();
@@ -92,7 +91,10 @@ extern "C" {
         test();
         return x;
     }
-
+    void set_size(int w, int h){
+        width = w;
+        height = h;
+    }
     void import_model(char* str, int fileformat){
         // fileformat 0: obj
         //            1: stl (ascii only)
