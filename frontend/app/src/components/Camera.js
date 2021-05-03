@@ -12,7 +12,20 @@ export const Camera = (props) => {
     let canvasElement = document.getElementById('canvas');
     let canvasX = 0;
     let canvasY = 0;
-
+    //Pass selection coords to backend
+    //Backend assumes (x1,y1) is top left
+    function selectArea(x1, y1, x2, y2){
+        window.Module.ready.then(api => {
+            if(x1 <= x2 && y1 <= y2)
+                api.on_mouse_up(x1, y1, x2, y2);
+            else if(x1 >= x2 && y1 <= y2)
+                api.on_mouse_up(x2, y1, x1, y2);
+            else if(x1 <= x2 && y1 >= y2)
+                api.on_mouse_up(x1, y2, x2, y1);
+            else
+                api.on_mouse_up(x2, y2, x1, y1);
+        });
+    }
     canvasElement.onmousedown = function mouseDown(e) {
         canvasX = e.pageX - this.offsetLeft;
         canvasY = e.pageY - this.offsetTop;
@@ -47,12 +60,7 @@ export const Camera = (props) => {
         let x2 = e.pageX - this.offsetLeft;
         let y2 = e.pageY - this.offsetTop;
         if(props.tool === 'select') {
-            window.Module.ready.then(api => {
-                if(canvasX <= x2 && canvasY <= y2)
-                    api.on_mouse_up(canvasX, canvasY, x2, y2);
-                else
-                    api.on_mouse_up(x2, y2, canvasX, canvasY);
-            });
+            selectArea(canvasX, canvasY, x2, y2);
         }
         this.onmousemove = function(e){
             let curX = e.pageX - this.offsetLeft;
