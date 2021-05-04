@@ -26,7 +26,7 @@ public:
     void select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport);
     Model& get_current();
 
-    void set_vertex_ID_selected(int ID);
+    //void set_vertex_ID_selected(int ID);
     void reset_selected_vertices();
 
 private:

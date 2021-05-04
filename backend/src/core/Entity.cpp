@@ -93,19 +93,19 @@ void Entity::draw_vertices(PickingShader& shader, Mesh* billboard, Texture circl
     glDisable(GL_BLEND);
 }
 
-void Entity::set_vertex_ID_selected(int ID) {
-    u32 j = 0;
-    for(Mesh& mesh : current.meshes) {
-        u32 i = 0;
-        for (Vertex &vertex : mesh.vertices) {
-            if(j == ID) {
-                mesh.selected[i] = true;
-            }
-            i++;
-            j++;
-        }
-    }
-}
+//void Entity::set_vertex_ID_selected(int ID) {
+//    u32 j = 0;
+//    for(Mesh& mesh : current.meshes) {
+//        u32 i = 0;
+//        for (Vertex &vertex : mesh.vertices) {
+//            if(j == ID) {
+//                mesh.selected[i] = true;
+//            }
+//            i++;
+//            j++;
+//        }
+//    }
+//}
 
 // Scale every vertex in every mesh in the entity by the factor passed in
 void Entity::scale_entity(float factor) {
@@ -158,6 +158,7 @@ void Entity::reset_selected_vertices() {
         for(int i = 0; i < m.selected.size(); ++i) {
             m.selected[i] = false;
         }
+        m.selected_vertices_indices.clear();
     }
 }
 
@@ -219,18 +220,22 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
             if(v1Screen.x > xIn && v1Screen.y > yIn && v1Screen.x <= x2 && v1Screen.y <= y2) {
                 //printf("vertexOne is inside the rectangle\n");
                 m.selected[i] = true;
+                m.selected_vertices_indices.push_back(i);
             }
             if(v2Screen.x > xIn && v2Screen.y > yIn && v2Screen.x <= x2 && v2Screen.y <= y2) {
                 //printf("vertexTwo is inside the rectangle\n");
                 m.selected[i] = true;
+                m.selected_vertices_indices.push_back(i);
             }
             if(v3Screen.x > xIn && v3Screen.y > yIn && v3Screen.x <= x2 && v3Screen.y <= y2) {
                 //printf("vertexThree is inside the rectangle\n");
                 m.selected[i] = true;
+                m.selected_vertices_indices.push_back(i);
             }
             if(v4Screen.x > xIn && v4Screen.y > yIn && v4Screen.x <= x2 && v4Screen.y <= y2) {
                 //printf("vertexFour is inside the rectangle\n");
                 m.selected[i] = true;
+                m.selected_vertices_indices.push_back(i);
             }
 
             //the sprite is on a rectangle, made up of two triangles, check if the mouse selection box is over those triangles at any point.
