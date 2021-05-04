@@ -70,8 +70,8 @@ export const Camera = (props) => {
         }
     }
     canvasElement.onwheel = function onwheel(e){
+        e.preventDefault();
         if(props.tool === 'move') {
-            e.preventDefault();
             if(e.ctrlKey){
                 let val = Math.min(Math.max(-360,  (e.deltaY * 0.1) + roll), 360);
                 setRoll(val);
