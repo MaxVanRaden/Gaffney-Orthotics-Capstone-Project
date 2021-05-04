@@ -61,6 +61,7 @@ canvas.emscripten { border: 0px none; background-color: black; width:1505px; hei
 body{
     margin: 0px;
     padding: 0px;
+    overflow: hidden;
 }
 #root{
     position: absolute;
