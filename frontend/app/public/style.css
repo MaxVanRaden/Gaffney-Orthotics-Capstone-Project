@@ -58,7 +58,7 @@ canvas.emscripten { border: 0px none; background-color: black; width:1505px; hei
             4px 4px 0px #d5d5d5,
             7px 7px 0px rgba(0, 0, 0, 0.2);
 }
-body{
+body.main{
     margin: 0px;
     padding: 0px;
     overflow: hidden;
@@ -93,7 +93,7 @@ a.help:hover {
     width: 100%;
 }
 div.toolbar {
-    height: 35px;
+    max-height: 35px;
     width: 100%;
     background-color: #2c2c2c;
     display: flex;
@@ -156,12 +156,14 @@ div.toolbar {
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
+.option {
+    border-bottom: 1px solid #7c868a;
+}
 .menu-items a, .menu-items div {
     color: #2c2c2c;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-
 }
 .menu-items a:hover {background-color: #ddd; cursor:pointer;}
 .dropdown:hover .menu-items {display: block;}

@@ -116,7 +116,7 @@ export const Camera = (props) => {
         <div className="dropdown">
             <button className="tool">Camera</button>
             <div className="menu-items" style={{minWidth:220}}>
-                <div style={{float:"left"}}>
+                <div className="option" style={{float:"left"}}>
                     X:
                     <input type="range"
                            className="x-inp"
@@ -133,7 +133,7 @@ export const Camera = (props) => {
                            maxLength="4"
                            value={x} onChange={handleChange}/>
                 </div>
-                <div style={{float:"left"}}>
+                <div className="option" style={{float:"left"}}>
                     Y:
                     <input type="range"
                            style={{maxWidth:75}}
@@ -150,7 +150,7 @@ export const Camera = (props) => {
                            maxLength="4"
                            value={y} onChange={handleChange}/>
                 </div>
-                <div style={{float:"left"}}>
+                <div className="option" style={{float:"left"}}>
                     Z:
                     <input type="range"
                            style={{maxWidth:75}}
@@ -167,7 +167,7 @@ export const Camera = (props) => {
                            maxLength="4"
                            value={z} onChange={handleChange}/>
                 </div>
-                <div style={{float:"left"}}>
+                <div className="option" style={{float:"left"}}>
                     Yaw:
                     <input type="range"
                            className="yaw-inp"
@@ -184,7 +184,7 @@ export const Camera = (props) => {
                            maxLength="4"
                            value={yaw} onChange={handleChange}/>
                 </div>
-                <div style={{float:"left"}}>
+                <div className="option" style={{float:"left"}}>
                     Pitch:
                     <input type="range"
                            className="pitch-inp"
@@ -201,7 +201,7 @@ export const Camera = (props) => {
                            maxLength="4"
                            value={pitch} onChange={handleChange}/>
                 </div>
-                <div style={{float:"left"}}>
+                <div className="option" style={{float:"left"}}>
                     Roll:
                     <input type="range"
                            className="roll-inp"

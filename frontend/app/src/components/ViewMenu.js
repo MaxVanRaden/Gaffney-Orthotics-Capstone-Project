@@ -7,7 +7,7 @@ export const ViewMenu = (props) => {
         <div className="dropdown">
             <button className="tool">View</button>
             <div className="menu-items">
-                <div style={{textAlign:"center"}}>
+                <div className="option" style={{textAlign:"left"}}>
                     Zoom
                     <br/>
                     <div style={{paddingRight:5, display:"inline", paddingLeft:5}}>
@@ -17,8 +17,8 @@ export const ViewMenu = (props) => {
                            value={props.zoom} onChange={e => props.setZoom(Number(e.target.value))}/>%
                     <button onClick={() => props.setZoom(prev => prev < 100 ? prev + 1 : prev)}>+</button>
                 </div>
-                <a href="#">Perspective</a>
-                <a onClick={() => document.getElementById('fullscreen').click()}>Fullscreen</a>
+                <a className="option" href="#">Perspective</a>
+                <a className="option" onClick={() => document.getElementById('fullscreen').click()}>Fullscreen</a>
             </div>
         </div>
     )
