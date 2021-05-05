@@ -36,6 +36,7 @@ private:
     Framebuffer pickbuffer;
     Camera camera{};
     Model stairs;
+    Model cylinderModel;
 };
 
 #endif //GAFFNEY_ORTHOTICS_CAPSTONE_PROJECT_MESHEDITOR_H
