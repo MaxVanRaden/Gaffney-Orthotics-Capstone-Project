@@ -48,8 +48,7 @@ struct Mesh {
     GLuint ebo;
 	std::vector<Vertex> vertices;
 	std::vector<GLushort> indices;
-	std::vector<bool> selected; //shadows vertices vector indicating if selected
-	std::vector<u32> selected_vertices_indices; //contains ONLY the indices of the selected vertices
+	std::vector<u32> selected; //contains ONLY the indices of the selected vertices
     u32 indexcount;
     u32 material;
 };

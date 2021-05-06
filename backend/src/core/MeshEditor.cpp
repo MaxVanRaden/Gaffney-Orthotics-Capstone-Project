@@ -267,7 +267,7 @@ uint32_t MeshEditor::get_export_strlen() const {
 void MeshEditor::translate_vertex() {
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
-            for(u32 index: m.selected_vertices_indices){
+            for(u32 index: m.selected){
                 m.vertices[index].position.x += 1;
             }
             glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
