@@ -91,7 +91,7 @@ void MeshEditor::run(int width, int height) {
 
 void MeshEditor::draw() {
     mat4 view = create_view_matrix(camera);
-    view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
+    //view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
 
     shader.bind();
     shader.set_light_pos(14, 14, 14);

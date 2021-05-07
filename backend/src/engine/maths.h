@@ -1088,7 +1088,7 @@ vec3 convert_to_spherical_coords(vec3 direction) {
 internal inline
 vec3 raycast(mat4 projection, Camera camera, vec2 mouse, Rect viewport) {
     mat4 view = create_view_matrix(camera);
-    view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
+    //view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
 
     f32 x = (2.0f * mouse.x) / viewport.width - 1.0f;
     f32 y = (2.0f * mouse.y) / viewport.height - 1.0f;
