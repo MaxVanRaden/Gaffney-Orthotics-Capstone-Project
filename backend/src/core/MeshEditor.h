@@ -7,11 +7,17 @@
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
 
+enum EditorState {
+    STATE_SELECT_ENTITY,
+    STATE_SELECT_VERTICES
+};
+
 class MeshEditor {
 public:
     MeshEditor();
     ~MeshEditor();
 
+    void draw();
     void run(int width, int height);
     void add_model(const char* str);
     char* export_model(int ID, const char* fileformat);
@@ -19,8 +25,11 @@ public:
     void scale_all_entities(float factor);
     void on_mouse_up(int x, int y, int x2, int y2);
 
+    bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
+
 private:
     std::vector<Entity> entities;
+    int selectedEntity;
 
     Mesh billboard;
     Texture circle;
@@ -34,6 +43,9 @@ private:
     Camera camera{};
     Model stairs;
     Model cylinderModel;
+    Model arrow;
+
+    EditorState state;
 };
 
 #endif //GAFFNEY_ORTHOTICS_CAPSTONE_PROJECT_MESHEDITOR_H

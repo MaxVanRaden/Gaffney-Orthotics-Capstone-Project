@@ -975,17 +975,17 @@ mat4 look_at(const vec3 camera, const vec3 center, const vec3 up = V3(0, 1, 0)) 
     upNorm = cross(right, dir);
 
     mat.m00 = right.x;
-    mat.m10 = right.y;
-    mat.m20 = right.z;
-    mat.m01 = upNorm.x;
+    mat.m01 = right.y;
+    mat.m02 = right.z;
+    mat.m10 = upNorm.x;
     mat.m11 = upNorm.y;
-    mat.m21 = upNorm.z;
-    mat.m02 = -dir.x;
-    mat.m12 = -dir.y;
+    mat.m12 = upNorm.z;
+    mat.m20 = -dir.x;
+    mat.m21 = -dir.y;
     mat.m22 = -dir.z;
-    mat.m30 = -dot(right, camera);
-    mat.m31 = -dot(upNorm, camera);
-    mat.m32 = dot(dir, camera);
+    mat.m03 = -dot(right, camera);
+    mat.m13 = -dot(upNorm, camera);
+    mat.m23 = dot(dir, camera);
 
     return mat;
 }
@@ -1088,6 +1088,8 @@ vec3 convert_to_spherical_coords(vec3 direction) {
 internal inline
 vec3 raycast(mat4 projection, Camera camera, vec2 mouse, Rect viewport) {
     mat4 view = create_view_matrix(camera);
+    view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
+
     f32 x = (2.0f * mouse.x) / viewport.width - 1.0f;
     f32 y = (2.0f * mouse.y) / viewport.height - 1.0f;
     //f32 y = 1.0f - (2.0f * mouse.y) / viewport.height;

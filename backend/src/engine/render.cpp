@@ -248,7 +248,7 @@ Mesh create_billboard() {
     return create_mesh(vertices, indices);
 }
 
-mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
+mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view, f32 xrot, f32 yrot, f32 zrot) {
     mat4 mat = identity();
     mat *= translation(x, y, z);
 
@@ -257,6 +257,10 @@ mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
     mat.m22 = view.m22;
     mat.m11 = view.m11;
     mat.m33 = view.m33;
+
+    mat *= rotateX(xrot);
+    mat *= rotateY(yrot);
+    mat *= rotateZ(zrot);
 
     //mat *= rotation(rot, 0, 0, 1);
     mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);
