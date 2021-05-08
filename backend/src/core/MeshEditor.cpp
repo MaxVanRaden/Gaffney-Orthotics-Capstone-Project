@@ -12,7 +12,7 @@ MeshEditor::MeshEditor() {
     camera = {0};
 
     entities.emplace_back();
-//    entities.back().load(staircaseobjhardcoded, 0);
+    entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
@@ -160,6 +160,71 @@ char* MeshEditor::export_model(const char* fileformat) {
                     std::string line = "f " + std::to_string(face1) + " " + std::to_string(face2) + " " + std::to_string(face3) + "\n";
                     modelData.append(line);
                 }
+            }
+        }
+
+        // Return the string containing the vertices and faces of the model
+        char *temp = new char[modelData.size()];
+        strcpy(temp, modelData.c_str());
+
+        // Set export_strlen
+        export_strlen = modelData.size();
+        return temp; // yes memory leak, implement fix if you can find one
+    } else if (!strcmp(fileformat, ".stl")){
+        std::string modelData;
+        //get the current model
+        for (Entity& e : entities) {
+            Model curr = e.get_current();
+            for (Mesh& m : curr.meshes) {
+                std::string header = "OrthoFreeD STLWriter\n";
+                modelData.append(header);
+                int j = 0;
+                //loop through the model and stringify, starting with the vertices
+                for(int i = 0; i < m.vertices.size()/3; i++) {
+                    float verticesX = m.vertices[j].position.x;
+                    float verticesY = m.vertices[j].position.y;
+                    float verticesZ = m.vertices[j].position.z;
+                    std::string v1 =
+                            "facet normal 0.0 0.0 0.0\n  outer loop\n    vertex " +
+                            std::to_string(verticesX) +
+                            "  " +
+                            std::to_string(verticesY) +
+                            "  " +
+                            std::to_string(verticesZ) +
+                            "\n";
+                    modelData.append(v1);
+
+                    j++;
+                    verticesX = m.vertices[j].position.x;
+                    verticesY = m.vertices[j].position.y;
+                    verticesZ = m.vertices[j].position.z;
+                    std::string v2 =
+                            "    vertex " +
+                            std::to_string(verticesX) +
+                            " " +
+                            std::to_string(verticesY) +
+                            " " +
+                            std::to_string(verticesZ) +
+                            "\n";
+                    modelData.append(v2);
+
+                    j++;
+                    verticesX = m.vertices[j].position.x;
+                    verticesY = m.vertices[j].position.y;
+                    verticesZ = m.vertices[j].position.z;
+                    std::string v3 =
+                            "    vertex " +
+                            std::to_string(verticesX) +
+                            " " +
+                            std::to_string(verticesY) +
+                            " " +
+                            std::to_string(verticesZ) +
+                            "\n  endloop\nendfacet\n";
+                    modelData.append(v3);
+                    j++;
+                }
+                std::string footer = "endsolid OrthoFreeD STLWriter";
+                modelData.append(footer);
             }
         }
 
