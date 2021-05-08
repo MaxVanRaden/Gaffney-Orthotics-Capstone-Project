@@ -26,7 +26,7 @@ div.emscripten_border {
     background-color: #d5d5d5;
 }
 /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
-canvas.emscripten { border: 0px none; background-color: black; width:1505px; height: 800px}
+canvas.emscripten { border: 0px none; background-color: black; width: 100%; height: 100%}
 #dev_stuff {
     display: none;
     /*visibility: hidden;*/

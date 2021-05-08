@@ -17,8 +17,8 @@ void load_binary_STL (char* buffer);
 global MeshEditor* editor;
 global bool initialized = false;
 
-static const int width = 800;
-static const int height = 600;
+static int width = 800;
+static int height = 600;
 
 int main(void) 
 {
@@ -132,6 +132,11 @@ extern "C" {
 
     bool is_ready() {
         return initialized;
+    }
+    //Set canvas size
+    void set_size(int w, int h){
+        width = w;
+        height = h;
     }
 
     void on_mouse_up(int x, int y, int x2, int y2){

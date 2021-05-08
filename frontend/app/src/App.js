@@ -10,9 +10,13 @@ function App() {
         }
         let canvas = document.getElementById("canvas")
         window.onresize = function(e){
-            window.Module._set_size(window.innerWidth, window.innerHeight)
-            canvas.style.width = window.innerWidth + 'px'
-            canvas.style.height = window.innerHeight + 'px'
+            let w = canvas.clientWidth;
+            let h = canvas.clientHeight;
+            if(w !== canvas.width || h !== canvas.height){
+                canvas.width = w;
+                canvas.height = h;
+            }
+            window.Module._set_size(w, h)
         }
         canvas.onmousemove = function(e){
             let curX = e.pageX - canvas.offsetLeft;
