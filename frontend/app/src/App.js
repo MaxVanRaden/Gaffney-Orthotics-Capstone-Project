@@ -8,11 +8,17 @@ function App() {
         document.getElementById("root").onwheel = function(e){
             e.preventDefault()
         }
+        let canvas = document.getElementById("canvas")
         window.onresize = function(e){
             window.Module._set_size(window.innerWidth, window.innerHeight)
-            let canvas = document.getElementById("canvas")
             canvas.style.width = window.innerWidth + 'px'
             canvas.style.height = window.innerHeight + 'px'
+        }
+        canvas.onmousemove = function(e){
+            let curX = e.pageX - canvas.offsetLeft;
+            let curY = e.pageY - canvas.offsetTop;
+            document.getElementById('xcoord').innerHTML = curX;
+            document.getElementById('ycoord').innerHTML = curY;
         }
     },[])
 
