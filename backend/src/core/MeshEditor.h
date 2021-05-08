@@ -29,13 +29,14 @@ private:
     Rect viewport;
 
     mat4 projection;
-    uint32_t export_strlen;
     PickingShader pshader{};
     StaticShader shader{};
     BillboardShader bshader{};
     Framebuffer pickbuffer;
     Camera camera{};
     Model stairs;
+    Model cylinderModel;
+    uint32_t export_strlen;
 };
 
 #endif //GAFFNEY_ORTHOTICS_CAPSTONE_PROJECT_MESHEDITOR_H

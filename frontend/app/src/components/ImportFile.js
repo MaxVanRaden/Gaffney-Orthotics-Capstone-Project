@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 // import { useState } from 'react';
 // import { fs } from 'memfs';
 
+
 const ToUTF8Array = (str) => {
     let utf8 = [];
     for (let i=0; i < str.length; i++) {
@@ -158,6 +159,7 @@ const Import = () => {
     };
 
     // event listener for file import
+
     useEffect(() => {
         window.addEventListener('file', load_file);
 
@@ -166,6 +168,7 @@ const Import = () => {
             window.removeEventListener('file', load_file);
         };
     }, );
+
 
     return (
         <div>
