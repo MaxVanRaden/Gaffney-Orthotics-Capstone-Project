@@ -44,7 +44,7 @@ void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture cir
             //shader.set_transform(create_transformation_matrix(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1,1 ));
             shader.set_transform(billboard_transform(pos.x, pos.y, pos.z, {0.10, 0.10, 0.10}, view));
 
-            if(mesh.selected[i]) {
+            if(mesh.selected[i] == i) {
                 shader.set_tint({1.0, 0.5, 0.2, 1.0});
             } else {
                 shader.set_tint({0, 0, 0,1.0});
@@ -93,19 +93,19 @@ void Entity::draw_vertices(PickingShader& shader, Mesh* billboard, Texture circl
     glDisable(GL_BLEND);
 }
 
-void Entity::set_vertex_ID_selected(int ID) {
-    u32 j = 0;
-    for(Mesh& mesh : current.meshes) {
-        u32 i = 0;
-        for (Vertex &vertex : mesh.vertices) {
-            if(j == ID) {
-                mesh.selected[i] = true;
-            }
-            i++;
-            j++;
-        }
-    }
-}
+//void Entity::set_vertex_ID_selected(int ID) {
+//    u32 j = 0;
+//    for(Mesh& mesh : current.meshes) {
+//        u32 i = 0;
+//        for (Vertex &vertex : mesh.vertices) {
+//            if(j == ID) {
+//                mesh.selected[i] = true;
+//            }
+//            i++;
+//            j++;
+//        }
+//    }
+//}
 
 // Scale every vertex in every mesh in the entity by the factor passed in
 void Entity::scale_entity(float factor) {
@@ -158,6 +158,7 @@ void Entity::reset_selected_vertices() {
         for(int i = 0; i < m.selected.size(); ++i) {
             m.selected[i] = false;
         }
+        m.selected.clear();
     }
 }
 
@@ -166,6 +167,90 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
     mat4 view = create_view_matrix(camera);
 
     reset_selected_vertices();
+
+    for(Mesh& m : current.meshes) {
+        int i = 0;
+        for (Vertex& v : m.vertices) {
+            //get world position of vertex sprite
+            vec3 pos = (transform * V4(v.position.x, v.position.y, v.position.z, 1.0)).xyz;
+
+            //get world position of the triangles that make up the 2d sprite showing where the vertices are
+            mat4 billboardTransform = billboard_transform(pos.x, pos.y, pos.z, {0.10, 0.10, 0.10}, view);
+            vec4 vertexOne = billboardTransform * V4(-0.5, -0.5, 0.0f, 1.0f);
+            vec4 vertexTwo = billboardTransform * V4(0.5, -0.5, 0.0f, 1.0f);
+            vec4 vertexThree = billboardTransform * V4(-0.5, 0.5, 0.0f, 1.0f);
+            vec4 vertexFour = billboardTransform * V4(0.5, 0.5, 0.0f, 1.0f);
+
+            //transform them onto the screen
+            vec4 v1Next = vertexOne * view * projection;
+            vec4 v2Next = vertexTwo * view * projection;
+            vec4 v3Next = vertexThree * view * projection;
+            vec4 v4Next = vertexFour * view * projection;
+
+            //perspective division to account for f.o.v.
+            vec3 v1Final = V3(v1Next.x / v1Next.w, v1Next.y / v1Next.w, v1Next.z / v1Next.w);
+            vec3 v2Final = V3(v2Next.x / v2Next.w, v2Next.y / v2Next.w, v2Next.z / v2Next.w);
+            vec3 v3Final = V3(v3Next.x / v3Next.w, v3Next.y / v3Next.w, v3Next.z / v3Next.w);
+            vec3 v4Final = V3(v4Next.x / v4Next.w, v4Next.y / v4Next.w, v4Next.z / v4Next.w);
+
+            //Now we're in normalized device space, which is -1.0f to 1.0f, convert to screen coordinates (0 to width), (0 to height)
+            vec2 v1Screen{};
+            v1Screen.x = (v1Final.x + 1.0f) * viewport.width / 2.0f;
+            v1Screen.y = (v1Final.y + 1.0f) * viewport.height / 2.0f;
+
+            vec2 v2Screen{};
+            v2Screen.x = (v2Final.x + 1.0f) * viewport.width / 2.0f;
+            v2Screen.y = (v2Final.y + 1.0f) * viewport.height / 2.0f;
+
+            vec2 v3Screen{};
+            v3Screen.x = (v3Final.x + 1.0f) * viewport.width / 2.0f;
+            v3Screen.y = (v3Final.y + 1.0f) * viewport.height / 2.0f;
+
+            vec2 v4Screen{};
+            v4Screen.x = (v4Final.x + 1.0f) * viewport.width / 2.0f;
+            v4Screen.y = (v4Final.y + 1.0f) * viewport.height / 2.0f;
+
+            //Invert y coordinate
+            v1Screen.y = viewport.height-v1Screen.y;
+            v2Screen.y = viewport.height-v2Screen.y;
+            v3Screen.y = viewport.height-v3Screen.y;
+            v4Screen.y = viewport.height-v4Screen.y;
+
+            //now they are on screen, so check if they are in the rectangle
+            if(v1Screen.x > xIn && v1Screen.y > yIn && v1Screen.x <= x2 && v1Screen.y <= y2) {
+                //printf("vertexOne is inside the rectangle\n");
+                m.selected[i] = true;
+                m.selected.push_back(i);
+            }
+            if(v2Screen.x > xIn && v2Screen.y > yIn && v2Screen.x <= x2 && v2Screen.y <= y2) {
+                //printf("vertexTwo is inside the rectangle\n");
+                m.selected[i] = true;
+                m.selected.push_back(i);
+            }
+            if(v3Screen.x > xIn && v3Screen.y > yIn && v3Screen.x <= x2 && v3Screen.y <= y2) {
+                //printf("vertexThree is inside the rectangle\n");
+                m.selected[i] = true;
+                m.selected.push_back(i);
+            }
+            if(v4Screen.x > xIn && v4Screen.y > yIn && v4Screen.x <= x2 && v4Screen.y <= y2) {
+                //printf("vertexFour is inside the rectangle\n");
+                m.selected[i] = true;
+                m.selected.push_back(i);
+            }
+
+            //the sprite is on a rectangle, made up of two triangles, check if the mouse selection box is over those triangles at any point.
+           // bool firstTri = ray_tri_collision(o, d, vertexOne.xyz, vertexTwo.xyz, vertexThree.xyz, NULL);
+            //bool secondTri = ray_tri_collision(o, d, vertexTwo.xyz, vertexThree.xyz, vertexFour.xyz, NULL);
+
+            //if (firstTri || secondTri) {
+            //    m.selected[i] = true;
+            //}
+
+            i++;
+        }
+    }
+
+#if 0
     //raycast for each pixel in the selection box and check if vertices are selected.
     for(int x = xIn; x < x2; x++) {
         for(int y = yIn; y < y2; y++) {
@@ -199,6 +284,7 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
             }
         }
     }
+#endif
 }
 
 void Entity::set_position(vec3 pos) {
@@ -211,6 +297,10 @@ void Entity::set_rotation(vec3 rotate) {
 
 void Entity::set_scale(vec3 scale) {
     current.scale = scale;
+}
+
+Model& Entity::get_current() {
+    return current;
 }
 
 Entity::~Entity() {

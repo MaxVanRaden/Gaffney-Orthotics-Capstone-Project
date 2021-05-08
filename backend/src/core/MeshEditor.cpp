@@ -2,6 +2,7 @@
 #include <fstream>
 #include "MeshEditor.h"
 #include "StairsString.h"
+#include "CylinderString.h"
 #include "assimp/Exporter.hpp"
 
 MeshEditor::MeshEditor() {
@@ -9,10 +10,12 @@ MeshEditor::MeshEditor() {
     shader.load();
     bshader.load();
     pshader.load();
-    camera = {0};
+    //TODO: [DEV] Change back to 0
+    camera = {3, 6, 0, 0, 0, 0};
 
     entities.emplace_back();
-//    entities.back().load(staircaseobjhardcoded, 0);
+    //TODO: [DEV] Comment out staircaseobj
+    entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
@@ -46,7 +49,15 @@ MeshEditor::MeshEditor() {
     circle = load_texture(pixels, 64, 64, GL_LINEAR);
     delete[] pixels;
 
-    pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
+    cylinderModel = load_model_string(cylinderHardcoded, 0);
+
+    camera.x -= 5;
+    camera.y -= 5;
+
+    //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
+
+    //std::thread test(thread_test);
+    //test.join();
 }
 
 void MeshEditor::run(int width, int height) {
@@ -77,6 +88,8 @@ void MeshEditor::run(int width, int height) {
     }
 #endif
 
+//    camera.x+=0.02f;
+//    camera.y+=0.02f;
     mat4 view = create_view_matrix(camera);
 
     shader.bind();
@@ -92,6 +105,20 @@ void MeshEditor::run(int width, int height) {
         e.draw(shader);
         e.set_rotation( {rotation, rotation, rotation} );
     }
+
+    //Draw lines to show the axis of the 3d grid
+    shader.set_light_color(1.0f, 0.3f, 0.3f);
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {100, 0.04, 0.04}, view));
+    draw_model(&cylinderModel);
+
+    shader.set_light_color(0.3f, 1.0f, 0.3f);
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 100}, view));
+    draw_model(&cylinderModel);
+
+    shader.set_light_color(0.3f, 0.3f, 1.0f);
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 100, 0.04}, view));
+    draw_model(&cylinderModel);
+
     bshader.bind();
     bshader.set_view(view);
     for(Entity& e : entities) {
@@ -176,10 +203,12 @@ char* MeshEditor::export_model(const char* fileformat) {
 }
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
-    //for(Entity& e: entities) {
-    //e.select(x, y, x2, y2, camera, projection, viewport);
-    //}
+    printf("mosue up\n");
+    for(Entity& e: entities) {
+        e.select(x, y, x2, y2, camera, projection, viewport);
+    }
 
+#if 0
     int width = x2-x;
     int height = y2-y;
 
@@ -214,6 +243,8 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
         unbind_framebuffer();
     }
     glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
+
+#endif
 }
 
 
@@ -232,22 +263,15 @@ uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
 }
 
+//TODO: Naive translate moves in x direction by one unit
 void MeshEditor::translate_vertex() {
-    std::cout << "translate_vertex() called\n";
-
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
-            int i = 0;
-            for(Vertex &v : m.vertices) {
-                if (m.selected[i]) {
-                    std::cout << "We are moving vertex: " << i << std::endl;
-                    m.vertices[i].position.x += 1;
-
-                }
-                ++i;
+            for(u32 index: m.selected){
+                m.vertices[index].position.x += 1;
             }
             glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[i], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
         }
     }
     return;

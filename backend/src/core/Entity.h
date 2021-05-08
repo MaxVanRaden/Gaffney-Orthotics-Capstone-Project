@@ -24,11 +24,9 @@ public:
     void set_scale(vec3 scale);
     void scale_entity(float factor);
     void select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport);
-    Model get_current() {
-        return current;
-    }
+    Model& get_current();
 
-    void set_vertex_ID_selected(int ID);
+    //void set_vertex_ID_selected(int ID);
     void reset_selected_vertices();
 
 private:

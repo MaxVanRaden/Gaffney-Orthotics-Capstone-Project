@@ -48,7 +48,7 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
 
     std::vector<Vertex> vertices;
     std::vector<GLushort> indices;
-    std::vector<bool> selected;
+    std::vector<u32> selected; //contains only selected vertices' indices
 
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -64,7 +64,7 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
         };
 
         vertices.push_back(v);
-        selected.push_back(true);
+        selected.push_back(i);
     }
 
     for(u32 i = 0; i < paiMesh->mNumFaces; ++i) {
@@ -255,6 +255,22 @@ Mesh create_billboard() {
     vertices.push_back({ {0.5f, 0.5f, 0.0f},   normal, {1, 0} });
 
     return create_mesh(vertices, indices);
+}
+
+mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
+    mat4 mat = identity();
+    mat *= translation(x, y, z);
+
+    //transpose scale component
+    mat.m00 = view.m00;
+    mat.m22 = view.m22;
+    mat.m11 = view.m11;
+    mat.m33 = view.m33;
+
+    //mat *= rotation(rot, 0, 0, 1);
+    mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);
+
+    return mat;
 }
 
 mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {

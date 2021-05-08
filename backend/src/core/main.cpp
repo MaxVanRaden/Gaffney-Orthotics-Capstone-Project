@@ -16,8 +16,8 @@ void mainloop();
 global MeshEditor* editor;
 global bool initialized = false;
 
-static const int width = 1920;
-static const int height = 1080;
+static const int width = 800;
+static const int height = 600;
 
 int main(void) 
 {
