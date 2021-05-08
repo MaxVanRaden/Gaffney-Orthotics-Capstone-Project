@@ -19,7 +19,7 @@ export const EditMenu = () => {
         <div className="dropdown">
             <button className="tool">Edit</button>
             <div className="menu-items">
-                <div>
+                <div className="option">
                     Scale Model
                     <input id="scale-val"
                            style={styles}
@@ -30,8 +30,8 @@ export const EditMenu = () => {
                     <span style={{...styles, paddingLeft:2}}>%</span>
                     <button onClick={Scale}>Scale</button>
                 </div>
-                <a href="#">Extend</a>
-                <a href="#">Bend/Twist</a>
+                <a className="option" href="#">Extend</a>
+                <a className="option" href="#">Bend/Twist</a>
             </div>
         </div>
     )
