@@ -10,6 +10,7 @@
 
 int initialize();
 void mainloop();
+void load_binary_STL (char* buffer);
 
 //globals for now just for testing
 //look in defines.h if you want to see what this "global" type is
@@ -95,8 +96,18 @@ extern "C" {
 
     void import_model(char* str, int fileformat){
         // fileformat 0: obj
-        //            1: stl (ascii only)
-        editor->add_model(str, fileformat);
+        //            1: stl (ascii)
+        //            2: stl (binary)
+        //            3: memfs filepath
+        //            4: null
+        // I'll switch the fileformat order around later making 0 == null
+        // no change for now to maintain branch compatibility
+        if (fileformat == 4)
+            printf("no file sent to import\n");
+        else if (fileformat == 2)
+            load_binary_STL(str);
+        else
+            editor->add_model(str, fileformat);
     }
 
     char* export_model(const char* fileformat) {
@@ -131,4 +142,62 @@ extern "C" {
     void translate_vertex(){
         editor->translate_vertex();
     }
+
+    // expermental memfs, does not yet work with React
+    void import_file(char* file_path){
+        FILE *file = fopen(file_path, "r");
+        if (!file)
+            printf("cannot open file\n");
+        else
+            editor->add_model(file_path, 3);
+    }
+}
+
+void load_binary_STL (char* buffer) {
+    const char *offset = buffer;
+    char name[80];
+    float temp;
+
+    memcpy(name, offset, 80);//Record file name
+    offset += 80;
+    int numTriangles;
+    memcpy(&numTriangles, offset, 4);//Record the number of triangles
+    offset += 4;
+
+    std::string modelData;
+    modelData.reserve(strlen(buffer) * 100);
+    modelData.append("solid name\n");
+    for (int i = 0; i < numTriangles; i++) {
+        memcpy(&temp, offset, 4);     float normalI = temp;
+        memcpy(&temp, offset +4, 4);  float normalJ = temp;
+        memcpy(&temp, offset +8, 4);  float normalK = temp;
+        std::string line1 =
+                "facet normal " +
+                std::to_string(normalI) + " " +
+                std::to_string(normalJ) + " " +
+                std::to_string(normalK) +
+                "\n  outer loop\n";
+        modelData.append(line1);
+        offset += 12;
+        for (int j = 0; j < 3; j++) {
+            memcpy(&temp, offset, 4);     float verticesX = temp;
+            memcpy(&temp, offset +4, 4);  float verticesY = temp;
+            memcpy(&temp, offset +8, 4);  float verticesZ = temp;
+            std::string line2 =
+                    "    vertex " +
+                    std::to_string(verticesX) + " " +
+                    std::to_string(verticesY) + " " +
+                    std::to_string(verticesZ) + "\n";
+            modelData.append(line2);
+            offset += 12;
+        }
+        modelData.append("  endloop\nendfacet\n");
+        offset += 2;
+    }
+    modelData.append("endsolid name\n");
+
+    int len = modelData.length();
+    printf("size of transfer: %d from main.cpp\n", len);
+
+    editor->add_model(&modelData[0], 1);
 }

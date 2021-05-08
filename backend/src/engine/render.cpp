@@ -140,8 +140,10 @@ void load_materials(Model* model, const aiScene* pScene, const char* filename) {
     }
 }
 
-#include <assimp/cimport.h>
-Model load_model_string(std::string file, int fileformat) {
+// function does not yet fully work
+// currently being taken care of in main.cpp
+Model load_STL (const char* buffer) {
+//Model load_STL (const std::string& buffer){
     Model model;
     model.pos = {0};
     model.rotate = {0};
@@ -149,35 +151,153 @@ Model load_model_string(std::string file, int fileformat) {
 
     Assimp::Importer importer;
 
-    if (fileformat == 0) {
-        const aiScene *pScene = importer.ReadFileFromMemory(
-                (void *) &file[0], file.size(), aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_Triangulate |
-                                                aiProcess_FindInvalidData | aiProcess_ValidateDataStructure | 0, ".obj"
-        );
-        model.meshes.resize(pScene->mNumMeshes);
-        model.materials.resize(pScene->mNumMaterials);
+    const char *offset = buffer;
+    char name[80];
+    float temp;
 
-        for(u32 i = 0; i < pScene->mNumMeshes; ++i) {
-            aiMesh* paiMesh = pScene->mMeshes[i];
-            load_mesh(&model, i, paiMesh);
-        }
-    } else if (fileformat == 1) {
-        const aiScene *pScene = importer.ReadFileFromMemory(
-                (void *) &file[0], file.size(), aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_Triangulate |
-                                                aiProcess_FindInvalidData | aiProcess_ValidateDataStructure | 0, ".stl"
-        );
-        model.meshes.resize(pScene->mNumMeshes);
-        model.materials.resize(pScene->mNumMaterials);
+    memcpy(name, offset, 80);//Record file name
+    offset += 80;
+    int numTriangles;
+    memcpy(&numTriangles, offset, 4);//Record the number of triangles
+    offset += 4;
 
-        for(u32 i = 0; i < pScene->mNumMeshes; ++i) {
-            aiMesh* paiMesh = pScene->mMeshes[i];
-            load_mesh(&model, i, paiMesh);
+    std::string modelData;
+    modelData.append("solid OrthoFreeD STLWriter\n");
+    for (int i = 0; i < numTriangles; i++) {
+        memcpy(&temp, offset, 4);     float normalI = temp;
+        memcpy(&temp, offset +4, 4);  float normalJ = temp;
+        memcpy(&temp, offset +8, 4);  float normalK = temp;
+        std::string line1 =
+                "facet normal " +
+                std::to_string(normalI) + " " +
+                std::to_string(normalJ) + " " +
+                std::to_string(normalK) +
+                "\n  outer loop\n";
+        modelData.append(line1);
+        offset += 12;
+        for (int j = 0; j < 3; j++) {
+            memcpy(&temp, offset, 4);     float verticesX = temp;
+            memcpy(&temp, offset +4, 4);  float verticesY = temp;
+            memcpy(&temp, offset +8, 4);  float verticesZ = temp;
+            std::string line2 =
+                    "    vertex " +
+                    std::to_string(verticesX) + " " +
+                    std::to_string(verticesY) + " " +
+                    std::to_string(verticesZ) + "\n";
+            modelData.append(line2);
+            offset += 12;
         }
-    } else {
-        printf("Load_model_string: Error loading model %s\n", file.c_str());
-        printf("Error: %s\n", importer.GetErrorString());
+        modelData.append("  endloop\nendfacet\n");
+        offset += 2;
+    }
+    modelData.append("endsolid OrthoFreeD STLWriter\n");
+
+    printf("size of transfer: %ld from render.cpp\n", modelData.length());
+
+//    char * newSTL = new char [modelData.length() + 1];
+//    strcpy(newSTL, modelData.c_str());
+    // memory leak!
+
+    //delete [] newSTL;
+
+    for(int i = 0; i < modelData.length() +1; i++){
+        printf("%c", modelData[i]);
     }
 
+
+    const aiScene *pScene = importer.ReadFileFromMemory(
+            (void *) &modelData[0], modelData.size(),
+            aiProcess_FlipUVs         |
+            aiProcess_GenSmoothNormals      |
+            aiProcess_Triangulate           |
+            aiProcess_FindInvalidData       |
+            aiProcess_ValidateDataStructure |
+            0, ".stl");
+    if(!pScene) {
+        printf("%s failed to load, (string)\n", modelData.c_str());
+    } else {
+        model.meshes.resize(pScene->mNumMeshes);
+        model.materials.resize(pScene->mNumMaterials);
+
+        for (u32 i = 0; i < pScene->mNumMeshes; ++i) {
+            aiMesh *paiMesh = pScene->mMeshes[i];
+            load_mesh(&model, i, paiMesh);
+        }
+    }
+
+    return model;
+
+}
+
+#include <assimp/cimport.h>
+Model load_model_string(const std::string& filepath, int fileformat) {
+    Model model;
+    model.pos = {0};
+    model.rotate = {0};
+    model.scale = {1, 1, 1};
+
+    Assimp::Importer importer;
+
+    std::string pHint;
+    std::string newpath;
+    // fileformat 0: obj
+    //            1: stl (ascii)
+    //            2: stl (binary)
+    //            3: memfs filepath
+    //            4: null
+    // I'll switch the fileformat order around later making 0 == null
+    // no change for now to maintain branch compatibility
+
+    if (fileformat == 3) {
+        const aiScene *pScene = importer.ReadFile( filepath,
+                                                   aiProcess_FlipUVs        |
+                                                   aiProcess_GenSmoothNormals      |
+                                                   aiProcess_Triangulate           |
+                                                   aiProcess_FindInvalidData       |
+                                                   aiProcess_ValidateDataStructure);
+        if(!pScene) {
+            printf("%s failed to load, (file)\n", filepath.c_str());
+        } else {
+            model.meshes.resize(pScene->mNumMeshes);
+            model.materials.resize(pScene->mNumMaterials);
+
+            for (u32 i = 0; i < pScene->mNumMeshes; ++i) {
+                aiMesh *paiMesh = pScene->mMeshes[i];
+                load_mesh(&model, i, paiMesh);
+            }
+        }
+        return model;
+
+    } else if (fileformat == 2){
+
+        return load_STL(&filepath[0]);
+
+    } else if (fileformat == 0) {
+        pHint.append(".obj");
+        printf("obj format processing...\n");
+    } else if (fileformat == 1) {
+        pHint.append(".stl");
+        printf("stl ascii format processing...\n");
+    }
+    const aiScene *pScene = importer.ReadFileFromMemory(
+            (void *) &filepath[0], filepath.size(),
+            aiProcess_FlipUVs         |
+            aiProcess_GenSmoothNormals      |
+            aiProcess_Triangulate           |
+            aiProcess_FindInvalidData       |
+            aiProcess_ValidateDataStructure |
+            0, pHint.c_str());
+    if(!pScene) {
+        printf("%s failed to load, (string)\n", filepath.c_str());
+    } else {
+        model.meshes.resize(pScene->mNumMeshes);
+        model.materials.resize(pScene->mNumMaterials);
+
+        for (u32 i = 0; i < pScene->mNumMeshes; ++i) {
+            aiMesh *paiMesh = pScene->mMeshes[i];
+            load_mesh(&model, i, paiMesh);
+        }
+    }
     //load_materials(&model, pScene, filename);
     return model;
 }

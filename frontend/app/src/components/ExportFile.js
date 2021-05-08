@@ -2,7 +2,7 @@ import {saveAs} from 'file-saver'
 import {useState} from 'react'
 
 const Export = () => {
-    const [format, setFormat] = useState('.obj');
+    const [format, setFormat] = useState('.stl');
     //const [format] = useState('.obj');
 
     const handleChange = (e) => {setFormat(e.target.value);}

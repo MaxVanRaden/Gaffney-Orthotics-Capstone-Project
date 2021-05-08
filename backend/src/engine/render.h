@@ -68,7 +68,8 @@ void dispose_model(Model* model);
 Mesh create_mesh(std::vector<Vertex> vertices, std::vector<GLushort> indices);
 void load_mesh(Model* model, u32 i, const aiMesh* paiMesh);
 Model load_model(const char* filename);
-Model load_model_string(std::string file, int fileformat);
+Model load_STL(const char* buffer);
+Model load_model_string(const std::string& filepath, int fileformat);
 void draw_mesh(Mesh mesh);
 void draw_model(Model* model);
 
