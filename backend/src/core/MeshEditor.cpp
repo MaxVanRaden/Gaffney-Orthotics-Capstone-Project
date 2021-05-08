@@ -263,11 +263,11 @@ uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
 }
 
-//TODO: Naive translate moves in x direction by one unit
+//TODO: [WIP] Naive translate moves in x direction by one unit
 void MeshEditor::translate_vertex() {
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
-            for(u32 index: m.selected){
+            for(u32 index: m.selected_indices){
                 m.vertices[index].position.x += 1;
             }
             glBindBuffer(GL_ARRAY_BUFFER, m.vbo);

@@ -10,6 +10,7 @@ void dispose_mesh(Mesh* mesh) {
     mesh->indices.clear();
     mesh->indexcount = mesh->material = 0;
     mesh->selected.clear();
+    mesh->selected_indices.clear();
     printf("dispose mesh\n");
 }
 
@@ -48,7 +49,8 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
 
     std::vector<Vertex> vertices;
     std::vector<GLushort> indices;
-    std::vector<u32> selected; //contains only selected vertices' indices
+    std::vector<bool> selected; //shadows vertices indicating selected or not
+    std::vector<u32> selected_indices; //contains only selected vertices' indices
 
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -64,7 +66,8 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
         };
 
         vertices.push_back(v);
-        selected.push_back(i);
+        selected.push_back(true);
+        selected_indices.push_back(i);
     }
 
     for(u32 i = 0; i < paiMesh->mNumFaces; ++i) {
@@ -93,6 +96,7 @@ void load_mesh(Model* model, u32 i, const aiMesh* paiMesh) {
     model->meshes[i].indexcount = indices.size();
     model->meshes[i].vertices = vertices;
     model->meshes[i].selected = selected;
+    model->meshes[i].selected_indices = selected_indices;
     model->meshes[i].indices = indices;
 }
 
