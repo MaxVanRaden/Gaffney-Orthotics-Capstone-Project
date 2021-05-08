@@ -136,8 +136,8 @@ export const Camera = (props) => {
             default:
                 console.log("unexpected input class");
         }
-        setCamera(newCamera);
-        window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, camera.roll));
+        setCamera({...newCamera});
+        window.Module.ready.then(api => api.set_camera(zoom, newCamera.x, newCamera.y, newCamera.z, newCamera.yaw, newCamera.pitch, newCamera.roll));
     }
     const styles = {
         float:"left",
