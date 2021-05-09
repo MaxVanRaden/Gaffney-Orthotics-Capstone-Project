@@ -149,7 +149,8 @@ const Import = () => {
         const len = uint8_view.length;
 
         // alloc memory
-        const input_ptr = window.Module.ready.cache = [len];
+        //const input_ptr = window.Module.ready.cache = [len];
+        const input_ptr = window.Module._malloc(len * uint8_view.BYTES_PER_ELEMENT)
 
         // write WASM memory calling the set method of the Uint8Array
         window.Module.HEAPU8.set(uint8_view, input_ptr);
