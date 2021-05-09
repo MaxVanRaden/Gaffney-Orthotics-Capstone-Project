@@ -20,6 +20,8 @@ global bool initialized = false;
 static int width = 800;
 static int height = 600;
 
+
+
 int main(void) 
 {
 	if (initialize() == GL_TRUE) {		
@@ -111,7 +113,7 @@ extern "C" {
     }
 
     char* export_model(const char* fileformat) {
-        return editor->export_model(".obj"); //.obj hard coded for now
+        return editor->export_model(".stl"); //.obj hard coded for now
     }
 
     uint32_t get_export_strlen() {
@@ -150,27 +152,35 @@ extern "C" {
 
     // expermental memfs, does not yet work with React
     void import_file(char* file_path){
-        FILE *file = fopen(file_path, "r");
+        FILE *file = fopen(file_path, "r+");
         if (!file)
             printf("cannot open file\n");
-        else
-            editor->add_model(file_path, 3);
+        else {
+            fseek(file, 0, SEEK_END);
+            long fileSize = ftell(file);//Read file size
+            fseek(file, 0, SEEK_SET);
+            printf("file size: %ld", fileSize);
+            char * buffer = (char *) malloc(sizeof(char) * fileSize);//Apply for memory
+            long result = fread(buffer, 1, fileSize, file);//File read into buffer
+            if (result != fileSize) {
+                printf("Reading error or ASCII file: ");
+                printf("result = %ld  fileSize = %ld\n", result, fileSize);
+            }
+            fclose(file);
+            load_binary_STL(buffer);
+        }
     }
 }
 
 void load_binary_STL (char* buffer) {
     const char *offset = buffer;
-    char name[80];
     float temp;
-
-    memcpy(name, offset, 80);//Record file name
     offset += 80;
     int numTriangles;
     memcpy(&numTriangles, offset, 4);//Record the number of triangles
     offset += 4;
 
     std::string modelData;
-    modelData.reserve(strlen(buffer) * 100);
     modelData.append("solid name\n");
     for (int i = 0; i < numTriangles; i++) {
         memcpy(&temp, offset, 4);     float normalI = temp;
@@ -202,7 +212,10 @@ void load_binary_STL (char* buffer) {
     modelData.append("endsolid name\n");
 
     int len = modelData.length();
-    printf("size of transfer: %d from main.cpp\n", len);
+    printf("size of converted file: %d\n", len);
 
+//    for(int i = modelData.length() - 15; i < modelData.length(); i++){
+//        printf("%c", modelData[i]);
+//    }
     editor->add_model(&modelData[0], 1);
 }

@@ -250,11 +250,11 @@ Model load_model_string(const std::string& filepath, int fileformat) {
 
     if (fileformat == 3) {
         const aiScene *pScene = importer.ReadFile( filepath,
-                                                   aiProcess_FlipUVs        |
-                                                   aiProcess_GenSmoothNormals      |
-                                                   aiProcess_Triangulate           |
-                                                   aiProcess_FindInvalidData       |
-                                                   aiProcess_ValidateDataStructure);
+               aiProcess_FlipUVs        |
+               aiProcess_GenSmoothNormals      |
+               aiProcess_Triangulate           |
+               aiProcess_FindInvalidData       |
+               aiProcess_ValidateDataStructure);
         if(!pScene) {
             printf("%s failed to load, (file)\n", filepath.c_str());
         } else {
