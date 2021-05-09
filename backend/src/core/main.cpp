@@ -10,7 +10,8 @@
 
 int initialize();
 void mainloop();
-void load_binary_STL (char* buffer);
+bool isBinarySTL(char * name);
+void load_binary_STL (char * buffer);
 
 //globals for now just for testing
 //look in defines.h if you want to see what this "global" type is
@@ -172,50 +173,70 @@ extern "C" {
     }
 }
 
+bool isBinarySTL(char * name){
+    char tag[strlen("solid") +1] = "solid";
+
+    for (int i = 0; i < strlen(tag); i++){
+        if (tag[i] != name[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
 void load_binary_STL (char* buffer) {
     const char *offset = buffer;
     float temp;
-    offset += 80;
-    int numTriangles;
-    memcpy(&numTriangles, offset, 4);//Record the number of triangles
-    offset += 4;
+    char name[80];
+    memcpy(name, offset, 80);//Record file name
+    if(isBinarySTL(name)) {
+        offset += 80;
+        int numTriangles;
+        memcpy(&numTriangles, offset, 4);//Record the number of triangles
+        offset += 4;
 
-    std::string modelData;
-    modelData.append("solid name\n");
-    for (int i = 0; i < numTriangles; i++) {
-        memcpy(&temp, offset, 4);     float normalI = temp;
-        memcpy(&temp, offset +4, 4);  float normalJ = temp;
-        memcpy(&temp, offset +8, 4);  float normalK = temp;
-        std::string line1 =
-                "facet normal " +
-                std::to_string(normalI) + " " +
-                std::to_string(normalJ) + " " +
-                std::to_string(normalK) +
-                "\n  outer loop\n";
-        modelData.append(line1);
-        offset += 12;
-        for (int j = 0; j < 3; j++) {
-            memcpy(&temp, offset, 4);     float verticesX = temp;
-            memcpy(&temp, offset +4, 4);  float verticesY = temp;
-            memcpy(&temp, offset +8, 4);  float verticesZ = temp;
-            std::string line2 =
-                    "    vertex " +
-                    std::to_string(verticesX) + " " +
-                    std::to_string(verticesY) + " " +
-                    std::to_string(verticesZ) + "\n";
-            modelData.append(line2);
+        std::string view;
+        view.append("solid name\n");
+        for (int i = 0; i < numTriangles; i++) {
+            memcpy(&temp, offset, 4);
+            float normalI = temp;
+            memcpy(&temp, offset + 4, 4);
+            float normalJ = temp;
+            memcpy(&temp, offset + 8, 4);
+            float normalK = temp;
+            std::string line1 =
+                    "facet normal " +
+                    std::to_string(normalI) + " " +
+                    std::to_string(normalJ) + " " +
+                    std::to_string(normalK) +
+                    "\n  outer loop\n";
+            view.append(line1);
             offset += 12;
+            for (int j = 0; j < 3; j++) {
+                memcpy(&temp, offset, 4);
+                float verticesX = temp;
+                memcpy(&temp, offset + 4, 4);
+                float verticesY = temp;
+                memcpy(&temp, offset + 8, 4);
+                float verticesZ = temp;
+                std::string line2 =
+                        "    vertex " +
+                        std::to_string(verticesX) + " " +
+                        std::to_string(verticesY) + " " +
+                        std::to_string(verticesZ) + "\n";
+                view.append(line2);
+                offset += 12;
+            }
+            view.append("  endloop\nendfacet\n");
+            offset += 2;
         }
-        modelData.append("  endloop\nendfacet\n");
-        offset += 2;
+        view.append("endsolid name\n");
+
+        int len = view.length();
+        printf("size of converted file: %d\n", len);
+
+        editor->add_model(&view[0], 1);
+    } else {
+        editor->add_model(buffer, 1);
     }
-    modelData.append("endsolid name\n");
-
-    int len = modelData.length();
-    printf("size of converted file: %d\n", len);
-
-//    for(int i = modelData.length() - 15; i < modelData.length(); i++){
-//        printf("%c", modelData[i]);
-//    }
-    editor->add_model(&modelData[0], 1);
 }

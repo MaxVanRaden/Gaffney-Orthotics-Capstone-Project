@@ -143,7 +143,6 @@ void load_materials(Model* model, const aiScene* pScene, const char* filename) {
 // function does not yet fully work
 // currently being taken care of in main.cpp
 Model load_STL (const char* buffer) {
-//Model load_STL (const std::string& buffer){
     Model model;
     model.pos = {0};
     model.rotate = {0};
@@ -193,12 +192,6 @@ Model load_STL (const char* buffer) {
     modelData.append("endsolid OrthoFreeD STLWriter\n");
 
     printf("size of transfer: %ld from render.cpp\n", modelData.length());
-
-//    char * newSTL = new char [modelData.length() + 1];
-//    strcpy(newSTL, modelData.c_str());
-    // memory leak!
-
-    //delete [] newSTL;
 
     for(int i = 0; i < modelData.length() +1; i++){
         printf("%c", modelData[i]);
@@ -298,7 +291,6 @@ Model load_model_string(const std::string& filepath, int fileformat) {
             load_mesh(&model, i, paiMesh);
         }
     }
-    //load_materials(&model, pScene, filename);
     return model;
 }
 
