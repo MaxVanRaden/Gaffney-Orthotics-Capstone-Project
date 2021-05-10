@@ -14,7 +14,7 @@ MeshEditor::MeshEditor() {
     camera = {3, 6, 0, 0, 0, 0};
 
     entities.emplace_back();
-//    entities.back().load(staircaseobjhardcoded, 0);
+    entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
@@ -48,7 +48,7 @@ MeshEditor::MeshEditor() {
     circle = load_texture(pixels, 64, 64, GL_LINEAR);
     delete[] pixels;
 
-//    cylinderModel = load_model_string(cylinderHardcoded, 0);
+    cylinderModel = load_model_string(cylinderHardcoded, 0);
 
     camera.x -= 5;
     camera.y -= 5;

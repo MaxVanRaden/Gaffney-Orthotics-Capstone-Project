@@ -10,7 +10,7 @@ Module.ready = new Promise(function(resolve, reject) {
             get_export_strlen: Module.cwrap('get_export_strlen', 'number', ['number']),
             translate_vertex: Module.cwrap('translate_vertex', null, null),
             scale: Module.cwrap('scale',null,['number']),
-            import_file: Module.cwrap('import_file', 'number', ['string'], [fileName])
+            import_file: Module.cwrap('import_file', null, ['string'], ['number'])
         };
         resolve(api);
     });

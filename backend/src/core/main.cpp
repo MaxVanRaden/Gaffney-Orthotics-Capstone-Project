@@ -97,21 +97,23 @@ extern "C" {
         return x;
     }
 
-    void import_model(char* str, int fileformat){
+    void import_model(char* buffer, int fileformat){
         // fileformat 0: obj
         //            1: stl (ascii)
         //            2: stl (binary)
-        //            3: memfs filepath
-        //            4: null
-        // I'll switch the fileformat order around later making 0 == null
-        // no change for now to maintain branch compatibility
-        if (fileformat == 4)
-            printf("no file sent to import\n");
-        else if (fileformat == 2)
-//            load_STL(str);
-            editor->add_model(str, fileformat);
+        //            3: filepath
+        if (fileformat == 0 || fileformat == 1) {
+            printf("sending buffer in ascii format (obj or stl)...\n");
+            editor->add_model(buffer, fileformat);
+            printf("buffer transfer operation has concluded\n");
+        }
+        else if (fileformat == 2) {
+            printf("sending file path of model...\n");
+            load_model(buffer);
+            printf("file transfer operation has concluded\n");
+        }
         else
-            editor->add_model(str, fileformat);
+        printf("no file format reported\n");
     }
 
     char* export_model(const char* fileformat) {
@@ -152,25 +154,36 @@ extern "C" {
         editor->translate_vertex();
     }
 
-    // expermental memfs, does not yet work with React
     // does not handle obj files
-    void import_file(char* file_path){
-        FILE *file = fopen(file_path, "r+");
-        if (!file)
-            printf("cannot open file\n");
-        else {
-            fseek(file, 0, SEEK_END);
-            long fileSize = ftell(file);//Read file size
-            fseek(file, 0, SEEK_SET);
-            char * buffer = (char *) malloc(sizeof(char) * fileSize);//Apply for memory
-            long result = fread(buffer, 1, fileSize, file);//File read into buffer
-            if (result != fileSize) {
-                printf("Reading error or ASCII file: ");
-                printf("result = %ld  fileSize = %ld\n", result, fileSize);
+    void import_file(char* file_path, int fileformat){
+        // fileformat 0: obj
+        //            1: stl (ascii)
+        //            2: stl (binary)
+        //            3: filepath
+        if (fileformat == 0) {
+            printf("sending obj file..\n");
+            editor->add_model(file_path, 0);
+            printf("file transfer operation has concluded\n");
+        }
+        else if (fileformat == 1 || fileformat == 2) {
+            FILE *file = fopen(file_path, "r+");
+            if (!file)
+                printf("cannot open file\n");
+            else {
+                fseek(file, 0, SEEK_END);
+                long fileSize = ftell(file);//Read file size
+                fseek(file, 0, SEEK_SET);
+                char *buffer = (char *) malloc(sizeof(char) * fileSize);//Apply for memory
+                long result = fread(buffer, 1, fileSize, file);//File read into buffer
+                if (result != fileSize) {
+                    printf("Reading error");
+                    printf("result = %ld  fileSize = %ld\n", result, fileSize);
+                }
+                fclose(file);
+                load_STL(buffer);
             }
-            fclose(file);
-            load_STL(buffer);
-//            editor->add_model(buffer, 2);
+        } else {
+            printf("unknown file format\n");
         }
     }
 }
@@ -233,8 +246,14 @@ void load_STL (char* buffer) {
             offset += 2;
         }
         view.append("endsolid name\n");
+
+        printf("sending converted STL ascii string...\n");
         editor->add_model(&view[0], 1);
+        printf("file transfer operation has concluded\n");
     } else {
-        editor->add_model(buffer, 1);
+        printf("sending STL ascii file\n");
+        //load_model(buffer);
+        editor->add_model(&buffer[0], 1);
+        printf("file transfer operation has concluded\n");
     }
 }
