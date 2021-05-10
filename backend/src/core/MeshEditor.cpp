@@ -14,6 +14,7 @@ MeshEditor::MeshEditor() {
     camera = {3, 6, 0, 0, 0, 0};
 
     entities.emplace_back();
+    //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
@@ -331,7 +332,7 @@ uint32_t MeshEditor::get_export_strlen() const {
 void MeshEditor::translate_vertex() {
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
-            for(u32 index: m.selected_indices){
+            for(u32 index: m.selected_vertices){
                 m.vertices[index].position.x += 1;
             }
             glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
