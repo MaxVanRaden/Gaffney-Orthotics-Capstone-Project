@@ -9,8 +9,12 @@ Module.ready = new Promise(function(resolve, reject) {
             on_mouse_up: Module.cwrap('on_mouse_up', null, ['number']),
             get_export_strlen: Module.cwrap('get_export_strlen', 'number', ['number']),
             translate_vertex: Module.cwrap('translate_vertex', null, null),
-            scale: Module.cwrap('scale',null,['number'])
+            scale: Module.cwrap('scale',null,['number']),
+            import_file: Module.cwrap('import_file', 'number', ['string'], [fileName])
         };
         resolve(api);
     });
 });
+
+
+

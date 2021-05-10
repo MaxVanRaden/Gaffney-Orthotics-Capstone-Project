@@ -10,8 +10,8 @@
 
 int initialize();
 void mainloop();
-bool isBinarySTL(char * name);
-void load_binary_STL (char * buffer);
+bool is_Binary_STL(char * name);
+void load_STL (char * buffer);
 
 //globals for now just for testing
 //look in defines.h if you want to see what this "global" type is
@@ -108,7 +108,8 @@ extern "C" {
         if (fileformat == 4)
             printf("no file sent to import\n");
         else if (fileformat == 2)
-            load_binary_STL(str);
+//            load_STL(str);
+            editor->add_model(str, fileformat);
         else
             editor->add_model(str, fileformat);
     }
@@ -152,6 +153,7 @@ extern "C" {
     }
 
     // expermental memfs, does not yet work with React
+    // does not handle obj files
     void import_file(char* file_path){
         FILE *file = fopen(file_path, "r+");
         if (!file)
@@ -160,7 +162,6 @@ extern "C" {
             fseek(file, 0, SEEK_END);
             long fileSize = ftell(file);//Read file size
             fseek(file, 0, SEEK_SET);
-            printf("file size: %ld", fileSize);
             char * buffer = (char *) malloc(sizeof(char) * fileSize);//Apply for memory
             long result = fread(buffer, 1, fileSize, file);//File read into buffer
             if (result != fileSize) {
@@ -168,12 +169,13 @@ extern "C" {
                 printf("result = %ld  fileSize = %ld\n", result, fileSize);
             }
             fclose(file);
-            load_binary_STL(buffer);
+            load_STL(buffer);
+//            editor->add_model(buffer, 2);
         }
     }
 }
 
-bool isBinarySTL(char * name){
+bool is_Binary_STL(char * name){
     char tag[strlen("solid") +1] = "solid";
 
     for (int i = 0; i < strlen(tag); i++){
@@ -184,12 +186,12 @@ bool isBinarySTL(char * name){
     return false;
 }
 
-void load_binary_STL (char* buffer) {
+void load_STL (char* buffer) {
     const char *offset = buffer;
     float temp;
     char name[80];
     memcpy(name, offset, 80);//Record file name
-    if(isBinarySTL(name)) {
+    if(is_Binary_STL(name)) {
         offset += 80;
         int numTriangles;
         memcpy(&numTriangles, offset, 4);//Record the number of triangles
@@ -231,10 +233,6 @@ void load_binary_STL (char* buffer) {
             offset += 2;
         }
         view.append("endsolid name\n");
-
-        int len = view.length();
-        printf("size of converted file: %d\n", len);
-
         editor->add_model(&view[0], 1);
     } else {
         editor->add_model(buffer, 1);

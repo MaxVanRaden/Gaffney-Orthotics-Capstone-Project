@@ -29,27 +29,29 @@ to call some C++ function the backend team will write.
 
 
 <!--Experemental memfs code (does not function in React yet)-->
-<input type="file" id="myFile" onchange="load_file()">
+<input type="file" id="newFile" onchange="load_file()">
 <script>
-  let reader= new FileReader();
+  let reader = new FileReader();
   let fileName;
 
   function load_file(){
-    let file = document.getElementById('myFile').files[0];
+    let file = document.getElementById('newFile').files[0];
     fileName = file.name;
-    reader.addEventListener('loadend', print_file);
+    reader.addEventListener('loadend', send_file);
     reader.readAsArrayBuffer(file);
   }
 
-  function print_file(e){
-    let result=reader.result;
+  function send_file(){
+    let result = reader.result;
     const uint8_view = new Uint8Array(result);
 
-    FS.writeFile(fileName, uint8_view)
-    console.log(FS.readFile(fileName));
-    Module.ccall('import_file', 'number', ['string'], [fileName])
+    let FS = require('fs');
+    // FS.writeFile(fileName, uint8_view);
+    // console.log(FS.readFile(fileName));
+    FS.writeFileSync(fileName, uint8_view);
+    console.log(FS.readFileSync(fileName));
+    Module.ccall('import_file', 'number', ['string'], [fileName]);
     // Module.ccall('import_model', null, [fileName,3]);
-
   }
 
 </script>

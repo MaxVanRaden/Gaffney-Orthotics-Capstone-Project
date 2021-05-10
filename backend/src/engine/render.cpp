@@ -1,6 +1,7 @@
 #include "render.h"
 #include <GL/glfw.h>
 #include <GLES2/gl2.h>
+#include <assimp/cimport.h>
 
 void dispose_mesh(Mesh* mesh) {
     glDeleteBuffers(1, &mesh->vbo);
@@ -140,89 +141,133 @@ void load_materials(Model* model, const aiScene* pScene, const char* filename) {
     }
 }
 
-// function does not yet fully work
-// currently being taken care of in main.cpp
-Model load_STL (const char* buffer) {
-    Model model;
-    model.pos = {0};
-    model.rotate = {0};
-    model.scale = {1, 1, 1};
 
-    Assimp::Importer importer;
+//bool is_Binary_STL(char * name){
+//    char tag[strlen("solid") +1] = "solid";
+//
+//    for (int i = 0; i < strlen(tag); i++){
+//        if (tag[i] != name[i]){
+//            return true;
+//        }
+//    }
+//    return false;
+//}
+//
+//// function does not yet fully work
+//// currently being taken care of in main.cpp
+////Model load_STL (const char* buffer) {
+//Model load_STL (char* buffer) {
+//    Model model;
+//    model.pos = {0};
+//    model.rotate = {0};
+//    model.scale = {1, 1, 1};
+//
+//    Assimp::Importer importer;
+//
+//
+////    const char *offset = buffer;
+//    char *offset = buffer;
+//    float temp;
+//    char name[80];
+//    memcpy(name, offset, 80);//Record file name
+//    if (is_Binary_STL(name)) {
+//        offset += 80;
+//        int numTriangles;
+//        memcpy(&numTriangles, offset, 4);//Record the number of triangles
+//        printf("number of triangles: %d\n", numTriangles);
+//        offset += 4;
+//        std::string view;
+//        view.append("solid name\n");
+//        for (int i = 0; i < numTriangles; i++) {
+//            memcpy(&temp, offset, 4);
+//            float normalI = temp;
+//            memcpy(&temp, offset + 4, 4);
+//            float normalJ = temp;
+//            memcpy(&temp, offset + 8, 4);
+//            float normalK = temp;
+//            std::string line1 =
+//                    "facet normal " +
+//                    std::to_string(normalI) + " " +
+//                    std::to_string(normalJ) + " " +
+//                    std::to_string(normalK) +
+//                    "\n  outer loop\n";
+//            view.append(line1);
+//            offset += 12;
+//            for (int j = 0; j < 3; j++) {
+//                memcpy(&temp, offset, 4);
+//                float verticesX = temp;
+//                memcpy(&temp, offset + 4, 4);
+//                float verticesY = temp;
+//                memcpy(&temp, offset + 8, 4);
+//                float verticesZ = temp;
+//                std::string line2 =
+//                        "    vertex " +
+//                        std::to_string(verticesX) + " " +
+//                        std::to_string(verticesY) + " " +
+//                        std::to_string(verticesZ) + "\n";
+//                view.append(line2);
+//                offset += 12;
+//            }
+//            view.append("  endloop\nendfacet\n");
+//            offset += 2;
+//        }
+//        view.append("endsolid name\n");
+//
+//        printf("file length: %d\n", view.length());
+//        printf("file size: %d\n", view.size());
+//        // FAILING RIGHT HERE:
+//        const aiScene *pScene = importer.ReadFileFromMemory(
+//                (void *) &(view.c_str())[0], view.size(),
+//                aiProcess_FlipUVs         |
+//                aiProcess_GenSmoothNormals      |
+//                aiProcess_Triangulate           |
+//                aiProcess_FindInvalidData       |
+//                aiProcess_ValidateDataStructure |
+//                0, ".stl");
+////        const aiScene *pScene = importer.ReadFileFromMemory(
+////                (void *) &view[0], view.size(),
+////                aiProcess_FlipUVs |
+////                aiProcess_GenSmoothNormals |
+////                aiProcess_Triangulate |
+////                aiProcess_FindInvalidData |
+////                aiProcess_ValidateDataStructure |
+////                0, ".stl");
+//        if (!pScene) {
+//            printf("failed to load file\n");
+//        } else {
+//            model.meshes.resize(pScene->mNumMeshes);
+//            model.materials.resize(pScene->mNumMaterials);
+//
+//            for (u32 i = 0; i < pScene->mNumMeshes; ++i) {
+//                aiMesh *paiMesh = pScene->mMeshes[i];
+//                load_mesh(&model, i, paiMesh);
+//            }
+//        }
+//    } else {
+//        const aiScene *pScene = importer.ReadFileFromMemory(
+//                (void *) &buffer[0], strlen(buffer),
+//                aiProcess_FlipUVs |
+//                aiProcess_GenSmoothNormals |
+//                aiProcess_Triangulate |
+//                aiProcess_FindInvalidData |
+//                aiProcess_ValidateDataStructure |
+//                0, ".stl");
+//        if (!pScene) {
+//            printf("failed to load file\n");
+//        } else {
+//            model.meshes.resize(pScene->mNumMeshes);
+//            model.materials.resize(pScene->mNumMaterials);
+//
+//            for (u32 i = 0; i < pScene->mNumMeshes; ++i) {
+//                aiMesh *paiMesh = pScene->mMeshes[i];
+//                load_mesh(&model, i, paiMesh);
+//            }
+//        }
+//    }
+//    return model;
+//}
 
-    const char *offset = buffer;
-    char name[80];
-    float temp;
 
-    memcpy(name, offset, 80);//Record file name
-    offset += 80;
-    int numTriangles;
-    memcpy(&numTriangles, offset, 4);//Record the number of triangles
-    offset += 4;
-
-    std::string modelData;
-    modelData.append("solid OrthoFreeD STLWriter\n");
-    for (int i = 0; i < numTriangles; i++) {
-        memcpy(&temp, offset, 4);     float normalI = temp;
-        memcpy(&temp, offset +4, 4);  float normalJ = temp;
-        memcpy(&temp, offset +8, 4);  float normalK = temp;
-        std::string line1 =
-                "facet normal " +
-                std::to_string(normalI) + " " +
-                std::to_string(normalJ) + " " +
-                std::to_string(normalK) +
-                "\n  outer loop\n";
-        modelData.append(line1);
-        offset += 12;
-        for (int j = 0; j < 3; j++) {
-            memcpy(&temp, offset, 4);     float verticesX = temp;
-            memcpy(&temp, offset +4, 4);  float verticesY = temp;
-            memcpy(&temp, offset +8, 4);  float verticesZ = temp;
-            std::string line2 =
-                    "    vertex " +
-                    std::to_string(verticesX) + " " +
-                    std::to_string(verticesY) + " " +
-                    std::to_string(verticesZ) + "\n";
-            modelData.append(line2);
-            offset += 12;
-        }
-        modelData.append("  endloop\nendfacet\n");
-        offset += 2;
-    }
-    modelData.append("endsolid OrthoFreeD STLWriter\n");
-
-    printf("size of transfer: %ld from render.cpp\n", modelData.length());
-
-    for(int i = 0; i < modelData.length() +1; i++){
-        printf("%c", modelData[i]);
-    }
-
-
-    const aiScene *pScene = importer.ReadFileFromMemory(
-            (void *) &modelData[0], modelData.size(),
-            aiProcess_FlipUVs         |
-            aiProcess_GenSmoothNormals      |
-            aiProcess_Triangulate           |
-            aiProcess_FindInvalidData       |
-            aiProcess_ValidateDataStructure |
-            0, ".stl");
-    if(!pScene) {
-        printf("%s failed to load, (string)\n", modelData.c_str());
-    } else {
-        model.meshes.resize(pScene->mNumMeshes);
-        model.materials.resize(pScene->mNumMaterials);
-
-        for (u32 i = 0; i < pScene->mNumMeshes; ++i) {
-            aiMesh *paiMesh = pScene->mMeshes[i];
-            load_mesh(&model, i, paiMesh);
-        }
-    }
-
-    return model;
-
-}
-
-#include <assimp/cimport.h>
 Model load_model_string(const std::string& filepath, int fileformat) {
     Model model;
     model.pos = {0};
@@ -263,7 +308,9 @@ Model load_model_string(const std::string& filepath, int fileformat) {
 
     } else if (fileformat == 2){
 
-        return load_STL(&filepath[0]);
+//        return load_STL(&(filepath.c_str()[0]);
+//        return load_STL(&filepath[0]);
+        return model;
 
     } else if (fileformat == 0) {
         pHint.append(".obj");
