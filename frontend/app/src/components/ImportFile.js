@@ -1,8 +1,5 @@
 import React from 'react';
 import { useEffect } from 'react';
-// import { useState } from 'react';
-// import { fs } from 'memfs';
-
 
 const ToUTF8Array = (str) => {
     let utf8 = [];
@@ -52,124 +49,94 @@ function isBinarySTL(buffer){
 const Import = () => {
     let fileReader;
     let fileName = '';
-    let fileFormat = 4;
-    // fileformat 0: obj
-    //            1: stl (ascii)
-    //            2: stl (binary)
-    //            3: memfs filepath
-    //            4: null
+    let fileFormat = 99; // null
+                    //0: obj
+                    //1: stl (ascii)
+                    //2: stl (binary)
+                    //3: filepath
 
-    function STLconvert(buffer){
-        let dv = new DataView(buffer, 80);
-        let isLittleEndian = true;
-        let numTriangles = new Uint32Array(buffer, 80, 1)[0];
-
-        let offset = 4;
-        let modelData = "OrthoFreeD STLWriter\n";
-        for (let i = 0; i < numTriangles; i++) {
-            let normalI = dv.getFloat32(offset, isLittleEndian);
-            let normalJ = dv.getFloat32(offset+4, isLittleEndian);
-            let normalK = dv.getFloat32(offset+8, isLittleEndian);
-            modelData +=
-                "facet normal " +
-                normalI +
-                " " +
-                normalJ +
-                " " +
-                normalK +
-                "\n  outer loop\n";
-            offset += 12;
-            for (let j = 0; j < 3; j++) {
-                let verticesX = dv.getFloat32(offset, isLittleEndian);
-                let verticesY = dv.getFloat32(offset+4, isLittleEndian);
-                let verticesZ = dv.getFloat32(offset+8, isLittleEndian);
-                modelData +=
-                    "    vertex " +
-                    verticesX +
-                    " " +
-                    verticesY +
-                    " " +
-                    verticesZ +
-                    "\n";
-                offset += 12;
-            }
-            modelData += "  endloop\nendfacet\n";
-            offset += 2;
-        }
-        modelData += "endsolid OrthoFreeD STLWriter";
-        return modelData;
-    }
-
-    const load_file = ({target: {files}}) => {
+    const handleChange = ({target: {files}}) => {
         fileName = files[0].name;
+        fileReader = new FileReader();
         if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
             fileFormat = 0;
-            fileReader = new FileReader();
-            fileReader.onloadend = handleFileRead;
-            fileReader.readAsText(files[0], 'ISO-8859-1');
         } else if (/^[a-zA-Z0-9_-]+\.[.stl|.STL]+$/.test(fileName)) {
-            let reader = new FileReader();
-            reader.onload = function(e){
-                let buffer = reader.result
-                if (isBinarySTL(buffer)){
-                    // let view = STLconvert(buffer);
-                    // handleString(view);
-                    fileFormat = 2;
-                    fileReader = new FileReader();
-                    fileReader.onloadend = handleFileRead;
-                    fileReader.readAsText(files[0], 'ISO-8859-1');
-                } else{
-                    fileFormat = 1;
-                    fileReader = new FileReader();
-                    fileReader.onloadend = handleFileRead;
-                    fileReader.readAsText(files[0], 'ISO-8859-1');
-                }
+            if (isBinarySTL(files[0])) {
+                fileFormat = 2;
+            } else {
+                fileFormat = 1;
             }
-            reader.onprogress = function(e){
-                if (e.lengthComputable){
-                    console.log('progress: ' + e.loaded + ' of ' + e.total)
-                }
-            }
-            console.log('loading the file');
-            reader.readAsArrayBuffer(files[0]);
         } else{
             alert("wrong file format");
+            return{};
         }
+        fileReader.onloadend = handleFileRead;
+        fileReader.readAsText(files[0], 'ISO-8859-1');
+    }
+
+    const sendFile = (filePath) => {
+        window.Module.ready.then(api => api.import_file(filePath, fileFormat))
+            .catch(e => console.log("ImportFile.js failed to send string to emscripten"));
+        console.log("ImportFile.js operation concluded")
     }
     const handleFileRead = () => {
-        const view = fileReader.result;
+        if (fileFormat === 0 || fileFormat === 1){
+            // array of bytes (8-bit unsigned int) representing the string
+            const result = fileReader.result;
+            let uint8_view;
+            if(isASCII(result))
+                uint8_view    = new Uint8Array(ToUTF8Array(result));
+            else
+                uint8_view   =
+                    new TextEncoder("ISO-8859-1",{NONSTANDARD_allowLegacyEncoding: true}).encode(result);
 
-        // array of bytes (8-bit unsigned int) representing the string
-        let uint8_view;
-        if(isASCII(view))
-            uint8_view    = new Uint8Array(ToUTF8Array(view));
-        else
-            uint8_view   = new TextEncoder("ISO-8859-1",{NONSTANDARD_allowLegacyEncoding: true}).encode(view);
+            const len = uint8_view.length;
 
-        const len = uint8_view.length;
+            // alloc memory
+            //const input_ptr = window.Module.ready.cache = [len];
+            const input_ptr = window.Module._malloc(len * uint8_view.BYTES_PER_ELEMENT)
 
-        // alloc memory
-        //const input_ptr = window.Module.ready.cache = [len];
-        const input_ptr = window.Module._malloc(len * uint8_view.BYTES_PER_ELEMENT)
+            // write WASM memory calling the set method of the Uint8Array
+            window.Module.HEAPU8.set(uint8_view, input_ptr);
 
-        // write WASM memory calling the set method of the Uint8Array
-        window.Module.HEAPU8.set(uint8_view, input_ptr);
-
-        window.Module.ready.then(api => console.log(api.import_model(input_ptr, fileFormat)))
-            .catch(err => console.log("ImportFile.js failed to send string to emscripten"));
+            window.Module.ready.then(api => console.log(api.import_model(input_ptr, fileFormat)))
+                .catch(err => console.log("ImportFile.js failed to send string to emscripten"));
+        } else if (fileFormat === 2) {
+            const getView = async () => {
+                try {
+                    const result = fileReader.result;
+                    let uint8_view =
+                        new TextEncoder("ISO-8859-1", {NONSTANDARD_allowLegacyEncoding: true}).encode(result);
+                    if (!uint8_view) {
+                        console.log(err => "could not convert view to Uint8Array");
+                    } else {
+                        setTimeout(window.FS.writeFile(fileName, uint8_view, err => {
+                            if (err) {
+                                console.log("stuff broke");
+                            }
+                        }), 1000);
+                        setTimeout(window.FS.readFile(fileName, err => {
+                            if (err) {
+                                console.log("stuff broke");
+                            }
+                        }), 1000);
+                        setTimeout(sendFile(fileName), 1000);
+                    }
+                } catch (err) {
+                    console.log(err => console.log("import did not complete and was aborted"));
+                }
+            };
+            getView();
+        }
     };
 
-    // event listener for file import
-
     useEffect(() => {
-        window.addEventListener('file', load_file);
+        window.addEventListener('file', handleChange);
 
-        // cleanup this component
         return () => {
-            window.removeEventListener('file', load_file);
+            window.removeEventListener('file', handleChange);
         };
     }, );
-
 
     return (
         <div>
@@ -181,7 +148,7 @@ const Import = () => {
                 style={{display:"none"}}
                 accept='.stl, .obj'
                 data-testid='import-file'
-                onChange={load_file}
+                onChange={handleChange}
                 type="file"
             />
         </div>

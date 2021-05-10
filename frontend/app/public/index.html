@@ -26,6 +26,7 @@ to call some C++ function the backend team will write.
   </head>
 
 <body class="main">
+
 <!--<p align="left">HTML</p>-->
 <!--<div class='container'>-->
 <!--&lt;!&ndash; Nav Bar &ndash;&gt;-->
@@ -187,32 +188,5 @@ to call some C++ function the backend team will write.
       //   window.Module.ready.then(api => console.log(api.on_mouse_up(x, y, x2, y2)));
       // };
     </script>
-
-
-  <!--Experemental memfs code (does not function in React yet)-->
-  <script>
-    let reader= new FileReader();
-    let fileName;
-
-    function load_file(){
-      let file = document.getElementById('myFile').files[0];
-      fileName = file.name;
-      reader.addEventListener('loadend', print_file);
-      reader.readAsArrayBuffer(file);
-    }
-
-    function print_file(e){
-      let result=reader.result;
-      const uint8_view = new Uint8Array(result);
-
-      FS.writeFile(fileName, uint8_view)
-      console.log(FS.readFile(fileName));
-      Module.ccall('import_file', 'number', ['string'], [fileName])
-      // Module.ccall('import_model', null, [fileName,3]);
-
-    }
-
-  </script>
-
   </body>
 </html>
