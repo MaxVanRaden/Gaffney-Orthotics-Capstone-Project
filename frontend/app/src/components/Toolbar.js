@@ -10,7 +10,7 @@ import {useState, useEffect} from 'react'
 import {ToolGroup} from "./ToolGroup";
 
 export const Toolbar = () => {
-    const [tool, setTool] = useState('select');
+    const [tool, setTool] = useState('default');
     const [zoom, setZoom] = useState(0);
     const [dev, setDev] = useState(false)
     useEffect(() =>{
@@ -29,7 +29,7 @@ export const Toolbar = () => {
             <TranslateVertex/>
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
-            <SelectMenu/>
+            <SelectMenu tool={tool} setTool={setTool}/>
             <Camera tool={tool} zoom={zoom}/>
             <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
