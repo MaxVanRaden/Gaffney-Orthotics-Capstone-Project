@@ -23,20 +23,7 @@ export const Camera = (props) => {
         document.getElementById('xcoord').innerHTML = curX;
         document.getElementById('ycoord').innerHTML = curY;
     },[canvasElement]);
-    //Pass selection coords to backend
-    //Backend assumes (x1,y1) is top left
-    function selectArea(x1, y1, x2, y2){
-        window.Module.ready.then(api => {
-            if(x1 <= x2 && y1 <= y2)
-                api.on_mouse_up(x1, y1, x2, y2);
-            else if(x1 >= x2 && y1 <= y2)
-                api.on_mouse_up(x2, y1, x1, y2);
-            else if(x1 <= x2 && y1 >= y2)
-                api.on_mouse_up(x1, y2, x2, y1);
-            else
-                api.on_mouse_up(x2, y2, x1, y1);
-        });
-    }
+
     //Handle mouse(and camera) movement
     const handleMove = useCallback((e) =>{
         trackMouse(e);
@@ -65,13 +52,8 @@ export const Camera = (props) => {
         },[canvasElement,props.tool, camera]);
 
     const mouseUp = useCallback((e) => {
-        let x2 = e.pageX - canvasElement.offsetLeft;
-        let y2 = e.pageY - canvasElement.offsetTop;
         setClicked(false);
         switch(props.tool){
-            case 'select':
-                selectArea(canvasX.current, canvasY.current, x2, y2);
-                break;
             case 'move':
                 setCamera({...moveVals.current});
                 break;
@@ -98,9 +80,11 @@ export const Camera = (props) => {
     },[props.tool, camera, zoom])
     //Set event listeners
     useEffect(() => {
-        canvasElement.onmousedown = mouseDown;
-        canvasElement.onmousemove = clicked ? handleMove : trackMouse;
-        canvasElement.onmouseup = mouseUp;
+        if(props.tool === "move"){
+            canvasElement.onmousedown = mouseDown;
+            canvasElement.onmouseup = mouseUp;
+        }
+        canvasElement.onmousemove = clicked && props.tool === "move" ? handleMove : trackMouse;
         canvasElement.onwheel = onwheel;
         //Remove event listeners
         return () => {
