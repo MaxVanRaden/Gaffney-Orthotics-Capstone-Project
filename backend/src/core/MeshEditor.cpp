@@ -3,6 +3,7 @@
 #include "MeshEditor.h"
 #include "StairsString.h"
 #include "CylinderString.h"
+#include "ArrowString.h"
 #include "assimp/Exporter.hpp"
 
 MeshEditor::MeshEditor() {
@@ -19,6 +20,8 @@ MeshEditor::MeshEditor() {
     entities.back().set_position( {4, 4, 4} );
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
+    camera.x = camera.y = camera.z = 4;
+    state = STATE_SELECT_ENTITY;
 
     billboard = create_billboard();
 
@@ -50,47 +53,53 @@ MeshEditor::MeshEditor() {
     delete[] pixels;
 
     cylinderModel = load_model_string(cylinderHardcoded, 0);
+    arrow = load_model_string(arrowHardcoded, 0);
 
     camera.x -= 5;
     camera.y -= 5;
 
     //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
-
-    //std::thread test(thread_test);
-    //test.join();
 }
 
 void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
 
-    local float rotation = 0.0f;
-    //rotation+=0.2f;
-    local float zoom = 5.0f;
-    //zoom-=0.025f;
+    if(state == STATE_SELECT_ENTITY) {
+        int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+        if(button == GLFW_PRESS) {
+            selectedEntity = -1;
+            vec2 mouse;
+            int x;
+            int y;
+            glfwGetMousePos(&x, &y);
+            mouse.x = x;
+            mouse.y = y;
 
-#if 0
-    vec2 mouse;
-    int x;
-    int y;
-    glfwGetMousePos(&x, &y);
-    mouse.x = x;
-    mouse.y = y;
+            vec3 rayposition = {camera.x, camera.y, camera.z};
+            vec3 raydirection = raycast(projection, camera, mouse, viewport);
 
-    vec3 rayposition = {camera.x, camera.y, camera.z};
-    vec3 raydirection = raycast(projection, camera, mouse, viewport);
-
-    for(int i = 0; i < entities.size(); ++i) {
-        if(entities[i].is_mouse_over(rayposition, raydirection)) {
-            printf("mouse is over a mesh\n");
-        } else {
-            printf("mouse is not over a mesh\n");
+            for (int i = 0; i < entities.size(); ++i) {
+                if(entities[i].is_mouse_over(rayposition, raydirection)) {
+                    selectedEntity = i;
+                    state = STATE_SELECT_VERTICES;
+                }
+            }
+        }
+    } else if(state == STATE_SELECT_VERTICES) {
+        int keystate = glfwGetKey(GLFW_KEY_TAB);
+        if(keystate == GLFW_PRESS) {
+            state = STATE_SELECT_ENTITY;
         }
     }
-#endif
 
 //    camera.x+=0.02f;
 //    camera.y+=0.02f;
+    draw();
+}
+
+void MeshEditor::draw() {
     mat4 view = create_view_matrix(camera);
+    //view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
 
     shader.bind();
     shader.set_light_pos(14, 14, 14);
@@ -98,31 +107,69 @@ void MeshEditor::run(int width, int height) {
     shader.set_camera_pos(camera.x, camera.y, camera.z);
     shader.set_view(view);
 
-    static int timer=0;
-    timer++;
-
     for(Entity& e : entities) {
         e.draw(shader);
-        e.set_rotation( {rotation, rotation, rotation} );
+    }
+
+    if(state == STATE_SELECT_VERTICES) {
+        vec2 mouse;
+        int x;
+        int y;
+        glfwGetMousePos(&x, &y);
+        mouse.x = x;
+        mouse.y = y;
+
+        vec3 o = {camera.x, camera.y, camera.z};
+        vec3 d = raycast(projection, camera, mouse, viewport);
+        mat4 transform;
+
+        glDisable(GL_DEPTH_TEST);
+        shader.set_light_color(0.15f, 0.8f, 0.15f); // green
+        transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 90, 0, 0);
+        if(is_mouse_over_arrow(o, d, transform)) {
+            shader.set_light_color(1.0f, 0.3f, 0.3f);
+        }
+        shader.set_transform(transform);
+        draw_model(&arrow);
+
+        shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
+        transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 0, 90, 0);
+        if(is_mouse_over_arrow(o, d, transform)) {
+            shader.set_light_color(0.3f, 1.0f, 0.3f);
+        }
+        shader.set_transform(transform);
+        draw_model(&arrow);
+
+        shader.set_light_color(0.8f, 0.15f, 0.15f); // red
+        transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 0, 0, 90);
+        if(is_mouse_over_arrow(o, d, transform)) {
+            shader.set_light_color(0.3f, 0.3f, 1.0f);
+        }
+        shader.set_transform(transform);
+        draw_model(&arrow);
+        glEnable(GL_DEPTH_TEST);
     }
 
     //Draw lines to show the axis of the 3d grid
     shader.set_light_color(1.0f, 0.3f, 0.3f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {100, 0.04, 0.04}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {10000, 0.04, 0.04}, view));
     draw_model(&cylinderModel);
 
     shader.set_light_color(0.3f, 1.0f, 0.3f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 100}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 10000}, view));
     draw_model(&cylinderModel);
 
     shader.set_light_color(0.3f, 0.3f, 1.0f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 100, 0.04}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 10000, 0.04}, view));
     draw_model(&cylinderModel);
 
-    bshader.bind();
-    bshader.set_view(view);
-    for(Entity& e : entities) {
-        e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+    if(state == STATE_SELECT_VERTICES) {
+        bshader.bind();
+        bshader.set_view(view);
+        entities[selectedEntity].draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+        //for (Entity &e : entities) {
+        //    e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+        //}
     }
 }
 
@@ -268,7 +315,6 @@ char* MeshEditor::export_model(const char* fileformat) {
 }
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
-    printf("mosue up\n");
     for(Entity& e: entities) {
         e.select(x, y, x2, y2, camera, projection, viewport);
     }
@@ -318,6 +364,34 @@ void MeshEditor::scale_all_entities(float factor) {
     for(Entity& e: entities) {
         e.scale_entity(factor);
     }
+}
+
+bool MeshEditor::is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform) {
+    for(Mesh m : arrow.meshes) {
+        for(int i = 0; i < m.indices.size(); i+=3) {
+            int index1 = m.indices[i+0];
+            int index2 = m.indices[i+1];
+            int index3 = m.indices[i+2];
+            Vertex one = m.vertices[index1];
+            Vertex two = m.vertices[index2];
+            Vertex three = m.vertices[index3];
+
+            vec3 collisionPoint;
+
+            if(ray_tri_collision(
+                    o, d,
+                    (transform * V4(one.position.x, one.position.y, one.position.z, 1.0)).xyz,
+                    (transform * V4(two.position.x, two.position.y, two.position.z, 1.0)).xyz,
+                    (transform * V4(three.position.x, three.position.y, three.position.z, 1.0)).xyz,
+                    &collisionPoint
+            )
+                    ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 // Getter function to return the size (in bytes) of the export string
