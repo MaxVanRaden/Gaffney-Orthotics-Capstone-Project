@@ -116,7 +116,7 @@ void MeshEditor::draw() {
         mat4 transform;
 
         glDisable(GL_DEPTH_TEST);
-        shader.set_light_color(0.8f, 0.15f, 0.15f);
+        shader.set_light_color(0.15f, 0.8f, 0.15f); //red
         transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(1.0f, 0.3f, 0.3f);
@@ -124,7 +124,7 @@ void MeshEditor::draw() {
         shader.set_transform(transform);
         draw_model(&arrow);
 
-        shader.set_light_color(0.15f, 0.8f, 0.15f);
+        shader.set_light_color(0.15f, 0.15f, 0.8f); //green
         transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 1.0f, 0.3f);
@@ -132,7 +132,7 @@ void MeshEditor::draw() {
         shader.set_transform(transform);
         draw_model(&arrow);
 
-        shader.set_light_color(0.15f, 0.15f, 0.8f);
+        shader.set_light_color(0.8f, 0.15f, 0.15f); //blue
         transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 0.3f, 1.0f);
