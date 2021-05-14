@@ -6,6 +6,7 @@
 #include "backend/src/engine/texture.h"
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
+#include <stack>;
 
 class MeshEditor {
 public:
@@ -20,9 +21,13 @@ public:
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;
     void translate_vertex();
+    void undo_model();
 
 private:
+    //TODO: [WIP] change to a stack of models, not entities
     std::vector<Entity> entities;
+//    std::stack<std::vector<Entity>> undostack;
+//    std::stack<Model> undostack; //current model
 
     Mesh billboard;
     Texture circle;

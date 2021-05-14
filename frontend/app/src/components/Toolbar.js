@@ -21,7 +21,8 @@ export const Toolbar = () => {
     },[dev])
     return(
         <div id ="toolbar" className="toolbar">
-            <a href="./" className="backbtn">&#8617;</a>
+            <button onClick={() => window.Module.ready.then(api => api.undo_button())}>UNDO</button>
+            {/*<a href="./" className="backbtn">&#8617;</a>*/}
             <a href="./" className="backbtn">&#8618;</a>
             <button id="devToggle" className="tool" onClick={() => setDev(!dev)}>Dev Stuff</button>
             <ImportFile/>
