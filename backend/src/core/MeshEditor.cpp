@@ -17,6 +17,7 @@ MeshEditor::MeshEditor() {
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
+    undostack.push(entities.back().get_current());
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
 
@@ -58,11 +59,6 @@ MeshEditor::MeshEditor() {
 
     //std::thread test(thread_test);
     //test.join();
-    for (Entity& e : entities) {
-        Model curr = e.get_current();
-        undostack.push(curr);
-        printf("%d states in memory\n", undostack.size());
-    }
 }
 
 void MeshEditor::run(int width, int height) {
@@ -138,14 +134,8 @@ void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, fl
 void MeshEditor::add_model(const char* str, int fileformat) {
     entities.emplace_back();
     entities.back().load(str, fileformat);
+    undostack.push(entities.back().get_current());
     printf("added model\n");
-//    undostack.push(entities);
-//    printf("%d states in memory\n", undostack.size());
-    for (Entity& e : entities) {
-        Model curr = e.get_current();
-        undostack.push(curr);
-        printf("%d states in memory\n", undostack.size());
-    }
 }
 
 // Returns char* to either a valid .obj/.stl string or null
@@ -359,14 +349,30 @@ void MeshEditor::undo_model() {
     if(!undostack.empty()) {
         Model temp = undostack.top();
         undostack.pop();
-        dispose_model(&temp);
+        redostack.push(temp);
 
-        printf("%d after pop of stack\n", undostack.size());
-        if (!undostack.empty()) {
-            printf("updating changes...\n");
-            Model update = undostack.top();
-                draw_model(&update);
-        }
+        //method 1:
+        entities.pop_back();
+        //method 2:
+//        Model fresh;
+//        fresh.scale = fresh.rotate = fresh.pos = {0};
+//        fresh.materials.clear();
+//        fresh.meshes.clear();
+//        entities.back().reset_head(fresh);
+
+
+        //method 3:
+//        dispose_model(&temp);
+    }
+}
+
+void MeshEditor::redo_model() {
+    printf("%d to current redo stack\n", redostack.size());
+    if(!redostack.empty()) {
+        Model temp = redostack.top();
+        redostack.pop();
+//        undostack.push(temp);
+//        draw_model(&temp);
     }
 }
 

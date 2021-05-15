@@ -22,10 +22,12 @@ public:
     uint32_t get_export_strlen() const;
     void translate_vertex();
     void undo_model();
+    void redo_model();
 
 private:
     std::vector<Entity> entities;
     std::stack<Model> undostack;
+    std::stack<Model> redostack;
 
     Mesh billboard;
     Texture circle;

@@ -303,6 +303,10 @@ Model& Entity::get_current() {
     return current;
 }
 
+void Entity::reset_head(Model& change){
+    current = change;
+}
+
 Entity::~Entity() {
     //dispose_model(&current);
     //dispose_model(&start);

@@ -187,8 +187,12 @@ extern "C" {
         }
     }
 
-    void undo_button(){
+    void undo(){
         editor -> undo_model();
+    }
+
+    void redo(){
+        editor -> redo_model();
     }
 }
 
