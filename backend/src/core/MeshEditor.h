@@ -24,10 +24,8 @@ public:
     void undo_model();
 
 private:
-    //TODO: [WIP] change to a stack of models, not entities
     std::vector<Entity> entities;
-//    std::stack<std::vector<Entity>> undostack;
-//    std::stack<Model> undostack; //current model
+    std::stack<Model> undostack;
 
     Mesh billboard;
     Texture circle;

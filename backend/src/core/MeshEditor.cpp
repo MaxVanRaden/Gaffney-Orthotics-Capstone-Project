@@ -58,8 +58,11 @@ MeshEditor::MeshEditor() {
 
     //std::thread test(thread_test);
     //test.join();
-//    undostack.push(entities);
-//    printf("%d states in memory\n", undostack.size());
+    for (Entity& e : entities) {
+        Model curr = e.get_current();
+        undostack.push(curr);
+        printf("%d states in memory\n", undostack.size());
+    }
 }
 
 void MeshEditor::run(int width, int height) {
@@ -138,6 +141,11 @@ void MeshEditor::add_model(const char* str, int fileformat) {
     printf("added model\n");
 //    undostack.push(entities);
 //    printf("%d states in memory\n", undostack.size());
+    for (Entity& e : entities) {
+        Model curr = e.get_current();
+        undostack.push(curr);
+        printf("%d states in memory\n", undostack.size());
+    }
 }
 
 // Returns char* to either a valid .obj/.stl string or null
@@ -347,25 +355,19 @@ void MeshEditor::translate_vertex() {
 }
 
 void MeshEditor::undo_model() {
-//    printf("%d to current stack\n", undostack.size());
-//    if(!undostack.empty()) {
-//        std::vector<Entity> temp = undostack.top();
-//        undostack.pop();
-//        for (Entity &e : temp) {
-//            Model curr = e.get_current();
-//            dispose_model(&curr);
-//        }
-//        printf("%d after pop of stack\n", undostack.size());
-//        if (!undostack.empty()) {
-//            printf("updating changes...\n");
-//            std::vector<Entity> update = undostack.top();
-//            for (Entity &e : update) {
-//                Model curr = e.get_current();
-//                e.draw(shader);
-//                e.set_rotation( {0.0f, 0.0f, 0.0f} );
-//            }
-//        }
-//    }
+    printf("%d to current stack\n", undostack.size());
+    if(!undostack.empty()) {
+        Model temp = undostack.top();
+        undostack.pop();
+        dispose_model(&temp);
+
+        printf("%d after pop of stack\n", undostack.size());
+        if (!undostack.empty()) {
+            printf("updating changes...\n");
+            Model update = undostack.top();
+                draw_model(&update);
+        }
+    }
 }
 
 MeshEditor::~MeshEditor() {
