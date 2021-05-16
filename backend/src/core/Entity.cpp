@@ -4,7 +4,7 @@ Entity::Entity() {
     current.scale = current.rotate = current.pos = {0};
     current.materials.clear();
     current.meshes.clear();
-    start = current;
+//    start = current;
 }
 
 Entity::Entity(std::string file) {

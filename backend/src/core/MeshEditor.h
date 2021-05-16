@@ -6,7 +6,6 @@
 #include "backend/src/engine/texture.h"
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
-#include <stack>;
 
 class MeshEditor {
 public:
@@ -26,8 +25,8 @@ public:
 
 private:
     std::vector<Entity> entities;
-    std::stack<Model> undostack;
-    std::stack<Model> redostack;
+    std::vector<Entity> undostack;
+    std::vector<Entity> redostack;
 
     Mesh billboard;
     Texture circle;

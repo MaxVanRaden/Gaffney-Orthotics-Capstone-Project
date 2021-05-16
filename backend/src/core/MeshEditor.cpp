@@ -17,7 +17,8 @@ MeshEditor::MeshEditor() {
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
-    undostack.push(entities.back().get_current());
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
 
@@ -134,7 +135,8 @@ void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, fl
 void MeshEditor::add_model(const char* str, int fileformat) {
     entities.emplace_back();
     entities.back().load(str, fileformat);
-    undostack.push(entities.back().get_current());
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     printf("added model\n");
 }
 
@@ -270,10 +272,12 @@ char* MeshEditor::export_model(const char* fileformat) {
 }
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
+
     printf("mosue up\n");
     for(Entity& e: entities) {
         e.select(x, y, x2, y2, camera, projection, viewport);
     }
+
 
 #if 0
     int width = x2-x;
@@ -320,6 +324,8 @@ void MeshEditor::scale_all_entities(float factor) {
     for(Entity& e: entities) {
         e.scale_entity(factor);
     }
+    redostack.clear();
+    undostack.emplace_back(entities.back());
 }
 
 // Getter function to return the size (in bytes) of the export string
@@ -341,39 +347,52 @@ void MeshEditor::translate_vertex() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
         }
     }
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     return;
 }
 
+// Naive undo method that saves the full page to a single state with each change
+// it might end up being to memory intensive and slow
+//TODO: if two models receive changes simultaneously, only the most recently added model can be undone
 void MeshEditor::undo_model() {
-    printf("%d to current stack\n", undostack.size());
+    printf("%d starting undostack size\n", undostack.size());
     if(!undostack.empty()) {
-        Model temp = undostack.top();
-        undostack.pop();
-        redostack.push(temp);
-
-        //method 1:
+        Entity bckup = undostack.back();
+        undostack.pop_back();
         entities.pop_back();
-        //method 2:
-//        Model fresh;
-//        fresh.scale = fresh.rotate = fresh.pos = {0};
-//        fresh.materials.clear();
-//        fresh.meshes.clear();
-//        entities.back().reset_head(fresh);
-
-
-        //method 3:
-//        dispose_model(&temp);
+        if(!undostack.empty()){
+            Entity curr = undostack.back();
+            entities.emplace_back(curr);
+        } else if (entities.size() == 1){
+            undostack.emplace_back(entities.back());
+            entities.clear();
+            entities.emplace_back();
+        }
+        // Update the VBO buffer to reflect changes in vertices
+        for (Entity& e : entities) {
+            for (Mesh &m : e.get_current().meshes) {
+                glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
+            }
+        }
     }
+    printf("%d finishing undostack size\n", undostack.size());
 }
 
+// Naive redo method
 void MeshEditor::redo_model() {
+    //TODO: implement redo functionality
     printf("%d to current redo stack\n", redostack.size());
     if(!redostack.empty()) {
-        Model temp = redostack.top();
-        redostack.pop();
-//        undostack.push(temp);
-//        draw_model(&temp);
+
+//        Entity curr = redostack.back();
+//        redostack.pop_back();
+//        entities.emplace_back(curr);
+//        undostack.emplace_back(curr);
+
     }
+    printf("%d finishing undostack size\n", redostack.size());
 }
 
 MeshEditor::~MeshEditor() {
