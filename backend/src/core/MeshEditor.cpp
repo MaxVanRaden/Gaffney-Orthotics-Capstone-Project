@@ -133,10 +133,10 @@ void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, fl
 }
 
 void MeshEditor::add_model(const char* str, int fileformat) {
-    entities.emplace_back();
-    entities.back().load(str, fileformat);
     redostack.clear();
     undostack.emplace_back(entities.back());
+    entities.emplace_back();
+    entities.back().load(str, fileformat);
     printf("added model\n");
 }
 
@@ -321,11 +321,11 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
 
 // Scale every vertex in every mesh in every entity by the factor passed in
 void MeshEditor::scale_all_entities(float factor) {
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     for(Entity& e: entities) {
         e.scale_entity(factor);
     }
-    redostack.clear();
-    undostack.emplace_back(entities.back());
 }
 
 // Getter function to return the size (in bytes) of the export string
@@ -338,6 +338,8 @@ uint32_t MeshEditor::get_export_strlen() const {
 
 //TODO: [WIP] Naive translate moves in x direction by one unit
 void MeshEditor::translate_vertex() {
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
             for(u32 index: m.selected_vertices){
@@ -347,27 +349,23 @@ void MeshEditor::translate_vertex() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
         }
     }
-    redostack.clear();
-    undostack.emplace_back(entities.back());
     return;
 }
 
-//TODO: if two models receive changes simultaneously, only the most recently added model can be undone
-//TODO: cannot undo any state changes that are made before using translate_vertex
+//TODO: flesh out all the needed conditions of state change
 void MeshEditor::undo_model() {
+
     if(!undostack.empty()) {
         redostack.emplace_back(undostack.back());
         undostack.pop_back();
         entities.pop_back();
-        if(!undostack.empty()){
+
+
+        if(undostack.size() >=1)
             entities.emplace_back(undostack.back());
-        } else if (entities.size() == 1){
-            undostack.emplace_back(entities.back());
+        else
             entities.emplace_back();
-        } else if (entities.size() == 0){
-            entities.emplace_back();
-        }
-        // Update the VBO buffer to reflect any changes in vertices
+
         for (Entity& e : entities) {
             for (Mesh &m : e.get_current().meshes) {
                 glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
@@ -379,21 +377,20 @@ void MeshEditor::undo_model() {
 }
 
 void MeshEditor::redo_model() {
-    //TODO: test implementation of redo function
+
     if(!redostack.empty()) {
-        Entity curr = redostack.back();
+        Entity revert = redostack.back();
+        entities.emplace_back(revert);
         redostack.pop_back();
-        entities.emplace_back(curr);
-        undostack.emplace_back(curr);
-        // Update the VBO buffer to reflect any changes in vertices
-        for (Entity& e : entities) {
+        undostack.emplace_back(revert);
+        for (Entity &e : entities) {
             for (Mesh &m : e.get_current().meshes) {
                 glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
             }
         }
+        printf("%d redostack size\n", redostack.size());
     }
-    printf("%d redostack size\n", redostack.size());
 }
 
 MeshEditor::~MeshEditor() {
