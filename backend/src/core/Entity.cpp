@@ -161,7 +161,6 @@ void Entity::reset_selected_vertices() {
             m.selected[i] = false;
         }
         m.selected_vertices.clear();
-        m.unique_selected_vertices.clear();
     }
 }
 
@@ -224,51 +223,25 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
                 //printf("vertexOne is inside the rectangle\n");
                 m.selected[i] = true;
                 m.selected_vertices.push_back(i);
-                add_vertex_if_unique(m, i);
             }
             if(v2Screen.x > xIn && v2Screen.y > yIn && v2Screen.x <= x2 && v2Screen.y <= y2) {
                 //printf("vertexTwo is inside the rectangle\n");
                 m.selected[i] = true;
                 m.selected_vertices.push_back(i);
-                add_vertex_if_unique(m, i);
             }
             if(v3Screen.x > xIn && v3Screen.y > yIn && v3Screen.x <= x2 && v3Screen.y <= y2) {
                 //printf("vertexThree is inside the rectangle\n");
                 m.selected[i] = true;
                 m.selected_vertices.push_back(i);
-                add_vertex_if_unique(m, i);
             }
             if(v4Screen.x > xIn && v4Screen.y > yIn && v4Screen.x <= x2 && v4Screen.y <= y2) {
                 //printf("vertexFour is inside the rectangle\n");
                 m.selected[i] = true;
                 m.selected_vertices.push_back(i);
-                add_vertex_if_unique(m, i);
             }
             i++;
         }
     }
-}
-
-void Entity::add_vertex_if_unique(Mesh& mesh, int i) {
-    if (mesh.unique_selected_vertices.empty()){
-        mesh.unique_selected_vertices.push_back(i);
-        return;
-    }
-
-    bool is_unique = true;
-
-    for (u32 index : mesh.unique_selected_vertices) {
-        bool duplicate = (
-            mesh.vertices[index].position.x == mesh.vertices[i].position.x &&
-            mesh.vertices[index].position.y == mesh.vertices[i].position.y &&
-            mesh.vertices[index].position.z == mesh.vertices[i].position.z);
-
-        if (duplicate)
-            is_unique = false;
-    }
-
-    if(is_unique)
-        mesh.unique_selected_vertices.push_back(i);
 }
 
 // Set position relative to it's current position which is {0} by default.

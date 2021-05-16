@@ -12,7 +12,6 @@ void dispose_mesh(Mesh* mesh) {
     mesh->indexcount = mesh->material = 0;
     mesh->selected.clear();
     mesh->selected_vertices.clear();
-    mesh->unique_selected_vertices.clear();
     printf("dispose mesh\n");
 }
 

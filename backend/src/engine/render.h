@@ -51,7 +51,6 @@ struct Mesh {
 	// Vertices are duplicated when meshes are diagonalized.
 	std::vector<bool> selected; //shadows vertices vector indicating if selected
 	std::vector<u32> selected_vertices; //contains ONLY the indices of the selected vertices
-	std::vector<u32> unique_selected_vertices; //contains ONLY the positionally unique vertices
     u32 indexcount;
     u32 material;
 };
