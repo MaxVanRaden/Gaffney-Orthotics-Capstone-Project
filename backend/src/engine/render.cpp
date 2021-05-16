@@ -12,6 +12,7 @@ void dispose_mesh(Mesh* mesh) {
     mesh->indexcount = mesh->material = 0;
     mesh->selected.clear();
     mesh->selected_vertices.clear();
+    mesh->unique_selected_vertices.clear();
     printf("dispose mesh\n");
 }
 
@@ -224,7 +225,7 @@ Model load_model(const char* filename) {
     return model;
 }
 
-void draw_mesh(Mesh mesh) {
+void draw_mesh(Mesh& mesh) {
     //bind VERTEX ARRAY OBJECT
     //and all attributes of it
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
@@ -247,7 +248,7 @@ void draw_mesh(Mesh mesh) {
 
 void draw_model(Model* model) {
         //ONE MATERIAL PER MESH -- DRAW ALL MESHES WITH THEIR MATERIALS (NO TEXTURES IN THESE LOW POLY MODELS, ONLY DIFFUSE COLOR)
-        for(const Mesh& mesh : model->meshes) {
+        for(Mesh& mesh : model->meshes) {
             draw_mesh(mesh);
         }
 }

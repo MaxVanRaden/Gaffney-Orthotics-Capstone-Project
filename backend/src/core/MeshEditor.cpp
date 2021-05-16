@@ -123,9 +123,43 @@ void MeshEditor::draw() {
         vec3 d = raycast(projection, camera, mouse, viewport);
         mat4 transform;
 
+        // Average position of selected vertices
+        float avgX = 0.0f;
+        float avgY = 0.0f;
+        float avgZ = 0.0f;
+        float total = 0.0f;
+
+        int tracker1 = 0;
+        int tracker2 = 0;
+        int tracker3 = 0;
+
+        for (Entity& e : entities){
+            ++tracker1;
+            for(Mesh& m : e.get_current().meshes){
+                ++tracker2;
+                for(u32 index : m.unique_selected_vertices){
+                    ++tracker3;
+                    avgX += m.vertices[index].position.x;
+                    avgY += m.vertices[index].position.y;
+                    avgZ += m.vertices[index].position.z;
+                    total += 1.0f;
+                }
+            }
+        }
+
+        avgX /= total;
+        avgY /= total;
+        avgZ /= total;
+
+        printf("Trackers: %d, %d, %d\n"
+               "%f, %f, %f | %f\n",
+               tracker1, tracker2, tracker3,
+               avgX, avgY, avgZ, total);
+
+
         glDisable(GL_DEPTH_TEST);
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
-        transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 90, 0, 0);
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(1.0f, 0.3f, 0.3f);
         }
@@ -133,7 +167,7 @@ void MeshEditor::draw() {
         draw_model(&arrow);
 
         shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
-        transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 0, 90, 0);
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 1.0f, 0.3f);
         }
@@ -141,7 +175,7 @@ void MeshEditor::draw() {
         draw_model(&arrow);
 
         shader.set_light_color(0.8f, 0.15f, 0.15f); // red
-        transform = no_view_scaling_transform(0, 0, 0, {0.4, 0.4, 0.4}, view, 0, 0, 90);
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 0.3f, 1.0f);
         }

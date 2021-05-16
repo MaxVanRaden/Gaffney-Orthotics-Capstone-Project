@@ -48,8 +48,10 @@ struct Mesh {
     GLuint ebo;
 	std::vector<Vertex> vertices;
 	std::vector<GLushort> indices;
+	// Vertices are duplicated when meshes are diagonalized.
 	std::vector<bool> selected; //shadows vertices vector indicating if selected
 	std::vector<u32> selected_vertices; //contains ONLY the indices of the selected vertices
+	std::vector<u32> unique_selected_vertices; //contains ONLY the positionally unique vertices
     u32 indexcount;
     u32 material;
 };
@@ -69,7 +71,7 @@ Mesh create_mesh(std::vector<Vertex> vertices, std::vector<GLushort> indices);
 void load_mesh(Model* model, u32 i, const aiMesh* paiMesh);
 Model load_model(const char* filename);
 Model load_model_string(const std::string& filepath, int fileformat);
-void draw_mesh(Mesh mesh);
+void draw_mesh(Mesh& mesh);
 void draw_model(Model* model);
 
 Mesh create_billboard();
