@@ -17,7 +17,7 @@ MeshEditor::MeshEditor() {
     entities.emplace_back();
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position( {4, 4, 4} );
+    entities.back().set_relative_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
     camera.x = camera.y = camera.z = 4;
@@ -129,16 +129,9 @@ void MeshEditor::draw() {
         float avgZ = 0.0f;
         float total = 0.0f;
 
-        int tracker1 = 0;
-        int tracker2 = 0;
-        int tracker3 = 0;
-
         for (Entity& e : entities){
-            ++tracker1;
             for(Mesh& m : e.get_current().meshes){
-                ++tracker2;
                 for(u32 index : m.unique_selected_vertices){
-                    ++tracker3;
                     avgX += m.vertices[index].position.x;
                     avgY += m.vertices[index].position.y;
                     avgZ += m.vertices[index].position.z;
@@ -150,12 +143,6 @@ void MeshEditor::draw() {
         avgX /= total;
         avgY /= total;
         avgZ /= total;
-
-        printf("Trackers: %d, %d, %d\n"
-               "%f, %f, %f | %f\n",
-               tracker1, tracker2, tracker3,
-               avgX, avgY, avgZ, total);
-
 
         glDisable(GL_DEPTH_TEST);
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
@@ -447,7 +434,6 @@ void MeshEditor::translate_vertex() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
         }
     }
-    return;
 }
 
 MeshEditor::~MeshEditor() {

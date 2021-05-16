@@ -27,8 +27,7 @@ void Entity::draw(StaticShader& shader) {
 }
 
 void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos) {
-    //TODO: Discuss transformation matrix
-    //mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
 
     //glDisable(GL_DEPTH_TEST);
     //glDisable(GL_CULL_FACE);
@@ -38,9 +37,7 @@ void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture cir
     for(Mesh& mesh : current.meshes) {
         int i = 0;
         for(Vertex& vertex : mesh.vertices) {
-            //TODO: Discuss transformation matrix
-            //vex3 pos = (transform * V4(vertex.position.x, vertex.position.y, vertex.position.z, 1.0)).xyz;
-            vec3 pos = vertex.position;
+            vec3 pos = (transform * V4(vertex.position.x, vertex.position.y, vertex.position.z, 1.0)).xyz;
 
             //move the circle a little towards the camera so it's not stuck in the mesh and you can see it clearly
             vec3 dir = normalize(campos - pos);
@@ -169,9 +166,7 @@ void Entity::reset_selected_vertices() {
 }
 
 void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport) {
-    //TODO: Discuss transformation matrix
-    //mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
-    mat4 transform = create_transformation_matrix( {0}, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
     mat4 view = create_view_matrix(camera);
 
     reset_selected_vertices();
@@ -276,8 +271,8 @@ void Entity::add_vertex_if_unique(Mesh& mesh, int i) {
         mesh.unique_selected_vertices.push_back(i);
 }
 
-void Entity::set_position(vec3 pos) {
-    current.pos = pos;
+// Set position relative to it's current position which is {0} by default.
+void Entity::set_relative_position(vec3 pos) {
     for (Mesh& m : current.meshes) {
         for (Vertex& v : m.vertices) {
             v.position.x += pos.x;
