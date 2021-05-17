@@ -1,6 +1,12 @@
 /* eslint-disable */
+import Draggable from 'react-draggable';
+import {useState, useEffect} from 'react';
 
 export const EditMenu = () => {
+    const [display,setDisplay] = useState("none");
+    useEffect(() => {
+        document.getElementById("edit-menu").style.display = display;
+    },[display]);
     //Scale the model
     const Scale = () => {
         let val = document.getElementById("scale-val").value;
@@ -17,8 +23,11 @@ export const EditMenu = () => {
     }
     return (
         <div className="dropdown">
-            <button className="tool">Edit</button>
-            <div className="menu-items">
+            <button className="tool"
+                    onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>Edit</button>
+            <Draggable>
+            <div className="menu-items" id="edit-menu">
+                <div className="menu-header" style={{padding:5}}>Edit</div>
                 <div className="option">
                     Scale Model
                     <input id="scale-val"
@@ -33,6 +42,7 @@ export const EditMenu = () => {
                 <a className="option" href="#">Extend</a>
                 <a className="option" href="#">Bend/Twist</a>
             </div>
+            </Draggable>
         </div>
     )
 }

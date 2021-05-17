@@ -1,6 +1,12 @@
 import {useState, useCallback, useRef, useEffect} from "react";
+import Draggable from "react-draggable";
 
 export const Camera = (props) => {
+    const [display,setDisplay] = useState("none");
+    useEffect(() => {
+        document.getElementById("camera-menu").style.display = display;
+    },[display]);
+
     const [camera, setCamera] = useState({
         x: 0,
         y: 0,
@@ -29,19 +35,21 @@ export const Camera = (props) => {
         trackMouse(e);
         //Use Ctrl key to change angles
         if (e.ctrlKey) {
-            let newPitch = Math.min(Math.max(-360, Number(moveVals.current.pitch + e.movementY)), 360);
-            let newYaw = Math.min(Math.max(-360, Number(moveVals.current.yaw + e.movementX)), 360);
+            let newPitch = Math.min(Math.max(-360, Number(moveVals.current.pitch + e.movementY*0.1)), 360);
+            let newYaw = Math.min(Math.max(-360, Number(moveVals.current.yaw + e.movementX*0.1)), 360);
             moveVals.current = {...moveVals.current, yaw: newYaw, pitch: newPitch};
         } else {
-            let newX = Math.min(Math.max(-range, Number(moveVals.current.x + e.movementX*0.5)), range);
-            let newY = Math.min(Math.max(-range, Number(moveVals.current.y - e.movementY*0.5)), range);
+            let newX = Math.min(Math.max(-range, Number(moveVals.current.x + e.movementX*0.1)), range);
+            let newY = Math.min(Math.max(-range, Number(moveVals.current.y - e.movementY*0.1)), range);
             moveVals.current = {...moveVals.current, x: newX, y: newY};
         }
+        setCamera({...moveVals.current});
         window.Module.ready.then(api => {
             api.set_camera(zoom, moveVals.current.x, moveVals.current.y, moveVals.current.z, moveVals.current.yaw, moveVals.current.pitch, moveVals.current.roll);
         })
     },[zoom, trackMouse]);
 
+    //On mouse down store mouse position
     const mouseDown = useCallback((e) => {
         canvasX.current = e.pageX - canvasElement.offsetLeft;
         canvasY.current = e.pageY - canvasElement.offsetTop;
@@ -51,6 +59,7 @@ export const Camera = (props) => {
         }
         },[canvasElement,props.tool, camera]);
 
+    //On mouse up call corresponding function
     const mouseUp = useCallback((e) => {
         setClicked(false);
         switch(props.tool){
@@ -63,6 +72,7 @@ export const Camera = (props) => {
         canvasElement.onmousemove = trackMouse;
     },[canvasElement,props.tool, trackMouse])
 
+    //Move camera while scrolling wheel
     const onwheel = useCallback((e) => {
         e.preventDefault();
         if(props.tool === 'move') {
@@ -78,6 +88,7 @@ export const Camera = (props) => {
             }
         }
     },[props.tool, camera, zoom])
+
     //Set event listeners
     useEffect(() => {
         if(props.tool === "move"){
@@ -95,6 +106,7 @@ export const Camera = (props) => {
         }
     },[props.tool,handleMove,mouseDown,canvasElement,mouseUp,onwheel, clicked,trackMouse]);
 
+    //Handle input
     const handleChange = (e) => {
         let val = Number(e.target.value);
         let newCamera = {...camera};
@@ -129,8 +141,11 @@ export const Camera = (props) => {
     }
     return(
         <div className="dropdown">
-            <button className="tool">Camera</button>
-            <div className="menu-items" style={{minWidth:220}}>
+            <button className="tool"
+                    onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>Camera</button>
+            <Draggable handle=".menu-header">
+            <div className="menu-items" id="camera-menu" style={{minWidth:220}}>
+                <div className="menu-header" style={{padding:5}}>Camera</div>
                 <div className="option" style={styles}>
                     X:
                     <input type="range"
@@ -234,6 +249,7 @@ export const Camera = (props) => {
                            value={camera.roll} onChange={handleChange}/>
                 </div>
             </div>
+            </Draggable>
         </div>
     )
 }

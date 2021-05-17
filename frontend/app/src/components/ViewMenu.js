@@ -1,12 +1,22 @@
 /* eslint-disable */
+import Draggable from 'react-draggable';
+import {useState, useEffect} from 'react';
 
 export const ViewMenu = (props) => {
-
+    const [display,setDisplay] = useState("none");
+    useEffect(() => {
+        document.getElementById("view-menu").style.display = display;
+    },[display]);
 
     return (
         <div className="dropdown">
-            <button className="tool">View</button>
-            <div className="menu-items">
+            <button className="tool"
+                    onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>
+                View
+            </button>
+            <Draggable>
+            <div className="menu-items" id="view-menu">
+                <div className="menu-header" style={{padding:5}}>View</div>
                 <div className="option" style={{textAlign:"left"}}>
                     Zoom
                     <br/>
@@ -18,8 +28,11 @@ export const ViewMenu = (props) => {
                     <button onClick={() => props.setZoom(prev => prev < 100 ? prev + 1 : prev)}>+</button>
                 </div>
                 <a className="option" href="#">Perspective</a>
-                <a className="option" onClick={() => document.getElementById('fullscreen').click()}>Fullscreen</a>
+                <a className="option" onClick={() => document.getElementById('fullscreen').click()}>
+                    Fullscreen
+                </a>
             </div>
+            </Draggable>
         </div>
     )
 }
