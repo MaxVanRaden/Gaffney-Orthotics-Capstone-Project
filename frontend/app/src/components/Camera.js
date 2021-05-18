@@ -33,8 +33,8 @@ export const Camera = (props) => {
     //Handle mouse(and camera) movement
     const handleMove = useCallback((e) =>{
         trackMouse(e);
-        //Use Ctrl key to change angles
-        if (e.ctrlKey) {
+        //Use Ctrl key or right click to change angles
+        if (e.ctrlKey || e.which === 3) {
             let newPitch = Math.min(Math.max(-360, Number(moveVals.current.pitch + e.movementY*0.1)), 360);
             let newYaw = Math.min(Math.max(-360, Number(moveVals.current.yaw + e.movementX*0.1)), 360);
             moveVals.current = {...moveVals.current, yaw: newYaw, pitch: newPitch};
@@ -79,12 +79,12 @@ export const Camera = (props) => {
             if(e.ctrlKey){
                 let val = Math.min(Math.max(-360,  (e.deltaY * 0.1) + camera.roll), 360);
                 setCamera({...camera,roll: val});
-                window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, camera.roll));
+                window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, val));
             }
             else{
                 let val = Math.min(Math.max(-range,  (e.deltaY * 0.01) + camera.z), range);
                 setCamera({...camera, z:val});
-                window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, camera.roll));
+                window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, val, camera.yaw, camera.pitch, camera.roll));
             }
         }
     },[props.tool, camera, zoom])
