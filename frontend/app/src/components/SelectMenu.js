@@ -59,17 +59,13 @@ export const SelectMenu = (props) => {
             <button className="tool"
                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>
                 Select
-                <input type="checkbox" checked={props.tool === "select" || props.tool === "vertex" }
-                onChange={e => {
-                    props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
-                }}/>
             </button>
             <Draggable>
             <div className="menu-items" id="select-menu">
                 <div className="menu-header" style={{padding:5}}>Select</div>
                 <div className="option">
                     Vertex
-                    <input type="radio" checked={props.tool === "vertex"}
+                    <input type="checkbox" checked={props.tool === "vertex"}
                            onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
                            value="vertex"
                            className="toggle"
@@ -77,7 +73,7 @@ export const SelectMenu = (props) => {
                 </div>
                 <div className="option">
                     Section
-                    <input type="radio" checked={props.tool === "select"}
+                    <input type="checkbox" checked={props.tool === "select"}
                            onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
                            value="select"
                            id="selectToggle" className="toggle"
