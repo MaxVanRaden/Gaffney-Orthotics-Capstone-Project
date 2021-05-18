@@ -159,6 +159,12 @@ div.toolbar {
 .option {
     border-bottom: 1px solid #7c868a;
 }
+.input-box {
+    position:relative;
+}
+.bend-val {
+    left: 0
+}
 .menu-header{
     border-bottom: 2px solid #7c868a;
     text-align: center;

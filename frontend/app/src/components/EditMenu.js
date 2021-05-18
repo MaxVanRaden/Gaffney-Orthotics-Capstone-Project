@@ -36,11 +36,63 @@ export const EditMenu = () => {
                            placeholder="100"
                            min="1"
                            step="1"/>
-                    <span style={{...styles, paddingLeft:2}}>%</span>
-                    <button onClick={Scale}>Scale</button>
+                    <span style={{...styles, paddingLeft:2}}>% </span>
+                    <button onClick={Scale}>Apply</button>
                 </div>
-                <a className="option" href="#">Extend</a>
-                <a className="option" href="#">Bend/Twist</a>
+                <div className="option">
+                    Bend Vertex
+                    <div className="input-box">
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}>&#176; X</span>
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}>&#176; Y</span>
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}>&#176; Z</span>
+                        <button>Apply</button>
+                    </div>
+                </div>
+                <div className="option">
+                    Translate Vertex
+                    <div className="input-box">
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                             min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}> X</span>
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}> Y</span>
+                    <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                    <span style={{...styles, paddingLeft:2}}> Z</span>
+                    <button>Apply</button>
+                    </div>
+                </div>
             </div>
             </Draggable>
         </div>
