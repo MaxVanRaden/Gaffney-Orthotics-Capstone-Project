@@ -134,9 +134,11 @@ void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, fl
 
 void MeshEditor::add_model(const char* str, int fileformat) {
     redostack.clear();
-    undostack.emplace_back(entities.back());
+    undostack.clear();
+    entities.clear();
     entities.emplace_back();
     entities.back().load(str, fileformat);
+    entities.back().set_position( {0, 0, 0} );
     printf("added model\n");
 }
 
@@ -352,8 +354,6 @@ void MeshEditor::translate_vertex() {
     return;
 }
 
-//TODO: flesh out all the needed conditions of state change
-//TODO: currently only testing cases with one model on screen
 void MeshEditor::undo_model() {
     printf("undo function start: ");
     printf("%d undostack, ", undostack.size());
@@ -398,12 +398,18 @@ void MeshEditor::redo_model() {
         if (redostack.back().get_current().meshes.size() != 0 ||
                 (redostack.back().get_current().materials.size() != 0)) {
             printf("found content...\n");
-            Entity revert = redostack.back();   // grab from redo stack
+            undostack.emplace_back(redostack.back());     // update undo stack with change
+            redostack.pop_back(); // pop whatever was on the redo stack
 
-            undostack.emplace_back(revert);     // update undo stack with change
-
-            entities.pop_back();                // remove last modification (should be first undo)
-            entities.emplace_back(revert);      // update
+            if(!redostack.empty()) {
+                // checks for content before adding:
+                if (redostack.back().get_current().meshes.size() != 0 ||
+                    (redostack.back().get_current().materials.size() != 0)) {
+                    Entity revert = redostack.back();   // grab from redo stack
+                    entities.pop_back();                // remove last modification (should be first undo)
+                    entities.emplace_back(revert);      // update
+                }
+            }
 
             // refresh screen with changes:
             for (Entity &e : entities) {
@@ -413,7 +419,6 @@ void MeshEditor::redo_model() {
                 }
             }
         }
-        redostack.pop_back(); // pop whatever was on the redo stack
     }
     printf("redo function end: ");
     printf("%d undostack, ", undostack.size());
