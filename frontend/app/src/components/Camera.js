@@ -1,5 +1,6 @@
 import {useState, useCallback, useRef, useEffect} from "react";
 import Draggable from "react-draggable";
+import cam_icon from '../button_icons/camera_icon.jpg';
 
 export const Camera = (props) => {
     const [display,setDisplay] = useState("none");
@@ -141,8 +142,8 @@ export const Camera = (props) => {
     }
     return(
         <div className="dropdown">
-            <button className="tool"
-                    onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>Camera</button>
+            <img src={cam_icon} alt="camera control icon" className="icon"
+                    onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}/>
             <Draggable handle=".menu-header">
             <div className="menu-items" id="camera-menu" style={{minWidth:220}}>
                 <div className="menu-header" style={{padding:5}}>Camera</div>
