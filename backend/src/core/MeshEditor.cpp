@@ -14,11 +14,11 @@ MeshEditor::MeshEditor() {
     camera = {3, 6, 0, 0, 0, 0};
 
     entities.emplace_back();
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
     entities.back().set_position( {4, 4, 4} );
-    redostack.clear();
-    undostack.emplace_back(entities.back());
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
 
@@ -353,44 +353,72 @@ void MeshEditor::translate_vertex() {
 }
 
 //TODO: flesh out all the needed conditions of state change
+//TODO: currently only testing cases with one model on screen
 void MeshEditor::undo_model() {
-
+    printf("undo function start: ");
+    printf("%d undostack, ", undostack.size());
+    printf("%d redostack, ", redostack.size());
+    printf("%d entities\n", entities.size());
     if(!undostack.empty()) {
-        redostack.emplace_back(undostack.back());
-        undostack.pop_back();
-        entities.pop_back();
 
+        Entity revert = undostack.back(); // grab the earlier used state from the design
 
-        if(undostack.size() >=1)
-            entities.emplace_back(undostack.back());
-        else
-            entities.emplace_back();
+        redostack.emplace_back(revert); // push top of undo stack to redo before popping it
 
-        for (Entity& e : entities) {
-            for (Mesh &m : e.get_current().meshes) {
-                glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
-            }
+        entities.pop_back(); // pop latest change from design
+        if (revert.get_current().meshes.size() != 0 || // checks for content before adding
+            (revert.get_current().materials.size() != 0)) {
+            printf("found content...\n");
+            entities.emplace_back(revert);
         }
-    }
-    printf("%d undostack size\n", undostack.size());
-}
 
-void MeshEditor::redo_model() {
-
-    if(!redostack.empty()) {
-        Entity revert = redostack.back();
-        entities.emplace_back(revert);
-        redostack.pop_back();
-        undostack.emplace_back(revert);
+        // refresh screen with changes:
         for (Entity &e : entities) {
             for (Mesh &m : e.get_current().meshes) {
                 glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
                 glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
             }
         }
-        printf("%d redostack size\n", redostack.size());
+        undostack.pop_back(); // pop whatever was on the undo stack
     }
+    printf("undo function end: ");
+    printf("%d undostack, ", undostack.size());
+    printf("%d redostack, ", redostack.size());
+    printf("%d entities\n\n", entities.size());
+}
+
+//TODO: may still contain an alignment fault
+void MeshEditor::redo_model() {
+    printf("redo function start: ");
+    printf("%d undostack, ", undostack.size());
+    printf("%d redostack, ", redostack.size());
+    printf("%d entities\n", entities.size());
+    if(!redostack.empty()) {
+        // checks for content before adding:
+        if (redostack.back().get_current().meshes.size() != 0 ||
+                (redostack.back().get_current().materials.size() != 0)) {
+            printf("found content...\n");
+            Entity revert = redostack.back();   // grab from redo stack
+
+            undostack.emplace_back(revert);     // update undo stack with change
+
+            entities.pop_back();                // remove last modification (should be first undo)
+            entities.emplace_back(revert);      // update
+
+            // refresh screen with changes:
+            for (Entity &e : entities) {
+                for (Mesh &m : e.get_current().meshes) {
+                    glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+                    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
+                }
+            }
+        }
+        redostack.pop_back(); // pop whatever was on the redo stack
+    }
+    printf("redo function end: ");
+    printf("%d undostack, ", undostack.size());
+    printf("%d redostack, ", redostack.size());
+    printf("%d entities\n\n", entities.size());
 }
 
 MeshEditor::~MeshEditor() {
