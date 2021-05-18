@@ -355,23 +355,14 @@ void MeshEditor::translate_vertex() {
 }
 
 void MeshEditor::undo_model() {
-    printf("undo function start: ");
-    printf("%d undostack, ", undostack.size());
-    printf("%d redostack, ", redostack.size());
-    printf("%d entities\n", entities.size());
     if(!undostack.empty()) {
-
         Entity revert = undostack.back(); // grab the earlier used state from the design
-
         redostack.emplace_back(revert); // push top of undo stack to redo before popping it
-
         entities.pop_back(); // pop latest change from design
         if (revert.get_current().meshes.size() != 0 || // checks for content before adding
             (revert.get_current().materials.size() != 0)) {
-            printf("found content...\n");
             entities.emplace_back(revert);
         }
-
         // refresh screen with changes:
         for (Entity &e : entities) {
             for (Mesh &m : e.get_current().meshes) {
@@ -387,20 +378,14 @@ void MeshEditor::undo_model() {
     printf("%d entities\n\n", entities.size());
 }
 
-//TODO: may still contain an alignment fault
+//TODO: may still contain an alignment fault, needs more testing
 void MeshEditor::redo_model() {
-    printf("redo function start: ");
-    printf("%d undostack, ", undostack.size());
-    printf("%d redostack, ", redostack.size());
-    printf("%d entities\n", entities.size());
     if(!redostack.empty()) {
         // checks for content before adding:
         if (redostack.back().get_current().meshes.size() != 0 ||
                 (redostack.back().get_current().materials.size() != 0)) {
-            printf("found content...\n");
             undostack.emplace_back(redostack.back());     // update undo stack with change
             redostack.pop_back(); // pop whatever was on the redo stack
-
             if(!redostack.empty()) {
                 // checks for content before adding:
                 if (redostack.back().get_current().meshes.size() != 0 ||
@@ -410,7 +395,6 @@ void MeshEditor::redo_model() {
                     entities.emplace_back(revert);      // update
                 }
             }
-
             // refresh screen with changes:
             for (Entity &e : entities) {
                 for (Mesh &m : e.get_current().meshes) {
