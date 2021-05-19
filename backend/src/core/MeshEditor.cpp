@@ -3,6 +3,7 @@
 #include "MeshEditor.h"
 #include "StairsString.h"
 #include "CylinderString.h"
+#include "ArrowString.h"
 #include "assimp/Exporter.hpp"
 
 MeshEditor::MeshEditor() {
@@ -14,11 +15,15 @@ MeshEditor::MeshEditor() {
     camera = {3, 6, 0, 0, 0, 0};
 
     entities.emplace_back();
+    redostack.clear();
+    undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position( {4, 4, 4} );
+    entities.back().set_relative_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
+    camera.x = camera.y = camera.z = 4;
+    state = STATE_SELECT_ENTITY;
 
     billboard = create_billboard();
 
@@ -50,47 +55,54 @@ MeshEditor::MeshEditor() {
     delete[] pixels;
 
     cylinderModel = load_model_string(cylinderHardcoded, 0);
+    arrow = load_model_string(arrowHardcoded, 0);
 
     camera.x -= 5;
     camera.y -= 5;
 
     //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
-
-    //std::thread test(thread_test);
-    //test.join();
 }
 
 void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
 
-    local float rotation = 0.0f;
-    //rotation+=0.2f;
-    local float zoom = 5.0f;
-    //zoom-=0.025f;
+    if(state == STATE_SELECT_ENTITY) {
+        int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+        if(button == GLFW_PRESS) {
+            selectedEntity = -1;
+            vec2 mouse;
+            int x;
+            int y;
+            glfwGetMousePos(&x, &y);
+            mouse.x = x;
+            mouse.y = y;
 
-#if 0
-    vec2 mouse;
-    int x;
-    int y;
-    glfwGetMousePos(&x, &y);
-    mouse.x = x;
-    mouse.y = y;
+            vec3 rayposition = {camera.x, camera.y, camera.z};
+            vec3 raydirection = raycast(projection, camera, mouse, viewport);
 
-    vec3 rayposition = {camera.x, camera.y, camera.z};
-    vec3 raydirection = raycast(projection, camera, mouse, viewport);
-
-    for(int i = 0; i < entities.size(); ++i) {
-        if(entities[i].is_mouse_over(rayposition, raydirection)) {
-            printf("mouse is over a mesh\n");
-        } else {
-            printf("mouse is not over a mesh\n");
+            for (int i = 0; i < entities.size(); ++i) {
+                if(entities[i].is_mouse_over(rayposition, raydirection)) {
+                    selectedEntity = i;
+                    state = STATE_SELECT_VERTICES;
+                }
+            }
+        }
+    } else if(state == STATE_SELECT_VERTICES) {
+        int keystate = glfwGetKey(GLFW_KEY_TAB);
+        if(keystate == GLFW_PRESS) {
+            state = STATE_SELECT_ENTITY;
         }
     }
 #endif
 
 //    camera.x+=0.02f;
 //    camera.y+=0.02f;
+    draw();
+}
+
+void MeshEditor::draw() {
     mat4 view = create_view_matrix(camera);
+    //view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
 
     shader.bind();
     shader.set_light_pos(14, 14, 14);
@@ -98,31 +110,90 @@ void MeshEditor::run(int width, int height) {
     shader.set_camera_pos(camera.x, camera.y, camera.z);
     shader.set_view(view);
 
-    static int timer=0;
-    timer++;
-
     for(Entity& e : entities) {
         e.draw(shader);
-        e.set_rotation( {rotation, rotation, rotation} );
+    }
+
+    if(state == STATE_SELECT_VERTICES) {
+        vec2 mouse;
+        int x;
+        int y;
+        glfwGetMousePos(&x, &y);
+        mouse.x = x;
+        mouse.y = y;
+
+        vec3 o = {camera.x, camera.y, camera.z};
+        vec3 d = raycast(projection, camera, mouse, viewport);
+        mat4 transform;
+
+        // Average position of selected vertices
+        float avgX = 0.0f;
+        float avgY = 0.0f;
+        float avgZ = 0.0f;
+        float total = 0.0f;
+
+        for (Entity& e : entities){
+            for(Mesh& m : e.get_current().meshes){
+                for(u32 index : m.selected_vertices){
+                    avgX += m.vertices[index].position.x;
+                    avgY += m.vertices[index].position.y;
+                    avgZ += m.vertices[index].position.z;
+                    total += 1.0f;
+                }
+            }
+        }
+
+        avgX /= total;
+        avgY /= total;
+        avgZ /= total;
+
+        glDisable(GL_DEPTH_TEST);
+        shader.set_light_color(0.15f, 0.8f, 0.15f); // green
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
+        if(is_mouse_over_arrow(o, d, transform)) {
+            shader.set_light_color(1.0f, 0.3f, 0.3f);
+        }
+        shader.set_transform(transform);
+        draw_model(&arrow);
+
+        shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
+        if(is_mouse_over_arrow(o, d, transform)) {
+            shader.set_light_color(0.3f, 1.0f, 0.3f);
+        }
+        shader.set_transform(transform);
+        draw_model(&arrow);
+
+        shader.set_light_color(0.8f, 0.15f, 0.15f); // red
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
+        if(is_mouse_over_arrow(o, d, transform)) {
+            shader.set_light_color(0.3f, 0.3f, 1.0f);
+        }
+        shader.set_transform(transform);
+        draw_model(&arrow);
+        glEnable(GL_DEPTH_TEST);
     }
 
     //Draw lines to show the axis of the 3d grid
     shader.set_light_color(1.0f, 0.3f, 0.3f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {100, 0.04, 0.04}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {10000, 0.04, 0.04}, view));
     draw_model(&cylinderModel);
 
     shader.set_light_color(0.3f, 1.0f, 0.3f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 100}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 10000}, view));
     draw_model(&cylinderModel);
 
     shader.set_light_color(0.3f, 0.3f, 1.0f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 100, 0.04}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 10000, 0.04}, view));
     draw_model(&cylinderModel);
 
-    bshader.bind();
-    bshader.set_view(view);
-    for(Entity& e : entities) {
-        e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+    if(state == STATE_SELECT_VERTICES) {
+        bshader.bind();
+        bshader.set_view(view);
+        entities[selectedEntity].draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+        //for (Entity &e : entities) {
+        //    e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+        //}
     }
 }
 
@@ -131,8 +202,12 @@ void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, fl
 }
 
 void MeshEditor::add_model(const char* str, int fileformat) {
+    redostack.clear();
+    undostack.clear();
+    entities.clear();
     entities.emplace_back();
     entities.back().load(str, fileformat);
+    entities.back().set_relative_position({4, 4, 4});
     printf("added model\n");
 }
 
@@ -268,7 +343,6 @@ char* MeshEditor::export_model(const char* fileformat) {
 }
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
-    printf("mosue up\n");
     for(Entity& e: entities) {
         e.select(x, y, x2, y2, camera, projection, viewport);
     }
@@ -315,9 +389,38 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
 
 // Scale every vertex in every mesh in every entity by the factor passed in
 void MeshEditor::scale_all_entities(float factor) {
+    set_undo(); // adds to the undo stack & resets the redo stack
     for(Entity& e: entities) {
         e.scale_entity(factor);
     }
+}
+
+bool MeshEditor::is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform) {
+    for(Mesh m : arrow.meshes) {
+        for(int i = 0; i < m.indices.size(); i+=3) {
+            int index1 = m.indices[i+0];
+            int index2 = m.indices[i+1];
+            int index3 = m.indices[i+2];
+            Vertex one = m.vertices[index1];
+            Vertex two = m.vertices[index2];
+            Vertex three = m.vertices[index3];
+
+            vec3 collisionPoint;
+
+            if(ray_tri_collision(
+                    o, d,
+                    (transform * V4(one.position.x, one.position.y, one.position.z, 1.0)).xyz,
+                    (transform * V4(two.position.x, two.position.y, two.position.z, 1.0)).xyz,
+                    (transform * V4(three.position.x, three.position.y, three.position.z, 1.0)).xyz,
+                    &collisionPoint
+            )
+                    ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 // Getter function to return the size (in bytes) of the export string
@@ -330,6 +433,7 @@ uint32_t MeshEditor::get_export_strlen() const {
 
 //TODO: [WIP] Naive translate moves in x direction by one unit
 void MeshEditor::translate_vertex() {
+    set_undo(); // adds to the undo stack & resets the redo stack
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
             for(u32 index: m.selected_vertices){
@@ -340,6 +444,70 @@ void MeshEditor::translate_vertex() {
         }
     }
     return;
+}
+
+// created for code reusability
+void MeshEditor::set_undo() {
+    redostack.clear();
+    if(undostack.size() < 25 )
+        undostack.emplace_back(entities.back());
+}
+
+void MeshEditor::undo_model() {
+    if(!undostack.empty()) {
+        Entity revert = undostack.back(); // grab the earlier used state from the design
+        if(redostack.size() < 25 )
+            redostack.emplace_back(revert); // push top of undo stack to redo before popping it
+        entities.pop_back(); // pop latest change from design
+        if (revert.get_current().meshes.size() != 0 || // checks for content before adding
+            (revert.get_current().materials.size() != 0)) {
+            entities.emplace_back(revert);
+        }
+        // refresh screen with changes:
+        for (Entity &e : entities) {
+            for (Mesh &m : e.get_current().meshes) {
+                glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
+            }
+        }
+        undostack.pop_back(); // pop whatever was on the undo stack
+    }
+    printf("undo function end: ");
+    printf("%d undostack, ", undostack.size());
+    printf("%d redostack, ", redostack.size());
+    printf("%d entities\n\n", entities.size());
+}
+
+//TODO: may still contain an alignment fault, needs more testing
+void MeshEditor::redo_model() {
+    if(!redostack.empty()) {
+        // checks for content before adding:
+        if (redostack.back().get_current().meshes.size() != 0 ||
+                (redostack.back().get_current().materials.size() != 0)) {
+            undostack.emplace_back(redostack.back());     // update undo stack with change
+            redostack.pop_back(); // pop whatever was on the redo stack
+            if(!redostack.empty()) {
+                // checks for content before adding:
+                if (redostack.back().get_current().meshes.size() != 0 ||
+                    (redostack.back().get_current().materials.size() != 0)) {
+                    Entity revert = redostack.back();   // grab from redo stack
+                    entities.pop_back();                // remove last modification (should be first undo)
+                    entities.emplace_back(revert);      // update
+                }
+            }
+            // refresh screen with changes:
+            for (Entity &e : entities) {
+                for (Mesh &m : e.get_current().meshes) {
+                    glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+                    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
+                }
+            }
+        }
+    }
+    printf("redo function end: ");
+    printf("%d undostack, ", undostack.size());
+    printf("%d redostack, ", redostack.size());
+    printf("%d entities\n\n", entities.size());
 }
 
 MeshEditor::~MeshEditor() {

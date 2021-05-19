@@ -224,14 +224,14 @@ Model load_model(const char* filename) {
     return model;
 }
 
-void draw_mesh(Mesh mesh) {
+void draw_mesh(Mesh& mesh) {
     //bind VERTEX ARRAY OBJECT
     //and all attributes of it
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.vertices.size(), &mesh.vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.vertices.size(), &mesh.vertices[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * mesh.indices.size(), &mesh.indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * mesh.indices.size(), &mesh.indices[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)0);                     //position
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)(3 * sizeof(GLfloat))); //normals
@@ -247,7 +247,7 @@ void draw_mesh(Mesh mesh) {
 
 void draw_model(Model* model) {
         //ONE MATERIAL PER MESH -- DRAW ALL MESHES WITH THEIR MATERIALS (NO TEXTURES IN THESE LOW POLY MODELS, ONLY DIFFUSE COLOR)
-        for(const Mesh& mesh : model->meshes) {
+        for(Mesh& mesh : model->meshes) {
             draw_mesh(mesh);
         }
 }
@@ -277,7 +277,7 @@ Mesh create_billboard() {
     return create_mesh(vertices, indices);
 }
 
-mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
+mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view, f32 xrot, f32 yrot, f32 zrot) {
     mat4 mat = identity();
     mat *= translation(x, y, z);
 
@@ -286,6 +286,10 @@ mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
     mat.m22 = view.m22;
     mat.m11 = view.m11;
     mat.m33 = view.m33;
+
+    mat *= rotateX(xrot);
+    mat *= rotateY(yrot);
+    mat *= rotateZ(zrot);
 
     //mat *= rotation(rot, 0, 0, 1);
     mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);

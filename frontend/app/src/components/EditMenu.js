@@ -1,6 +1,12 @@
 /* eslint-disable */
+import Draggable from 'react-draggable';
+import {useState, useEffect} from 'react';
 
 export const EditMenu = () => {
+    const [display,setDisplay] = useState("none");
+    useEffect(() => {
+        document.getElementById("edit-menu").style.display = display;
+    },[display]);
     //Scale the model
     const Scale = () => {
         let val = document.getElementById("scale-val").value;
@@ -17,8 +23,11 @@ export const EditMenu = () => {
     }
     return (
         <div className="dropdown">
-            <button className="tool">Edit</button>
-            <div className="menu-items">
+            <button className="tool"
+                    onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>Edit</button>
+            <Draggable>
+            <div className="menu-items" id="edit-menu">
+                <div className="menu-header" style={{padding:5}}>Edit</div>
                 <div className="option">
                     Scale Model
                     <input id="scale-val"
@@ -27,12 +36,65 @@ export const EditMenu = () => {
                            placeholder="100"
                            min="1"
                            step="1"/>
-                    <span style={{...styles, paddingLeft:2}}>%</span>
-                    <button onClick={Scale}>Scale</button>
+                    <span style={{...styles, paddingLeft:2}}>% </span>
+                    <button onClick={Scale}>Apply</button>
                 </div>
-                <a className="option" href="#">Extend</a>
-                <a className="option" href="#">Bend/Twist</a>
+                <div className="option">
+                    Bend Vertex
+                    <div className="input-box">
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}>&#176; X</span>
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}>&#176; Y</span>
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}>&#176; Z</span>
+                        <button>Apply</button>
+                    </div>
+                </div>
+                <div className="option">
+                    Translate Vertex
+                    <div className="input-box">
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                             min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}> X</span>
+                        <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                        <span style={{...styles, paddingLeft:2}}> Y</span>
+                    <input className="bend-val"
+                            style={styles}
+                            type="number"
+                            placeholder="0"
+                            min="0"
+                            step="1"/>
+                    <span style={{...styles, paddingLeft:2}}> Z</span>
+                    <button>Apply</button>
+                    </div>
+                </div>
             </div>
+            </Draggable>
         </div>
     )
 }

@@ -4,7 +4,7 @@ Entity::Entity() {
     current.scale = current.rotate = current.pos = {0};
     current.materials.clear();
     current.meshes.clear();
-    start = current;
+//    start = current;
 }
 
 Entity::Entity(std::string file) {
@@ -14,6 +14,8 @@ Entity::Entity(std::string file) {
 
 void Entity::load(std::string file, int fileformat) {
     current = load_model_string(file, fileformat);
+    current.scale = current.rotate = current.pos = {0};
+    current.scale = {1, 1, 1};
     //start = current;
 }
 
@@ -187,7 +189,7 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
             vec4 v3Next = vertexThree * view * projection;
             vec4 v4Next = vertexFour * view * projection;
 
-            //perspective division to account for f.o.v.
+            //perspective division to account for fov
             vec3 v1Final = V3(v1Next.x / v1Next.w, v1Next.y / v1Next.w, v1Next.z / v1Next.w);
             vec3 v2Final = V3(v2Next.x / v2Next.w, v2Next.y / v2Next.w, v2Next.z / v2Next.w);
             vec3 v3Final = V3(v3Next.x / v3Next.w, v3Next.y / v3Next.w, v3Next.z / v3Next.w);
@@ -237,58 +239,20 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
                 m.selected[i] = true;
                 m.selected_vertices.push_back(i);
             }
-
-            //the sprite is on a rectangle, made up of two triangles, check if the mouse selection box is over those triangles at any point.
-           // bool firstTri = ray_tri_collision(o, d, vertexOne.xyz, vertexTwo.xyz, vertexThree.xyz, NULL);
-            //bool secondTri = ray_tri_collision(o, d, vertexTwo.xyz, vertexThree.xyz, vertexFour.xyz, NULL);
-
-            //if (firstTri || secondTri) {
-            //    m.selected[i] = true;
-            //}
-
             i++;
         }
     }
-
-#if 0
-    //raycast for each pixel in the selection box and check if vertices are selected.
-    for(int x = xIn; x < x2; x++) {
-        for(int y = yIn; y < y2; y++) {
-            //raycast through this pixel
-            vec3 o = {camera.x, camera.y, camera.z};
-            vec3 d = raycast(projection, camera, {(float)x, (float)y}, viewport);
-
-            for (Mesh& m : current.meshes) {
-                int i = 0;
-                for (Vertex& v : m.vertices) {
-                    //get world position of vertex sprite
-                    vec3 pos = (transform * V4(v.position.x, v.position.y, v.position.z, 1.0)).xyz;
-
-                    //get world position of the triangles that make up the 2d sprite showing where the vertices are
-                    mat4 billboardTransform = billboard_transform(pos.x, pos.y, pos.z, {0.10, 0.10, 0.10}, view);
-                    vec4 vertexOne = billboardTransform * V4(-0.5, -0.5, 0.0f, 1.0f);
-                    vec4 vertexTwo = billboardTransform * V4(0.5, -0.5, 0.0f, 1.0f);
-                    vec4 vertexThree = billboardTransform * V4(-0.5, 0.5, 0.0f, 1.0f);
-                    vec4 vertexFour = billboardTransform * V4(0.5, 0.5, 0.0f, 1.0f);
-
-                    //the sprite is on a rectangle, made up of two triangles, check if the mouse selection box is over those triangles at any point.
-                    bool firstTri = ray_tri_collision(o, d, vertexOne.xyz, vertexTwo.xyz, vertexThree.xyz, NULL);
-                    bool secondTri = ray_tri_collision(o, d, vertexTwo.xyz, vertexThree.xyz, vertexFour.xyz, NULL);
-
-                    if (firstTri || secondTri) {
-                        m.selected[i] = true;
-                    }
-
-                    i++;
-                }
-            }
-        }
-    }
-#endif
 }
 
-void Entity::set_position(vec3 pos) {
-    current.pos = pos;
+// Set position relative to it's current position which is {0} by default.
+void Entity::set_relative_position(vec3 pos) {
+    for (Mesh& m : current.meshes) {
+        for (Vertex& v : m.vertices) {
+            v.position.x += pos.x;
+            v.position.y += pos.y;
+            v.position.z += pos.z;
+        }
+    }
 }
 
 void Entity::set_rotation(vec3 rotate) {
@@ -301,6 +265,10 @@ void Entity::set_scale(vec3 scale) {
 
 Model& Entity::get_current() {
     return current;
+}
+
+void Entity::reset_head(Model& change){
+    current = change;
 }
 
 Entity::~Entity() {

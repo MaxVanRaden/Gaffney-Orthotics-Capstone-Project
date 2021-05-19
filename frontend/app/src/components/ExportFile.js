@@ -23,7 +23,7 @@ const Export = () => {
             .catch(e => console.log("Failed to export model"));
     }
     return (
-        <div className="dropdown">
+        <div className="dropdown" id="export-menu">
             <label htmlFor="export" className="tool">Export File</label>
             <button id="export" style={{display:"none"}} onClick={handleClick}/>
             <div className="menu-items" style={{color:"black", minWidth:90, paddingRight:10}}>
