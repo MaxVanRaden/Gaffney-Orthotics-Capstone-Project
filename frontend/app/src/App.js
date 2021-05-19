@@ -16,7 +16,7 @@ function App() {
                 canvas.width = w;
                 canvas.height = h;
             }
-            window.Module._set_size(w, h)
+            window.Module.ready.then(api => api.set_size(w,h))
         }
         canvas.onmousemove = function(e){
             let curX = e.pageX - canvas.offsetLeft;

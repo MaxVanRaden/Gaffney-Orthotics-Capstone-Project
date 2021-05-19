@@ -159,6 +159,18 @@ div.toolbar {
 .option {
     border-bottom: 1px solid #7c868a;
 }
+.input-box {
+    position:relative;
+}
+.bend-val {
+    left: 0
+}
+.menu-header{
+    border-bottom: 2px solid #7c868a;
+    text-align: center;
+    background-color: #259c9c;
+    height: 15px;
+}
 .menu-items a, .menu-items div {
     color: #2c2c2c;
     padding: 12px 16px;
@@ -166,7 +178,8 @@ div.toolbar {
     display: block;
 }
 .menu-items a:hover {background-color: #ddd; cursor:pointer;}
-.dropdown:hover .menu-items {display: block;}
+/*.dropdown:hover .menu-items {display: block;}*/
+#export-menu:hover .menu-items {display: block;}
 .toolGroup {
     display: flex;
     flex-flow: row wrap;
