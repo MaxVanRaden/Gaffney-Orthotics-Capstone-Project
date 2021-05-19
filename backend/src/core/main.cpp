@@ -186,6 +186,14 @@ extern "C" {
             printf("unknown file format\n");
         }
     }
+
+    void undo(){
+        editor -> undo_model();
+    }
+
+    void redo(){
+        editor -> redo_model();
+    }
 }
 
 bool is_Binary_STL(char * name){

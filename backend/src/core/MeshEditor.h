@@ -26,12 +26,17 @@ public:
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;
     void translate_vertex();
+    void set_undo();
+    void undo_model();
+    void redo_model();
 
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 
 private:
     std::vector<Entity> entities;
     int selectedEntity;
+    std::vector<Entity> undostack;
+    std::vector<Entity> redostack;
 
     Mesh billboard;
     Texture circle;

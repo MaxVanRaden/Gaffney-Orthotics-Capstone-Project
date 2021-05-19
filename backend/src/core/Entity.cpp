@@ -4,7 +4,7 @@ Entity::Entity() {
     current.scale = current.rotate = current.pos = {0};
     current.materials.clear();
     current.meshes.clear();
-    start = current;
+//    start = current;
 }
 
 Entity::Entity(std::string file) {
@@ -265,6 +265,10 @@ void Entity::set_scale(vec3 scale) {
 
 Model& Entity::get_current() {
     return current;
+}
+
+void Entity::reset_head(Model& change){
+    current = change;
 }
 
 Entity::~Entity() {
