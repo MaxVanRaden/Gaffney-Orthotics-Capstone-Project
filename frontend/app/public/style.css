@@ -126,6 +126,13 @@ div.toolbar {
     border: 2px solid;
     border-left: none;
 }
+
+.icon {
+    max-height: 35px;
+    max-width: 35px;
+}
+.icon:hover {cursor:pointer; opacity: 0.7;}
+
 #import {
     width: 80px;
     opacity: 0;
@@ -146,7 +153,8 @@ div.toolbar {
     position: relative;
     display: inline-block;
     margin-top: auto;
-    margin-bottom: auto;}
+    margin-bottom: auto;
+}
 .menu-items {
     display: none;
     position: absolute;

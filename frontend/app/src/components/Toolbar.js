@@ -8,6 +8,7 @@ import {Coords} from "./Coords";
 import {Camera} from "./Camera";
 import {useState, useEffect} from 'react'
 import {ToolGroup} from "./ToolGroup";
+import center_icon from "../button_icons/center_icon.jpg"
 
 export const Toolbar = () => {
     const [tool, setTool] = useState('default');
@@ -32,6 +33,7 @@ export const Toolbar = () => {
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu tool={tool} setTool={setTool}/>
+            <img src={center_icon} alt="center model icon" className="icon"/>
             <Camera tool={tool} zoom={zoom}/>
             <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
