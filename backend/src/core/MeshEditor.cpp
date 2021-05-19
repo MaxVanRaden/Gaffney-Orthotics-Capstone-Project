@@ -323,8 +323,7 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
 
 // Scale every vertex in every mesh in every entity by the factor passed in
 void MeshEditor::scale_all_entities(float factor) {
-    redostack.clear();
-    undostack.emplace_back(entities.back());
+    set_undo(); // adds to the undo stack & resets the redo stack
     for(Entity& e: entities) {
         e.scale_entity(factor);
     }
@@ -340,8 +339,7 @@ uint32_t MeshEditor::get_export_strlen() const {
 
 //TODO: [WIP] Naive translate moves in x direction by one unit
 void MeshEditor::translate_vertex() {
-    redostack.clear();
-    undostack.emplace_back(entities.back());
+    set_undo(); // adds to the undo stack & resets the redo stack
     for (Entity& e : entities) {
         for (Mesh &m : e.get_current().meshes) {
             for(u32 index: m.selected_vertices){
@@ -354,10 +352,18 @@ void MeshEditor::translate_vertex() {
     return;
 }
 
+// created for code reusability
+void MeshEditor::set_undo() {
+    redostack.clear();
+    if(undostack.size() < 25 )
+        undostack.emplace_back(entities.back());
+}
+
 void MeshEditor::undo_model() {
     if(!undostack.empty()) {
         Entity revert = undostack.back(); // grab the earlier used state from the design
-        redostack.emplace_back(revert); // push top of undo stack to redo before popping it
+        if(redostack.size() < 25 )
+            redostack.emplace_back(revert); // push top of undo stack to redo before popping it
         entities.pop_back(); // pop latest change from design
         if (revert.get_current().meshes.size() != 0 || // checks for content before adding
             (revert.get_current().materials.size() != 0)) {
