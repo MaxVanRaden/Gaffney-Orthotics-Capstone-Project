@@ -93,7 +93,6 @@ void MeshEditor::run(int width, int height) {
             state = STATE_SELECT_ENTITY;
         }
     }
-#endif
 
 //    camera.x+=0.02f;
 //    camera.y+=0.02f;
