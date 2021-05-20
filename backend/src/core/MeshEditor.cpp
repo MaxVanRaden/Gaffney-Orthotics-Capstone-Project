@@ -7,6 +7,9 @@
 #include "assimp/Exporter.hpp"
 
 MeshEditor::MeshEditor() {
+    pressed = false;
+    start_x = 0;
+    start_y = 0;
     export_strlen = 0;
     shader.load();
     bshader.load();
@@ -148,15 +151,50 @@ void MeshEditor::draw() {
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
         transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
-            shader.set_light_color(1.0f, 0.3f, 0.3f);
+            shader.set_light_color(0.3f, 1.0f, 0.3f);
+
+            bool box_selection_active = false;
+            float translation_amount = 0.01f;
+
+            // Mouse button has been pressed
+            if (!box_selection_active && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                if (!this->pressed) {
+                    glfwGetMousePos(&this->start_x, &this->start_y);
+                    this->pressed = true;
+                } else {
+                    int end_x;
+                    int end_y;
+                    glfwGetMousePos(&end_x, &end_y);
+                    //move vertices
+                    for (Entity& e : entities) {
+                        for (Mesh& m : e.get_current().meshes){
+                            for (u32 index: m.selected_vertices){
+                                m.vertices[index].position.z += translation_amount;
+                            }
+                            glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+                            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
+                        }
+                    }
+                }
+            }
         }
+
+        if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
+            if(this->pressed)
+               this->pressed = false;
+        }
+
         shader.set_transform(transform);
         draw_model(&arrow);
 
         shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
         transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
-            shader.set_light_color(0.3f, 1.0f, 0.3f);
+            shader.set_light_color(0.3f, 0.3f, 1.0f);
+
+            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                printf("hello!!\n");
+            }
         }
         shader.set_transform(transform);
         draw_model(&arrow);
@@ -164,7 +202,11 @@ void MeshEditor::draw() {
         shader.set_light_color(0.8f, 0.15f, 0.15f); // red
         transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
-            shader.set_light_color(0.3f, 0.3f, 1.0f);
+            shader.set_light_color(1.0f, 0.3f, 0.3f);
+
+            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+                printf("hello!!\n");
+            }
         }
         shader.set_transform(transform);
         draw_model(&arrow);

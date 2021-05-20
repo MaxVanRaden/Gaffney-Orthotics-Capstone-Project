@@ -33,6 +33,10 @@ private:
     std::vector<Entity> entities;
     int selectedEntity;
 
+    bool pressed;
+    int start_x;
+    int start_y;
+
     Mesh billboard;
     Texture circle;
     Rect viewport;
