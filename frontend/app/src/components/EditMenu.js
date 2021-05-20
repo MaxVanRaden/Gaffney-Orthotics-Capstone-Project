@@ -93,6 +93,16 @@ export const EditMenu = () => {
                     <button>Apply</button>
                     </div>
                 </div>
+                <div className="option">
+                    Translate Factor
+                    <div className="input-box">
+                    <input type='number' id='translationFactor'
+                           min='0.001' step="0.01"
+                           style={{width:60}}
+                           placeholder="0.001"
+                    />
+                    </div>
+                </div>
             </div>
             </Draggable>
         </div>
