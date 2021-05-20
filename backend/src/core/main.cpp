@@ -117,7 +117,7 @@ extern "C" {
     }
 
     char* export_model(const char* fileformat) {
-        return editor->export_model(".stl"); //.obj hard coded for now
+        return editor->export_model(fileformat);
     }
 
     uint32_t get_export_strlen() {
