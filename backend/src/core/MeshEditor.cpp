@@ -16,6 +16,7 @@ MeshEditor::MeshEditor() {
     pshader.load();
     //TODO: [DEV] Change back to 0
     camera = {3, 6, 0, 0, 0, 0};
+    fliparrows = false;
 
     entities.emplace_back();
     //TODO: [DEV] Comment out staircaseobj
@@ -149,7 +150,10 @@ void MeshEditor::draw() {
 
         glDisable(GL_DEPTH_TEST);
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
-        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
+        if(fliparrows)
+            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 270, 0, 0);
+        else
+            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 1.0f, 0.3f);
 
@@ -188,7 +192,10 @@ void MeshEditor::draw() {
         draw_model(&arrow);
 
         shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
-        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
+        if(fliparrows)
+            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 180, 0, 0);
+        else
+            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 0.3f, 1.0f);
 
@@ -200,7 +207,10 @@ void MeshEditor::draw() {
         draw_model(&arrow);
 
         shader.set_light_color(0.8f, 0.15f, 0.15f); // red
-        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
+        if(fliparrows)
+            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 270);
+        else
+            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(1.0f, 0.3f, 0.3f);
 
@@ -476,6 +486,13 @@ void MeshEditor::translate_vertex() {
             glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
         }
     }
+}
+
+void MeshEditor::flip_axis() {
+    if(fliparrows)
+        fliparrows = false;
+    else
+        fliparrows = true;
 }
 
 MeshEditor::~MeshEditor() {

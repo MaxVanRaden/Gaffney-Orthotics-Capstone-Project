@@ -31,6 +31,7 @@ export const Toolbar = () => {
             <EditMenu/>
             <SelectMenu tool={tool} setTool={setTool}/>
             <Camera tool={tool} zoom={zoom}/>
+            <button onClick={() => window.Module.ready.then(api => api.flip_axis())}>Flip Axis</button>
             <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
         </div>

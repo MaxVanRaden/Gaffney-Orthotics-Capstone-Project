@@ -154,6 +154,10 @@ extern "C" {
         editor->translate_vertex();
     }
 
+    void flip_axis(){
+        editor->flip_axis();
+    }
+
     // does not handle obj files
     void import_file(char* file_path, int fileformat){
         // fileformat 0: obj

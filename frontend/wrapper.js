@@ -10,7 +10,8 @@ Module.ready = new Promise(function(resolve, reject) {
             get_export_strlen: Module.cwrap('get_export_strlen', 'number', ['number']),
             translate_vertex: Module.cwrap('translate_vertex', null, null),
             scale: Module.cwrap('scale',null,['number']),
-            import_file: Module.cwrap('import_file', null, ['string'], ['number'])
+            import_file: Module.cwrap('import_file', null, ['string'], ['number']),
+            flip_axis: Module.cwrap('flip_axis',null)
         };
         resolve(api);
     });

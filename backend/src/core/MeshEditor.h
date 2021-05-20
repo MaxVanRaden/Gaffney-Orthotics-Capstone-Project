@@ -26,6 +26,7 @@ public:
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;
     void translate_vertex();
+    void flip_axis();
 
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 
@@ -36,6 +37,7 @@ private:
     bool pressed;
     int start_x;
     int start_y;
+    bool fliparrows;
 
     Mesh billboard;
     Texture circle;
