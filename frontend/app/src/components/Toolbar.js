@@ -1,4 +1,4 @@
-import {TranslateVertex} from "./Translate";
+// import {TranslateVertex} from "./Translate";
 import {ExportFile} from "./ExportFile";
 import {ImportFile} from "./ImportFile";
 import {ViewMenu} from "./ViewMenu";
@@ -29,7 +29,7 @@ export const Toolbar = () => {
             <button id="devToggle" className="tool" onClick={() => setDev(!dev)}>Dev Stuff</button>
             <ImportFile/>
             <ExportFile/>
-            <TranslateVertex/>
+            {/*<TranslateVertex/>*/}
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu tool={tool} setTool={setTool}/>
