@@ -1,7 +1,7 @@
 #TODO: Edit the "Project Working Directory" below
 #TODO: Edit "EMSDK" to point to your emsdk file location
-set(PWD "C:/Users/GTango/CLionProjects/Gaffney-Orthotics-Capstone-Project")
-set(EMSDK "C:/emsdk")
+set(PWD "C:/Users/Phil/Documents/GitHub/Gaffney-Orthotics-Capstone-Project")
+set(EMSDK "C:/Users/Phil/emsdk")
 cmake_minimum_required(VERSION 3.17.5)
 
 # Project Name
