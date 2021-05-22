@@ -150,8 +150,8 @@ extern "C" {
         editor->on_mouse_up(x, y, x2, y2);
     }
 
-    void translate_vertex(){
-        editor->translate_vertex();
+    void flip_axis(){
+        editor->flip_axis();
     }
 
     // does not handle obj files

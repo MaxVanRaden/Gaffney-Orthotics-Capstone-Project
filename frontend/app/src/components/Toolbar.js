@@ -29,12 +29,12 @@ export const Toolbar = () => {
             <button id="devToggle" className="tool" onClick={() => setDev(!dev)}>Dev Stuff</button>
             <ImportFile/>
             <ExportFile/>
-            {/*<TranslateVertex/>*/}
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu tool={tool} setTool={setTool}/>
             <img src={center_icon} alt="center model icon" className="icon"/>
             <Camera tool={tool} zoom={zoom}/>
+            <button onClick={() => window.Module.ready.then(api => api.flip_axis())}>Flip Axis</button>
             <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
         </div>

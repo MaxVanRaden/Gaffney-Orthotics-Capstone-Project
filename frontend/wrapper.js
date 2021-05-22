@@ -13,7 +13,8 @@ Module.ready = new Promise(function(resolve, reject) {
             scale: Module.cwrap('scale',null,['number']),
             import_file: Module.cwrap('import_file', null, ['string'], ['number']),
             undo: Module.cwrap('undo',null),
-            redo: Module.cwrap('redo',null)
+            redo: Module.cwrap('redo',null),
+            flip_axis: Module.cwrap('flip_axis',null)
         };
         resolve(api);
     });

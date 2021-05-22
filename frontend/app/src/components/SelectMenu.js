@@ -59,6 +59,10 @@ export const SelectMenu = (props) => {
             <button className="tool"
                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>
                 Select
+                <input type="checkbox" id='selectToggle' checked={props.tool === "select" || props.tool === "vertex" }
+                onChange={e => {
+                    props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
+                }}/>
             </button>
             <Draggable>
             <div className="menu-items" id="select-menu">
