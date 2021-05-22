@@ -5,11 +5,28 @@
 #include "CylinderString.h"
 #include "ArrowString.h"
 #include "assimp/Exporter.hpp"
+#include "emscripten.h"
+
+enum axis {
+    x,
+    y,
+    z
+};
+
+extern "C" {
+
+    EM_JS(float, get_translation_factor, (), {
+        return document.getElementById('translationFactor').value;
+    });
+
+    EM_JS(bool, is_select_or_move_checked, (), {
+        return (document.getElementById('selectToggle').checked || document.getElementById('moveToggle').checked);
+    });
+
+}
 
 MeshEditor::MeshEditor() {
-    pressed = false;
-    start_x = 0;
-    start_y = 0;
+    axis_clicked = false;
     export_strlen = 0;
     shader.load();
     bshader.load();
@@ -58,6 +75,7 @@ MeshEditor::MeshEditor() {
 
     cylinderModel = load_model_string(cylinderHardcoded, 0);
     arrow = load_model_string(arrowHardcoded, 0);
+    arrow.pos = calculate_avg_pos_selected_vertices();
 
     camera.x -= 5;
     camera.y -= 5;
@@ -117,6 +135,7 @@ void MeshEditor::draw() {
 
     if(state == STATE_SELECT_VERTICES) {
         vec2 mouse;
+        Axis axis;
         int x;
         int y;
         glfwGetMousePos(&x, &y);
@@ -127,65 +146,21 @@ void MeshEditor::draw() {
         vec3 d = raycast(projection, camera, mouse, viewport);
         mat4 transform;
 
-        // Average position of selected vertices
-        float avgX = 0.0f;
-        float avgY = 0.0f;
-        float avgZ = 0.0f;
-        float total = 0.0f;
 
-        for (Entity& e : entities){
-            for(Mesh& m : e.get_current().meshes){
-                for(u32 index : m.selected_vertices){
-                    avgX += m.vertices[index].position.x;
-                    avgY += m.vertices[index].position.y;
-                    avgZ += m.vertices[index].position.z;
-                    total += 1.0f;
-                }
-            }
-        }
-
-        avgX /= total;
-        avgY /= total;
-        avgZ /= total;
+        //TODO: Make all three arrows not flat
 
         glDisable(GL_DEPTH_TEST);
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
         if(fliparrows)
-            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 270, 0, 0);
+            transform = no_view_scaling_transform(arrow.pos.x, arrow.pos.y, arrow.pos.z, {0.4, 0.4, 0.4}, view, 270, 0, 0);
         else
-            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
+            transform = no_view_scaling_transform(arrow.pos.x, arrow.pos.y, arrow.pos.z, {0.4, 0.4, 0.4}, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 1.0f, 0.3f);
-
-            bool box_selection_active = false;
-            float translation_amount = 0.01f;
-
-            // Mouse button has been pressed
-            if (!box_selection_active && glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-                if (!this->pressed) {
-                    glfwGetMousePos(&this->start_x, &this->start_y);
-                    this->pressed = true;
-                } else {
-                    int end_x;
-                    int end_y;
-                    glfwGetMousePos(&end_x, &end_y);
-                    //move vertices
-                    for (Entity& e : entities) {
-                        for (Mesh& m : e.get_current().meshes){
-                            for (u32 index: m.selected_vertices){
-                                m.vertices[index].position.z += translation_amount;
-                            }
-                            glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
-                            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
-                        }
-                    }
-                }
+            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !axis_clicked) {
+                axis_clicked = true;
+                axis = Z;
             }
-        }
-
-        if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
-            if(this->pressed)
-               this->pressed = false;
         }
 
         shader.set_transform(transform);
@@ -193,14 +168,14 @@ void MeshEditor::draw() {
 
         shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
         if(fliparrows)
-            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 180, 0, 0);
+            transform = no_view_scaling_transform(arrow.pos.x, arrow.pos.y, arrow.pos.z, {0.4, 0.4, 0.4}, view, 180, 0, 0);
         else
-            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
+            transform = no_view_scaling_transform(arrow.pos.x, arrow.pos.y, arrow.pos.z, {0.4, 0.4, 0.4}, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(0.3f, 0.3f, 1.0f);
-
-            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-                printf("hello!!\n");
+            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !axis_clicked) {
+                axis_clicked = true;
+                axis = Y;
             }
         }
         shader.set_transform(transform);
@@ -208,19 +183,29 @@ void MeshEditor::draw() {
 
         shader.set_light_color(0.8f, 0.15f, 0.15f); // red
         if(fliparrows)
-            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 270);
+            transform = no_view_scaling_transform(arrow.pos.x, arrow.pos.y, arrow.pos.z, {0.4, 0.4, 0.4}, view, 0, 0, 270);
         else
-            transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
+            transform = no_view_scaling_transform(arrow.pos.x, arrow.pos.y, arrow.pos.z, {0.4, 0.4, 0.4}, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
             shader.set_light_color(1.0f, 0.3f, 0.3f);
-
-            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-                printf("hello!!\n");
+            if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && !axis_clicked) {
+                axis_clicked = true;
+                axis = X;
             }
         }
+
         shader.set_transform(transform);
         draw_model(&arrow);
         glEnable(GL_DEPTH_TEST);
+
+        if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && axis_clicked && !is_select_or_move_checked()) {
+            translate_vertices_along_axis(axis);
+        } else {
+            if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
+                axis_clicked = false;
+                //TODO: Consider this a complete operation, so save the model here
+            }
+        }
     }
 
     //Draw lines to show the axis of the 3d grid
@@ -243,6 +228,36 @@ void MeshEditor::draw() {
         //for (Entity &e : entities) {
         //    e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
         //}
+    }
+}
+
+//Translates vertices along the passed in axis if the left mouse button is being pressed.
+void MeshEditor::translate_vertices_along_axis(Axis axis) {
+    //Z axis is flipped for some reason
+    float translation_factor;
+    if (axis == Z)
+        translation_factor = fliparrows ? get_translation_factor() : (-1) * get_translation_factor();
+    else
+        translation_factor = fliparrows ? (-1) * get_translation_factor() : get_translation_factor();
+
+    //Loop over every selected vertex and move appropriate axis by the translation factor
+    for (Entity& e : entities) {
+        for (Mesh& m : e.get_current().meshes) {
+            for (u32 index: m.selected_vertices) {
+                switch (axis) {
+                    case X: m.vertices[index].position.x += translation_factor; break;
+                    case Y: m.vertices[index].position.y += translation_factor; break;
+                    case Z: m.vertices[index].position.z += translation_factor; break;
+                }
+            }
+            switch (axis) {
+                case X: arrow.pos.x += translation_factor; break;
+                case Y: arrow.pos.y += translation_factor; break;
+                case Z: arrow.pos.z += translation_factor; break;
+            }
+            glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
+        }
     }
 }
 
@@ -391,7 +406,7 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
     for(Entity& e: entities) {
         e.select(x, y, x2, y2, camera, projection, viewport);
     }
-
+    arrow.pos = calculate_avg_pos_selected_vertices();
 #if 0
     int width = x2-x;
     int height = y2-y;
@@ -429,6 +444,36 @@ void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
     glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
 
 #endif
+}
+
+vec3 MeshEditor::calculate_avg_pos_selected_vertices() {
+    vec3 pos = {0};
+
+    // Average position of selected vertices
+    float avgX = 0.0f;
+    float avgY = 0.0f;
+    float avgZ = 0.0f;
+    float total = 0.0f;
+
+    for (Entity& e : entities){
+        for(Mesh& m : e.get_current().meshes){
+            for(u32 index : m.selected_vertices){
+                avgX += m.vertices[index].position.x;
+                avgY += m.vertices[index].position.y;
+                avgZ += m.vertices[index].position.z;
+                total += 1.0f;
+            }
+        }
+    }
+
+    avgX /= total;
+    avgY /= total;
+    avgZ /= total;
+    pos.x = avgX;
+    pos.y = avgY;
+    pos.z = avgZ;
+
+    return pos;
 }
 
 
@@ -473,19 +518,6 @@ bool MeshEditor::is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform) {
 //      Talk to Jacob if you feel like you have a better solution and I'll hear you out.
 uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
-}
-
-//TODO: [WIP] Naive translate moves in x direction by one unit
-void MeshEditor::translate_vertex() {
-    for (Entity& e : entities) {
-        for (Mesh &m : e.get_current().meshes) {
-            for(u32 index: m.selected_vertices){
-                m.vertices[index].position.x += 1;
-            }
-            glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
-        }
-    }
 }
 
 void MeshEditor::flip_axis() {

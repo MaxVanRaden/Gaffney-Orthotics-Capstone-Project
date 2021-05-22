@@ -111,8 +111,11 @@ to call some C++ function the backend team will write.
   <hr/>
   <div class="emscripten">
     <!-- Initialization check is done on backend -->
+<!--    TODO: Make real scaling-->
     <input type='number' id='scale_entity' value=100>Scale by %</input>
     <button onclick='_scale(document.getElementById("scale_entity").value / 100)'>Scale</button>
+<!--    TODO: Move to real location (keep 'translationFactor' as id) -->
+    <input type='number' id='translationFactor' value='0.01'>Translation Factor</input>
     <input type="checkbox" id="resize">Resize canvas
     <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
     <input type="button" value="Fullscreen" id="fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,

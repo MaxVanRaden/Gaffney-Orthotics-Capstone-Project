@@ -12,6 +12,12 @@ enum EditorState {
     STATE_SELECT_VERTICES
 };
 
+enum Axis {
+    X,
+    Y,
+    Z
+};
+
 class MeshEditor {
 public:
     MeshEditor();
@@ -25,18 +31,18 @@ public:
     void scale_all_entities(float factor);
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;
-    void translate_vertex();
     void flip_axis();
 
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 
 private:
+    void translate_vertices_along_axis(Axis axis);
+    vec3 calculate_avg_pos_selected_vertices();
+
     std::vector<Entity> entities;
     int selectedEntity;
 
-    bool pressed;
-    int start_x;
-    int start_y;
+    bool axis_clicked;
     bool fliparrows;
 
     Mesh billboard;

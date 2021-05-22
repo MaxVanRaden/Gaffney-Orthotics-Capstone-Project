@@ -53,7 +53,7 @@ export const SelectMenu = (props) => {
         <div className="dropdown">
             <button className="tool">
                 Select
-                <input type="checkbox" checked={props.tool === "select" || props.tool === "vertex" }
+                <input type="checkbox" id='selectToggle' checked={props.tool === "select" || props.tool === "vertex" }
                 onChange={e => {
                     props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
                 }}/>
