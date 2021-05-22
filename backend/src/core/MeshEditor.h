@@ -7,9 +7,12 @@
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
 
+#define INVALID_CROSS_SECTION 0xFFFFFF
+
 enum EditorState {
     STATE_SELECT_ENTITY,
-    STATE_SELECT_VERTICES
+    STATE_SELECT_VERTICES,
+    STATE_SELECT_CROSS_SECTION
 };
 
 class MeshEditor {
@@ -32,6 +35,13 @@ public:
 private:
     std::vector<Entity> entities;
     int selectedEntity;
+    bool mouseDown;
+    bool showOverlay;
+    vec3 dragDirection;
+
+    bool placedFirstSection;
+    float crossSectionBot;
+    float crossSectionTop;
 
     Mesh billboard;
     Texture circle;

@@ -17,7 +17,7 @@ MeshEditor::MeshEditor() {
     entities.emplace_back();
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_relative_position({4, 4, 4});
+    //entities.back().set_relative_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
     camera.x = camera.y = camera.z = 4;
@@ -57,6 +57,10 @@ MeshEditor::MeshEditor() {
 
     camera.x -= 5;
     camera.y -= 5;
+    mouseDown = false;
+
+    crossSectionBot = crossSectionTop = INVALID_CROSS_SECTION;
+    placedFirstSection = false;
 
     //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
 }
@@ -64,7 +68,20 @@ MeshEditor::MeshEditor() {
 void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
 
+    int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+    if(button == GLFW_PRESS) {
+        mouseDown = true;
+    }
+    if(button == GLFW_RELEASE) {
+        mouseDown = false;
+    }
+
     if(state == STATE_SELECT_ENTITY) {
+        int keystate = glfwGetKey(KEY_C);
+        if(keystate == GLFW_PRESS) {
+            state = STATE_SELECT_CROSS_SECTION;
+        }
+
         int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
         if(button == GLFW_PRESS) {
             selectedEntity = -1;
@@ -86,11 +103,58 @@ void MeshEditor::run(int width, int height) {
             }
         }
     } else if(state == STATE_SELECT_VERTICES) {
-        int keystate = glfwGetKey(GLFW_KEY_TAB);
+        int keystate = glfwGetKey(GLFW_KEY_ESC);
+        if(keystate == GLFW_PRESS) {
+            state = STATE_SELECT_ENTITY;
+        }
+    } else if(state == STATE_SELECT_CROSS_SECTION) {
+        int keystate = glfwGetKey(GLFW_KEY_ESC);
         if(keystate == GLFW_PRESS) {
             state = STATE_SELECT_ENTITY;
         }
     }
+
+    if(state == STATE_SELECT_CROSS_SECTION) {
+        //selectedEntity = -1;
+        vec2 mouse;
+        int x;
+        int y;
+        glfwGetMousePos(&x, &y);
+        mouse.x = x;
+        mouse.y = y;
+
+        vec3 rayposition = {camera.x, camera.y, camera.z};
+        vec3 raydirection = raycast(projection, camera, mouse, viewport);
+
+        int buttonLeft = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+        int buttonRight = glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT);
+
+        for (int i = 0; i < entities.size(); ++i) {
+            if(placedFirstSection) {
+                crossSectionTop = entities[i].place_line(rayposition, raydirection);
+                if(buttonRight == GLFW_PRESS) {
+                    placedFirstSection = false;
+                    crossSectionTop = INVALID_CROSS_SECTION;
+                    crossSectionBot = INVALID_CROSS_SECTION;
+                }
+                //if(buttonLeft == GLFW_PRESS) {
+                int keystate = glfwGetKey(GLFW_KEY_ENTER);
+                if(keystate == GLFW_PRESS) {
+                    entities[i].select_vertices_in_cross_section(crossSectionBot, crossSectionTop);
+                    state = STATE_SELECT_VERTICES;
+                }
+                //}
+            }
+            else {
+                if(buttonLeft == GLFW_PRESS) {
+                    placedFirstSection = true;
+                }
+                crossSectionBot = entities[i].place_line(rayposition, raydirection);
+            }
+        }
+    }
+
+    showOverlay = false;
 
 //    camera.x+=0.02f;
 //    camera.y+=0.02f;
@@ -107,10 +171,26 @@ void MeshEditor::draw() {
     shader.set_camera_pos(camera.x, camera.y, camera.z);
     shader.set_view(view);
 
+    if(state == STATE_SELECT_CROSS_SECTION) {
+        shader.set_show_cross_section(true);
+        shader.set_cross_section_bot(crossSectionBot);
+        shader.set_cross_section_top(crossSectionTop);
+    } else {
+        shader.set_show_cross_section(false);
+    }
+
     for(Entity& e : entities) {
         e.draw(shader);
     }
+    shader.set_show_cross_section(false);
 
+    if(showOverlay) {
+        for (Entity &e : entities) {
+            e.draw_overlay(shader);
+        }
+    }
+
+    shader.set_solid_color(true);
     if(state == STATE_SELECT_VERTICES) {
         vec2 mouse;
         int x;
@@ -148,6 +228,11 @@ void MeshEditor::draw() {
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
         transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
+            int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+            if(button == GLFW_PRESS) {
+                mouseDown = true;
+                dragDirection = V3(0, 0, 1);
+            }
             shader.set_light_color(1.0f, 0.3f, 0.3f);
         }
         shader.set_transform(transform);
@@ -156,6 +241,14 @@ void MeshEditor::draw() {
         shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
         transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
+            int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+            if(button == GLFW_PRESS) {
+                mouseDown = true;
+                int lasxpos;
+                int lasypos;
+                glfwGetMousePos(&lasxpos, &lasypos);
+                dragDirection = V3(0, 1, 0);
+            }
             shader.set_light_color(0.3f, 1.0f, 0.3f);
         }
         shader.set_transform(transform);
@@ -164,6 +257,11 @@ void MeshEditor::draw() {
         shader.set_light_color(0.8f, 0.15f, 0.15f); // red
         transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
+            int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
+            if(button == GLFW_PRESS) {
+                mouseDown = true;
+                dragDirection = V3(1, 0, 0);
+            }
             shader.set_light_color(0.3f, 0.3f, 1.0f);
         }
         shader.set_transform(transform);
@@ -184,6 +282,8 @@ void MeshEditor::draw() {
     shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 10000, 0.04}, view));
     draw_model(&cylinderModel);
 
+    shader.set_solid_color(false);
+
     if(state == STATE_SELECT_VERTICES) {
         bshader.bind();
         bshader.set_view(view);
@@ -194,8 +294,9 @@ void MeshEditor::draw() {
     }
 }
 
-void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
+void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll) {
     camera = {x, y, z, pitch, yaw, roll};
+    move_cam_backwards(&camera, zoom);
 }
 
 void MeshEditor::add_model(const char* str, int fileformat) {
