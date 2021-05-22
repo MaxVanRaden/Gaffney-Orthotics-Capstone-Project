@@ -97,9 +97,9 @@ export const EditMenu = () => {
                     Translate Factor
                     <div className="input-box">
                     <input type='number' id='translationFactor'
-                           min='0.001' step="0.01"
+                           min='0.001' step='0.01'
                            style={{width:60}}
-                           placeholder="0.001"
+                           value="0.01" // Must be value, placeholder causes unexpected behavior on backend
                     />
                     </div>
                 </div>

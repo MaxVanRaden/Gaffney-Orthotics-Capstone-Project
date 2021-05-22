@@ -463,7 +463,7 @@ vec3 MeshEditor::calculate_avg_pos_selected_vertices() {
 
     for (Entity& e : entities){
         for(Mesh& m : e.get_current().meshes){
-            for(u32 index : m.selected_vertices){
+            for(u32 index : m.selected_vertices) {
                 avgX += m.vertices[index].position.x;
                 avgY += m.vertices[index].position.y;
                 avgZ += m.vertices[index].position.z;
