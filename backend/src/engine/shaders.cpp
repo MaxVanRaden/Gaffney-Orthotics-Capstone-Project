@@ -113,6 +113,11 @@ varying vec3 pass_normal;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 cameraPos;
+uniform float alpha;
+uniform float crossSectionBottom;
+uniform float crossSectionTop;
+uniform float shouldShowCrossSection;
+uniform float solidColor;
 
 void main() {
     vec3 normal = normalize(pass_normal);
@@ -130,8 +135,23 @@ void main() {
     spec = spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec;
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 lighting = (ambient + diffuse + specular) * lightColor;
-    gl_FragColor = vec4(lighting, 1.0);
+    if(solidColor > 0.5) {
+        gl_FragColor = vec4(lightColor, 1.0);
+    } else {
+        vec3 lighting = (ambient + diffuse + specular) * lightColor;
+        gl_FragColor = vec4(lighting, 1.0);
+        gl_FragColor.a = alpha;
+    }
+
+    if(shouldShowCrossSection > 0.5) {
+        if(pass_pos.y >= crossSectionTop-0.015 && pass_pos.y <= crossSectionTop+0.015) {
+            gl_FragColor = vec4(1, 0.4, 0.4, 1);
+        }
+
+        if(pass_pos.y >= crossSectionBottom-0.015 && pass_pos.y <= crossSectionBottom+0.015) {
+            gl_FragColor = vec4(1, 0.4, 0.4, 1);
+        }
+    }
 }
 )foo";
 	shader = load_shader_from_strings( vShaderStr, fShaderStr );
@@ -148,9 +168,18 @@ void main() {
     transform = glGetUniformLocation(shader.ID, "transform");
     view = glGetUniformLocation(shader.ID, "view");
     lightspace = glGetUniformLocation(shader.ID, "lightspace");
+    alpha = glGetUniformLocation(shader.ID, "alpha");
+    solidColor = glGetUniformLocation(shader.ID, "solidColor");
+
+    crossSectionBot = glGetUniformLocation(shader.ID, "crossSectionBottom");
+    crossSectionTop = glGetUniformLocation(shader.ID, "crossSectionTop");
+    showCrossSection = glGetUniformLocation(shader.ID, "shouldShowCrossSection");
 
     glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(90, 16.0f / 9.0f, 1.0f, 300.0f).elements));
-	
+
+    set_show_cross_section(false);
+    set_solid_color(false);
+    set_alpha(1.0f);
 	set_light_color(1.0, 1.0, 1.0);
 	set_light_pos(-4, 24, -2);
 	set_camera_pos(7, 7, 7);
@@ -160,6 +189,24 @@ void main() {
 	set_shadows_on(true);
 
     printf("static shader constructed\n");
+}
+
+void StaticShader::set_alpha(float alpha) const {
+    glUniform1f(this->alpha, alpha);
+}
+
+void StaticShader::set_solid_color(bool solid) const {
+    glUniform1f(this->solidColor, solid);
+}
+
+void StaticShader::set_cross_section_top(float y) const {
+    glUniform1f(this->crossSectionTop, y);
+}
+void StaticShader::set_cross_section_bot(float y) const {
+    glUniform1f(this->crossSectionBot, y);
+}
+void StaticShader::set_show_cross_section(bool show) const {
+    glUniform1f(this->showCrossSection, (float)show);
 }
 
 void StaticShader::dispose() {
