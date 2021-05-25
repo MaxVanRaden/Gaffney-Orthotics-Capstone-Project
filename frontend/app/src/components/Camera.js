@@ -167,7 +167,7 @@ export const Camera = (props) => {
                     <input type="number"
                            className="x-inp"
                            min={-range} max={range}
-                           style={{maxWidth:500, paddingLeft:10, minWidth:6, width:"20%"}}
+                           style={{maxWidth:500, paddingLeft:10, minWidth:30, width:"20%"}}
                            maxLength="4"
                            value={camera.x} onChange={handleChange}/>
                 </div>
@@ -184,7 +184,7 @@ export const Camera = (props) => {
                     <input type="number"
                            className="y-inp"
                            min={-range} max={range}
-                           style={{maxWidth:500, paddingLeft:10, minWidth:6, width:"20%"}}
+                           style={{maxWidth:500, paddingLeft:10, minWidth:30, width:"20%"}}
                            maxLength="4"
                            value={camera.y} onChange={handleChange}/>
                 </div>
@@ -201,7 +201,7 @@ export const Camera = (props) => {
                     <input type="number"
                            className="z-inp"
                            min={-range} max={range}
-                           style={{maxWidth:500, paddingLeft:10, minWidth:6, width:"20%"}}
+                           style={{maxWidth:500, paddingLeft:10, minWidth:30, width:"20%"}}
                            maxLength="4"
                            value={camera.z} onChange={handleChange}/>
                 </div>
@@ -218,7 +218,7 @@ export const Camera = (props) => {
                     <input type="number"
                            className="yaw-inp"
                            min="-360" max="360"
-                           style={{maxWidth:500, paddingLeft:10, minWidth:6, width:"20%"}}
+                           style={{maxWidth:500, paddingLeft:10, minWidth:30, width:"20%"}}
                            maxLength="4"
                            value={camera.yaw} onChange={handleChange}/>
                 </div>
@@ -235,7 +235,7 @@ export const Camera = (props) => {
                     <input type="number"
                            className="pitch-inp"
                            min="-360" max="360"
-                           style={{maxWidth:500, paddingLeft:10, minWidth:6, width:"20%"}}
+                           style={{maxWidth:500, paddingLeft:10, minWidth:30, width:"20%"}}
                            maxLength="4"
                            value={camera.pitch} onChange={handleChange}/>
                 </div>
@@ -252,7 +252,7 @@ export const Camera = (props) => {
                     <input type="number"
                            className="roll-inp"
                            min="-360" max="360"
-                           style={{maxWidth:500, paddingLeft:10, minWidth:6, width:"20%"}}
+                           style={{maxWidth:500, paddingLeft:10, minWidth:30, width:"20%"}}
                            maxLength="4"
                            value={camera.roll} onChange={handleChange}/>
                 </div>
