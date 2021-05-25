@@ -19,7 +19,7 @@ public:
     void draw(StaticShader& shader);
     void draw_vertices(BillboardShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos);
     void draw_vertices(PickingShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos);
-    void set_relative_position(vec3 pos);
+    void set_position(vec3 pos);
     void set_rotation(vec3 rotate);
     void set_scale(vec3 scale);
     void scale_entity(float factor);

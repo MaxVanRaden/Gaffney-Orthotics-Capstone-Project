@@ -47,6 +47,9 @@ private:
     std::vector<Entity> undostack;
     std::vector<Entity> redostack;
 
+    float scale_factor;
+    bool draw_arrows;
+
     bool axis_clicked;
     bool fliparrows;
 

@@ -130,7 +130,6 @@ extern "C" {
 
 	// Scale every vertex in every mesh in every entity by the factor passed in
 	void scale(float factor){
-        printf("backend scale got factor %f and attempted to scale by %f%\n", factor, factor*100);
         if(initialized){
             editor->scale_all_entities(factor);
         }

@@ -26,6 +26,8 @@ extern "C" {
 }
 
 MeshEditor::MeshEditor() {
+    scale_factor = 1.0f;
+    draw_arrows = false;
     axis_clicked = false;
     export_strlen = 0;
     shader.load();
@@ -40,7 +42,7 @@ MeshEditor::MeshEditor() {
     undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_relative_position({4, 4, 4});
+    entities.back().set_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
     camera.x = camera.y = camera.z = 4;
@@ -135,7 +137,7 @@ void MeshEditor::draw() {
         e.draw(shader);
     }
 
-    if(state == STATE_SELECT_VERTICES) {
+    if(state == STATE_SELECT_VERTICES && draw_arrows) {
         vec2 mouse;
         Axis axis;
         int x;
@@ -273,7 +275,7 @@ void MeshEditor::add_model(const char* str, int fileformat) {
     entities.clear();
     entities.emplace_back();
     entities.back().load(str, fileformat);
-    entities.back().set_relative_position({4, 4, 4});
+    entities.back().set_position({4, 4, 4});
     printf("added model\n");
 }
 
@@ -463,6 +465,9 @@ vec3 MeshEditor::calculate_avg_pos_selected_vertices() {
 
     for (Entity& e : entities){
         for(Mesh& m : e.get_current().meshes){
+            if (!m.selected_vertices.empty()) {
+                draw_arrows = true;
+            }
             for(u32 index : m.selected_vertices) {
                 avgX += m.vertices[index].position.x;
                 avgY += m.vertices[index].position.y;
@@ -483,11 +488,29 @@ vec3 MeshEditor::calculate_avg_pos_selected_vertices() {
 }
 
 
-// Scale every vertex in every mesh in every entity by the factor passed in
+// Set the scale of the entities to be ${factor}% of the original size.
 void MeshEditor::scale_all_entities(float factor) {
-    set_undo(); // adds to the undo stack & resets the redo stack
-    for(Entity& e: entities) {
-        e.scale_entity(factor);
+
+    bool is_scale_to_zero = factor == 0 || scale_factor == 0;
+
+    // Avoid / 0
+    if (is_scale_to_zero) {
+        scale_factor = factor;
+    } else {
+        float hold = factor;
+        factor = 1 / (scale_factor / factor);
+        scale_factor = hold;
+    }
+
+    // No need to multiply by 1
+    if (factor != 1) {
+        set_undo(); // adds to the undo stack & resets the redo stack
+        for (Entity &e: entities) {
+            draw_arrows = false;
+            e.reset_selected_vertices();
+            state = STATE_SELECT_ENTITY;
+            e.scale_entity(factor);
+        }
     }
 }
 

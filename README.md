@@ -15,6 +15,7 @@ Carlos Sotello
 * Navigate to *frontend/app* directory and run:
 ```
 npm install
+npm install react-draggable
 ```
 * Navigate to the root directory and run:
 ```

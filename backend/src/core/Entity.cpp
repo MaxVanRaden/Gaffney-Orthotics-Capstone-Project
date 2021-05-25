@@ -20,14 +20,14 @@ void Entity::load(std::string file, int fileformat) {
 }
 
 void Entity::draw(StaticShader& shader) {
-    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( {0}, current.rotate, current.scale );
     shader.set_transform(transform);
 
     draw_model(&current);
 }
 
 void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos) {
-    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( {0}, current.rotate, current.scale );
 
     //glDisable(GL_DEPTH_TEST);
     //glDisable(GL_CULL_FACE);
@@ -63,7 +63,7 @@ void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture cir
 }
 
 void Entity::draw_vertices(PickingShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos) {
-    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( {0}, current.rotate, current.scale );
 
     //glDisable(GL_DEPTH_TEST);
     //glDisable(GL_CULL_FACE);
@@ -114,9 +114,9 @@ void Entity::scale_entity(float factor) {
     for (Mesh& mesh : current.meshes) {
         for (Vertex& vertex : mesh.vertices){
             // Scale each vertex's position by the factor
-            vertex.position.x *= factor;
-            vertex.position.y *= factor;
-            vertex.position.z *= factor;
+            vertex.position.x = ((vertex.position.x - current.pos.x) * factor) + current.pos.x;
+            vertex.position.y = ((vertex.position.y - current.pos.y) * factor) + current.pos.y;
+            vertex.position.z = ((vertex.position.z - current.pos.z) * factor) + current.pos.z;
         }
         // Update the VBO buffer to reflect changes in vertices
         glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
@@ -125,7 +125,7 @@ void Entity::scale_entity(float factor) {
 }
 
 bool Entity::is_mouse_over(vec3 o, vec3 d) {
-    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( {0}, current.rotate, current.scale );
 
     for(Mesh m : current.meshes) {
         for(int i = 0; i < m.indices.size(); i+=3) {
@@ -165,7 +165,7 @@ void Entity::reset_selected_vertices() {
 }
 
 void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport) {
-    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+    mat4 transform = create_transformation_matrix( {0}, current.rotate, current.scale );
     mat4 view = create_view_matrix(camera);
 
     reset_selected_vertices();
@@ -259,7 +259,8 @@ void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projec
 }
 
 // Set position relative to it's current position which is {0} by default.
-void Entity::set_relative_position(vec3 pos) {
+void Entity::set_position(vec3 pos) {
+    current.pos = pos;
     for (Mesh& m : current.meshes) {
         for (Vertex& v : m.vertices) {
             v.position.x += pos.x;
