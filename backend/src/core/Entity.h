@@ -25,7 +25,7 @@ public:
     void set_rotation(vec3 rotate);
     void set_scale(vec3 scale);
     void scale_entity(float factor);
-    void select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport);
+    void select(int xIn, int yIn, int x2, int y2, mat4 view, mat4 projection, Rect viewport);
     void select_vertices_in_cross_section(float top, float bot);
     Model& get_current();
     void reset_head(Model& change);
