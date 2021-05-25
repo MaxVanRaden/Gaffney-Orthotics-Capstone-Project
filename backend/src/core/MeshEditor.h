@@ -28,9 +28,11 @@ public:
 
     void draw();
     void run(int width, int height);
+    void camera_controls();
+
     void add_model(const char* str, int fileformat);
     char* export_model(const char* fileformat);
-    void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll);
+    void set_camera(float zoom, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     void scale_all_entities(float factor);
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;
@@ -54,12 +56,18 @@ private:
     bool fliparrows;
 
     bool mouseDown;
+    bool waitForRelease;
+    bool shiftDown;
+    bool zoomOut;
+    bool zoomIn;
     bool showOverlay;
     vec3 dragDirection;
 
     bool placedFirstSection;
     float crossSectionBot;
     float crossSectionTop;
+    int lastMouseX;
+    int lastMouseY;
 
     Mesh billboard;
     Texture circle;
@@ -70,7 +78,9 @@ private:
     StaticShader shader{};
     BillboardShader bshader{};
     Framebuffer pickbuffer;
-    Camera camera{};
+    //Camera camera{};
+    vec3 cameraPos;
+    vec3 cameraCenter;
     Model stairs;
     Model cylinderModel;
     uint32_t export_strlen;

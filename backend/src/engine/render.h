@@ -75,7 +75,7 @@ void draw_model(Model* model);
 
 Mesh create_billboard();
 void draw_billboard_unordered(Mesh* mesh);
-mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view, f32 xrot=0, f32 yrot=0, f32 zrot=0);
+mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, vec3 cameraPos, mat4& view, f32 xrot=0, f32 yrot=0, f32 zrot=0);
 mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view);
 
 #endif

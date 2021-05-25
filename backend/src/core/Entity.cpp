@@ -243,9 +243,8 @@ void Entity::reset_selected_vertices() {
     }
 }
 
-void Entity::select(int xIn, int yIn, int x2, int y2, Camera camera, mat4 projection, Rect viewport) {
+void Entity::select(int xIn, int yIn, int x2, int y2, mat4 view, mat4 projection, Rect viewport) {
     mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
-    mat4 view = create_view_matrix(camera);
 
     reset_selected_vertices();
 
