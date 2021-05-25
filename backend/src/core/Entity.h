@@ -36,7 +36,7 @@ public:
 private:
     void add_vertex_if_unique(Mesh& mesh, int i);
     Model current; //current model
-//    Model start; //the model before any changes were made
+    Model start; //the model before any changes were made
 //    Model previous[MAX_REVERT_COUNT]; //an array of the last MAX_REVERT_COUNT number of changes (for undoing)
 };
 
