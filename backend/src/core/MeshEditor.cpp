@@ -34,7 +34,7 @@ MeshEditor::MeshEditor() {
     bshader.load();
     pshader.load();
     //TODO: [DEV] Change back to 0
-    camera = {3, 6, 0, 0, 0, 0};
+    camera = {0, 0, 0, 0, 0, 0};
     fliparrows = false;
 
     entities.emplace_back();
@@ -42,7 +42,7 @@ MeshEditor::MeshEditor() {
     undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position({4, 4, 4});
+    entities.back().set_position({50, 50, -350});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     move_cam_backwards(&camera, 10);
     camera.x = camera.y = camera.z = 4;

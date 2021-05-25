@@ -7,6 +7,9 @@ export const EditMenu = () => {
     useEffect(() => {
         document.getElementById("edit-menu").style.display = display;
     },[display]);
+    useEffect(() => {
+        document.getElementById("translationFactor").value = 0.001;
+    })
     //Scale the model
     const Scale = () => {
         let val = document.getElementById("scale-val").value;
@@ -99,7 +102,7 @@ export const EditMenu = () => {
                     <input type='number' id='translationFactor'
                            min='0.001' step='0.01'
                            style={{width:60}}
-                           value="0.01" // Must be value, placeholder causes unexpected behavior on backend
+                           //value="0.01" Can't set value to literal or it won't change
                     />
                     </div>
                 </div>

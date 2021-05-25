@@ -177,6 +177,7 @@ Model load_model_string(const std::string& buffer, int fileformat) {
             aiProcess_Triangulate           |
             aiProcess_FindInvalidData       |
             aiProcess_ValidateDataStructure |
+            aiProcess_JoinIdenticalVertices |
             0, pHint.c_str());
     if(!pScene) {
         printf("%s failed to load\n", buffer.c_str());

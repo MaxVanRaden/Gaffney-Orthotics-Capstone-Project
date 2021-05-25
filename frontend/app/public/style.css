@@ -171,7 +171,17 @@ div.toolbar {
     position:relative;
 }
 .bend-val {
-    left: 0
+    left: 0;
+}
+#hidden_box {
+    display:none;
+}
+#hidden_text {
+    font-style: italic;
+    font-size: 11px;
+}
+#hover_here:hover + #hidden_box {
+    display: block;
 }
 .menu-header{
     border-bottom: 2px solid #7c868a;

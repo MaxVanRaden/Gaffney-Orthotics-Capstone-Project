@@ -83,6 +83,12 @@ export const SelectMenu = (props) => {
                            id="selectToggle" className="toggle"
                     />
                 </div>
+                <div className="option" id="hover_here">
+                    Cross section<input type='checkbox' id='crossToggle' className='toggle' value="section"/>
+                </div>
+                <div id="hidden_box">
+                    <p id="hidden_text"> Click on the model to place a line on each side of the section you'd like to select. Right click to remove a line. </p>
+                </div>
             </div>
             </Draggable>
         </div>
