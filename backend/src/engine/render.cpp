@@ -278,22 +278,18 @@ Mesh create_billboard() {
     return create_mesh(vertices, indices);
 }
 
-mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view, f32 xrot, f32 yrot, f32 zrot) {
+mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, vec3 cameraPos, mat4& view, f32 xrot, f32 yrot, f32 zrot) {
     mat4 mat = identity();
     mat *= translation(x, y, z);
-
-    //transpose scale component
-    mat.m00 = view.m00;
-    mat.m22 = view.m22;
-    mat.m11 = view.m11;
-    mat.m33 = view.m33;
 
     mat *= rotateX(xrot);
     mat *= rotateY(yrot);
     mat *= rotateZ(zrot);
 
     //mat *= rotation(rot, 0, 0, 1);
-    mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);
+    vec3 diff = normalize(V3(x, y, z) - cameraPos);
+    float dist = length(diff);
+    mat *= scale(dist * scaleVec.x, dist * scaleVec.y, dist * scaleVec.z);
 
     return mat;
 }
@@ -309,9 +305,6 @@ mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view) {
     mat.m12 = view.m21;
     mat.m20 = view.m02;
     mat.m22 = view.m22;
-    //transpose scale component
-    mat.m11 = view.m11;
-    mat.m33 = view.m33;
 
     //mat *= rotation(rot, 0, 0, 1);
     mat *= scale(scaleVec.x, scaleVec.y, scaleVec.z);

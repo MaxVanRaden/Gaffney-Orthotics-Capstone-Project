@@ -1,10 +1,14 @@
 #include <iostream>
 #include <fstream>
+#include <functional>
 #include "MeshEditor.h"
 #include "StairsString.h"
 #include "CylinderString.h"
 #include "ArrowString.h"
 #include "assimp/Exporter.hpp"
+
+void scroll_callback(int test);
+double scrollY;
 
 MeshEditor::MeshEditor() {
     export_strlen = 0;
@@ -12,15 +16,16 @@ MeshEditor::MeshEditor() {
     bshader.load();
     pshader.load();
     //TODO: [DEV] Change back to 0
-    camera = {3, 6, 0, 0, 0, 0};
+    //camera = {3, 6, 0, 0, 0, 0};
+    cameraPos = {3, 6, 0};
 
     entities.emplace_back();
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
     //entities.back().set_relative_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
-    move_cam_backwards(&camera, 10);
-    camera.x = camera.y = camera.z = 4;
+    //move_cam_backwards(&camera, 10);
+    cameraPos.x = cameraPos.y = cameraPos.z = 4;
     state = STATE_SELECT_ENTITY;
 
     billboard = create_billboard();
@@ -51,37 +56,36 @@ MeshEditor::MeshEditor() {
     }
     circle = load_texture(pixels, 64, 64, GL_LINEAR);
     delete[] pixels;
+    scrollY = 0;
 
     cylinderModel = load_model_string(cylinderHardcoded, 0);
     arrow = load_model_string(arrowHardcoded, 0);
 
-    camera.x -= 5;
-    camera.y -= 5;
+    cameraPos.x -= 5;
+    cameraPos.y -= 5;
     mouseDown = false;
+    cameraCenter = {0, 0, 0};
 
     crossSectionBot = crossSectionTop = INVALID_CROSS_SECTION;
     placedFirstSection = false;
 
     //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
+
+    glfwSetMouseWheelCallback(scroll_callback);
 }
 
 void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
+    mat4 view = look_at(cameraPos, cameraCenter);
 
-    int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
-    if(button == GLFW_PRESS) {
-        mouseDown = true;
-    }
-    if(button == GLFW_RELEASE) {
-        mouseDown = false;
+    int keystate = glfwGetKey(KEY_C);
+    if(keystate == GLFW_PRESS) {
+        state = STATE_SELECT_CROSS_SECTION;
+        crossSectionBot = crossSectionTop = INVALID_CROSS_SECTION;
+        placedFirstSection = false;
     }
 
     if(state == STATE_SELECT_ENTITY) {
-        int keystate = glfwGetKey(KEY_C);
-        if(keystate == GLFW_PRESS) {
-            state = STATE_SELECT_CROSS_SECTION;
-        }
-
         int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
         if(button == GLFW_PRESS) {
             selectedEntity = -1;
@@ -92,8 +96,8 @@ void MeshEditor::run(int width, int height) {
             mouse.x = x;
             mouse.y = y;
 
-            vec3 rayposition = {camera.x, camera.y, camera.z};
-            vec3 raydirection = raycast(projection, camera, mouse, viewport);
+            vec3 rayposition = {cameraPos.x, cameraPos.y, cameraPos.z};
+            vec3 raydirection = raycast(projection, view, mouse, viewport);
 
             for (int i = 0; i < entities.size(); ++i) {
                 if(entities[i].is_mouse_over(rayposition, raydirection)) {
@@ -123,31 +127,39 @@ void MeshEditor::run(int width, int height) {
         mouse.x = x;
         mouse.y = y;
 
-        vec3 rayposition = {camera.x, camera.y, camera.z};
-        vec3 raydirection = raycast(projection, camera, mouse, viewport);
+        vec3 rayposition = {cameraPos.x, cameraPos.y, cameraPos.z};
+        vec3 raydirection = raycast(projection, view, mouse, viewport);
 
         int buttonLeft = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
         int buttonRight = glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT);
+        if(buttonLeft == GLFW_RELEASE) {
+            waitForRelease = false;
+        }
 
         for (int i = 0; i < entities.size(); ++i) {
             if(placedFirstSection) {
-                crossSectionTop = entities[i].place_line(rayposition, raydirection);
-                if(buttonRight == GLFW_PRESS) {
-                    placedFirstSection = false;
-                    crossSectionTop = INVALID_CROSS_SECTION;
-                    crossSectionBot = INVALID_CROSS_SECTION;
+                if(!waitForRelease) {
+                    crossSectionTop = entities[i].place_line(rayposition, raydirection);
+                    if(buttonRight == GLFW_PRESS) {
+                        placedFirstSection = false;
+                        crossSectionTop = INVALID_CROSS_SECTION;
+                        crossSectionBot = INVALID_CROSS_SECTION;
+                        break;
+                    }
+                    if(buttonLeft == GLFW_PRESS) {
+                        //int keystate = glfwGetKey(GLFW_KEY_ENTER);
+                        //if(keystate == GLFW_PRESS) {
+                        entities[i].select_vertices_in_cross_section(crossSectionBot, crossSectionTop);
+                        state = STATE_SELECT_VERTICES;
+                        break;
+                        //}
+                    }
                 }
-                //if(buttonLeft == GLFW_PRESS) {
-                int keystate = glfwGetKey(GLFW_KEY_ENTER);
-                if(keystate == GLFW_PRESS) {
-                    entities[i].select_vertices_in_cross_section(crossSectionBot, crossSectionTop);
-                    state = STATE_SELECT_VERTICES;
-                }
-                //}
             }
             else {
                 if(buttonLeft == GLFW_PRESS) {
                     placedFirstSection = true;
+                    waitForRelease = true;
                 }
                 crossSectionBot = entities[i].place_line(rayposition, raydirection);
             }
@@ -159,16 +171,85 @@ void MeshEditor::run(int width, int height) {
 //    camera.x+=0.02f;
 //    camera.y+=0.02f;
     draw();
+    camera_controls();
+}
+
+void scroll_callback(int test) {
+    printf("test: %d\n", test);
+}
+
+void MeshEditor::camera_controls() {
+    int test = glfwGetMouseWheel();
+
+    int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_MIDDLE);
+    if(button == GLFW_PRESS) {
+        mouseDown = true;
+    }
+    if(button == GLFW_RELEASE) {
+        mouseDown = false;
+    }
+
+    int key = glfwGetKey(KEY_LEFT_SHIFT);
+    if(key == GLFW_PRESS) {
+        shiftDown = true;
+    }
+    if(key == GLFW_RELEASE) {
+        shiftDown = false;
+    }
+
+    if(mouseDown) {
+        if(shiftDown) {
+            cameraCenter.x += 0.03f;
+            cameraPos.x += 0.03f;
+        } else {
+            int mouseX;
+            int mouseY;
+            glfwGetMousePos(&mouseX, &mouseY);
+
+            vec4 pos = V4(cameraPos.x, cameraPos.y, cameraPos.z, 1.0);
+            f32 yaw = (mouseX - lastMouseX) * 0.15f;
+            f32 pitch = (mouseY - lastMouseY) * 0.15f;
+            pos = pos * rotateX(pitch) * rotateY(yaw);
+            cameraPos = pos.xyz;
+        }
+    }
+
+    key = glfwGetKey(KEY_MINUS);
+    if(key == GLFW_PRESS) {
+        zoomOut = true;
+    }
+    if(key == GLFW_RELEASE) {
+        zoomOut = false;
+    }
+
+    key = glfwGetKey(KEY_EQUAL);
+    if(key == GLFW_PRESS) {
+        zoomIn = true;
+    }
+    if(key == GLFW_RELEASE) {
+        zoomIn = false;
+    }
+
+    if(zoomOut) {
+        vec3 diff = normalize(cameraPos - cameraCenter);
+        cameraPos = cameraPos + diff * 0.5f;
+    }
+    if(zoomIn) {
+        vec3 diff = normalize(cameraPos - cameraCenter);
+        cameraPos = cameraPos + diff * -0.5f;
+    }
+
+    glfwGetMousePos(&lastMouseX, &lastMouseY);
 }
 
 void MeshEditor::draw() {
-    mat4 view = create_view_matrix(camera);
-    //view = look_at({camera.x, camera.y, camera.z}, {0, 0, 0});
+    //mat4 view = create_view_matrix(camera);
+    mat4 view = look_at(cameraPos, cameraCenter);
 
     shader.bind();
     shader.set_light_pos(14, 14, 14);
     shader.set_light_color(147.0f/255.0f, 108.0f/255.0f,95.0f/255.0f);
-    shader.set_camera_pos(camera.x, camera.y, camera.z);
+    shader.set_camera_pos(cameraPos.x, cameraPos.y, cameraPos.z);
     shader.set_view(view);
 
     if(state == STATE_SELECT_CROSS_SECTION) {
@@ -199,8 +280,8 @@ void MeshEditor::draw() {
         mouse.x = x;
         mouse.y = y;
 
-        vec3 o = {camera.x, camera.y, camera.z};
-        vec3 d = raycast(projection, camera, mouse, viewport);
+        vec3 o = cameraPos;
+        vec3 d = raycast(projection, view, mouse, viewport);
         mat4 transform;
 
         // Average position of selected vertices
@@ -226,42 +307,24 @@ void MeshEditor::draw() {
 
         glDisable(GL_DEPTH_TEST);
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
-        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 90, 0, 0);
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.2, 0.2, 0.2}, cameraPos, view, 90, 0, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
-            int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
-            if(button == GLFW_PRESS) {
-                mouseDown = true;
-                dragDirection = V3(0, 0, 1);
-            }
             shader.set_light_color(1.0f, 0.3f, 0.3f);
         }
         shader.set_transform(transform);
         draw_model(&arrow);
 
         shader.set_light_color(0.15f, 0.15f, 0.8f); // blue
-        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 90, 0);
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.2, 0.2, 0.2}, cameraPos, view, 0, 90, 0);
         if(is_mouse_over_arrow(o, d, transform)) {
-            int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
-            if(button == GLFW_PRESS) {
-                mouseDown = true;
-                int lasxpos;
-                int lasypos;
-                glfwGetMousePos(&lasxpos, &lasypos);
-                dragDirection = V3(0, 1, 0);
-            }
             shader.set_light_color(0.3f, 1.0f, 0.3f);
         }
         shader.set_transform(transform);
         draw_model(&arrow);
 
         shader.set_light_color(0.8f, 0.15f, 0.15f); // red
-        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.4, 0.4, 0.4}, view, 0, 0, 90);
+        transform = no_view_scaling_transform(avgX, avgY, avgZ, {0.2, 0.2, 0.2}, cameraPos, view, 0, 0, 90);
         if(is_mouse_over_arrow(o, d, transform)) {
-            int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
-            if(button == GLFW_PRESS) {
-                mouseDown = true;
-                dragDirection = V3(1, 0, 0);
-            }
             shader.set_light_color(0.3f, 0.3f, 1.0f);
         }
         shader.set_transform(transform);
@@ -271,15 +334,15 @@ void MeshEditor::draw() {
 
     //Draw lines to show the axis of the 3d grid
     shader.set_light_color(1.0f, 0.3f, 0.3f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {10000, 0.04, 0.04}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {10000, 0.02, 0.02}, cameraPos, view));
     draw_model(&cylinderModel);
 
     shader.set_light_color(0.3f, 1.0f, 0.3f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 0.04, 10000}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.02, 0.02, 10000}, cameraPos, view));
     draw_model(&cylinderModel);
 
     shader.set_light_color(0.3f, 0.3f, 1.0f);
-    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.04, 10000, 0.04}, view));
+    shader.set_transform(no_view_scaling_transform(0, 0, 0, {0.02, 10000, 0.02}, cameraPos, view));
     draw_model(&cylinderModel);
 
     shader.set_solid_color(false);
@@ -287,16 +350,18 @@ void MeshEditor::draw() {
     if(state == STATE_SELECT_VERTICES) {
         bshader.bind();
         bshader.set_view(view);
-        entities[selectedEntity].draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
+        entities[selectedEntity].draw_vertices(bshader, &billboard, circle, view, cameraPos);
         //for (Entity &e : entities) {
         //    e.draw_vertices(bshader, &billboard, circle, view, {camera.x, camera.y, camera.z});
         //}
     }
 }
 
-void MeshEditor::set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll) {
-    camera = {x, y, z, pitch, yaw, roll};
-    move_cam_backwards(&camera, zoom);
+void MeshEditor::set_camera(float zoom, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ) {
+    cameraPos = {posX, posY, posZ};
+    cameraCenter = {lookAtX, lookAtY, lookAtZ};
+    vec3 diff = normalize(cameraPos - cameraCenter);
+    cameraPos = cameraPos + diff * zoom;
 }
 
 void MeshEditor::add_model(const char* str, int fileformat) {
@@ -438,7 +503,7 @@ char* MeshEditor::export_model(const char* fileformat) {
 
 void MeshEditor::on_mouse_up(int x, int y, int x2, int y2) {
     for(Entity& e: entities) {
-        e.select(x, y, x2, y2, camera, projection, viewport);
+        e.select(x, y, x2, y2, look_at(cameraPos, cameraCenter), projection, viewport);
     }
 
 #if 0
