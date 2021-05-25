@@ -7,9 +7,12 @@
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
 
+#define INVALID_CROSS_SECTION 0xFFFFFF
+
 enum EditorState {
     STATE_SELECT_ENTITY,
-    STATE_SELECT_VERTICES
+    STATE_SELECT_VERTICES,
+    STATE_SELECT_CROSS_SECTION
 };
 
 enum Axis {
@@ -49,6 +52,14 @@ private:
 
     bool axis_clicked;
     bool fliparrows;
+
+    bool mouseDown;
+    bool showOverlay;
+    vec3 dragDirection;
+
+    bool placedFirstSection;
+    float crossSectionBot;
+    float crossSectionTop;
 
     Mesh billboard;
     Texture circle;

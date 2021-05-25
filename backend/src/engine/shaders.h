@@ -44,6 +44,12 @@ class StaticShader {
         void set_transform(mat4 tran);
         void set_view(mat4 view);
         void set_lightspace(mat4 LSM);
+        void set_alpha(float alpha) const;
+        void set_solid_color(bool show) const;
+
+        void set_cross_section_top(float y) const;
+        void set_cross_section_bot(float y) const;
+        void set_show_cross_section(bool show) const;
 
     private:
         Shader shader;
@@ -56,6 +62,12 @@ class StaticShader {
         GLint transform;
         GLint lightspace;
         GLint view;
+        GLint alpha;
+        GLint solidColor;
+
+        GLint crossSectionBot;
+        GLint crossSectionTop;
+        GLint showCrossSection;
 };
 
 class BillboardShader {

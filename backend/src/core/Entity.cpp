@@ -16,14 +16,24 @@ void Entity::load(std::string file, int fileformat) {
     current = load_model_string(file, fileformat);
     current.scale = current.rotate = current.pos = {0};
     current.scale = {1, 1, 1};
-    //start = current;
+    start = current;
 }
 
 void Entity::draw(StaticShader& shader) {
     mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
     shader.set_transform(transform);
-
+    shader.set_alpha(1.0f);
     draw_model(&current);
+}
+
+void Entity::draw_overlay(StaticShader& shader) {
+    mat4 transform = create_transformation_matrix( start.pos, start.rotate, 1.5f*start.scale );
+    shader.set_transform(transform);
+    shader.set_alpha(0.25f);
+    //shader.set_light_color(1, 1, 1);
+    draw_model(&start);
+
+    shader.set_alpha(1.0f);
 }
 
 void Entity::draw_vertices(BillboardShader& shader, Mesh* billboard, Texture circle, mat4 view, vec3 campos) {
@@ -124,6 +134,76 @@ void Entity::scale_entity(float factor) {
     }
 }
 
+float Entity::place_line(vec3 o, vec3 d) {
+    mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
+
+    //get all the collisions with the ray
+    std::vector<vec3> collisions;
+    for(Mesh m : current.meshes) {
+        for(int i = 0; i < m.indices.size(); i+=3) {
+            int index1 = m.indices[i+0];
+            int index2 = m.indices[i+1];
+            int index3 = m.indices[i+2];
+            Vertex one = m.vertices[index1];
+            Vertex two = m.vertices[index2];
+            Vertex three = m.vertices[index3];
+
+            vec3 collisionPoint;
+
+            if(ray_tri_collision(
+                    o, d,
+                    (transform * V4(one.position.x, one.position.y, one.position.z, 1.0)).xyz,
+                    (transform * V4(two.position.x, two.position.y, two.position.z, 1.0)).xyz,
+                    (transform * V4(three.position.x, three.position.y, three.position.z, 1.0)).xyz,
+                    &collisionPoint))
+            {
+                collisions.push_back(collisionPoint);
+            }
+        }
+    }
+
+    //find the closest of the collisions (because it can collide with triangles on the back-side of the model too, so you want the side closer to the camera)
+    float closest = 0xFFFFFF;
+    int index = 0;
+    for(int i = 0; i < collisions.size(); ++i) {
+        vec3 diff = collisions[i] - o;
+        float distance = length(diff);
+        if(distance < closest) {
+            closest = distance;
+            index = i;
+        }
+    }
+
+    //and return that closest collision's y coordinate (that is where the cross-section will be)
+    if(!collisions.empty()) {
+        return collisions[index].y;
+    }
+
+    return 0;
+}
+
+void Entity::select_vertices_in_cross_section(float top, float bot) {
+    reset_selected_vertices();
+
+    //make sure top is always above bot, swap them if this is incorrect.
+    if(bot > top) {
+        float temp = bot;
+        bot = top;
+        top = temp;
+    }
+
+    for(Mesh& m : current.meshes) {
+        int i = 0;
+        for(Vertex v : m.vertices) {
+            if(v.position.y > bot && v.position.y < top) {
+                m.selected[i] = true;
+                m.selected_vertices.push_back(i);
+            }
+            i++;
+        }
+    }
+}
+
 bool Entity::is_mouse_over(vec3 o, vec3 d) {
     mat4 transform = create_transformation_matrix( current.pos, current.rotate, current.scale );
 
@@ -143,9 +223,8 @@ bool Entity::is_mouse_over(vec3 o, vec3 d) {
                     (transform * V4(one.position.x, one.position.y, one.position.z, 1.0)).xyz,
                     (transform * V4(two.position.x, two.position.y, two.position.z, 1.0)).xyz,
                     (transform * V4(three.position.x, three.position.y, three.position.z, 1.0)).xyz,
-                    &collisionPoint
-            )
-                    ) {
+                    &collisionPoint))
+            {
                 return true;
             }
         }
