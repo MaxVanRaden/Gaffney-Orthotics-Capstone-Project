@@ -7127,6 +7127,10 @@ function _glfwGetMousePos(x, y) {
  GLFW.getMousePos(GLFW.active.id, x, y);
 }
 
+function _glfwGetMouseWheel() {
+ return 0;
+}
+
 function _glfwInit() {
  if (GLFW.windows) return 1;
  GLFW.initialTime = GLFW.getTime();
@@ -7175,6 +7179,10 @@ function _glfwOpenWindowHint(target, hint) {
 }
 
 function _glfwPollEvents() {}
+
+function _glfwSetMouseWheelCallback(cbfun) {
+ GLFW.setScrollCallback(GLFW.active.id, cbfun);
+}
 
 function _glfwSetWindowTitle(title) {
  GLFW.setWindowTitle(GLFW.active.id, title);
@@ -7718,10 +7726,12 @@ var asmLibraryArg = {
  "glfwGetKey": _glfwGetKey,
  "glfwGetMouseButton": _glfwGetMouseButton,
  "glfwGetMousePos": _glfwGetMousePos,
+ "glfwGetMouseWheel": _glfwGetMouseWheel,
  "glfwInit": _glfwInit,
  "glfwOpenWindow": _glfwOpenWindow,
  "glfwOpenWindowHint": _glfwOpenWindowHint,
  "glfwPollEvents": _glfwPollEvents,
+ "glfwSetMouseWheelCallback": _glfwSetMouseWheelCallback,
  "glfwSetWindowTitle": _glfwSetWindowTitle,
  "glfwSwapBuffers": _glfwSwapBuffers,
  "glfwSwapInterval": _glfwSwapInterval,

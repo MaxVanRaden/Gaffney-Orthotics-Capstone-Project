@@ -46,7 +46,7 @@ MeshEditor::MeshEditor() {
     undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position({50, 50, -350});
+    entities.back().set_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     //move_cam_backwards(&camera, 10);
     cameraPos.x = cameraPos.y = cameraPos.z = 4;
@@ -328,21 +328,6 @@ void MeshEditor::draw() {
 
         //TODO: Make all three arrows not flat
 
-        for (Entity& e : entities){
-            for(Mesh& m : e.get_current().meshes){
-                for(u32 index : m.selected_vertices){
-                    avgX += m.vertices[index].position.x;
-                    avgY += m.vertices[index].position.y;
-                    avgZ += m.vertices[index].position.z;
-                    total += 1.0f;
-                }
-            }
-        }
-
-        avgX /= total;
-        avgY /= total;
-        avgZ /= total;
-
         glDisable(GL_DEPTH_TEST);
         shader.set_light_color(0.15f, 0.8f, 0.15f); // green
         if(fliparrows)
@@ -452,6 +437,13 @@ void MeshEditor::translate_vertices_along_axis(Axis axis) {
         translation_factor = fliparrows ? get_translation_factor() : (-1) * get_translation_factor();
     else
         translation_factor = fliparrows ? (-1) * get_translation_factor() : get_translation_factor();
+
+    // Flip back around if looking at model from other direction
+    float yaw = cameraCenter.x;
+
+    if (yaw <= -90 || yaw >= 90) {
+        translation_factor *= (-1);
+    }
 
     //Loop over every selected vertex and move appropriate axis by the translation factor
     for (Entity& e : entities) {
