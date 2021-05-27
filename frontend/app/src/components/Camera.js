@@ -8,8 +8,8 @@ export const Camera = (props) => {
         document.getElementById("camera-menu").style.display = display;
     },[display]);
     const cameraOrigin = {
-        x: 0,
-        y: 0,
+        x: 2,
+        y: 3,
         z: 15,
         yaw: 0,
         pitch: 0,
@@ -18,7 +18,7 @@ export const Camera = (props) => {
     const [camera, setCamera] = useState(cameraOrigin);
 
     const zoom = props.zoom / 100;
-    const range = 100;//range of xyz coordinates
+    const range = Number.MAX_SAFE_INTEGER;//range of xyz coordinates
     let canvasElement = document.getElementById('canvas');
     const [clicked, setClicked] = useState(false) //Sets onmousemove listener
     let moveVals = useRef({...camera})//tracks mouse movement without rerender
@@ -49,7 +49,7 @@ export const Camera = (props) => {
         window.Module.ready.then(api => {
             api.set_camera(zoom, moveVals.current.x, moveVals.current.y, moveVals.current.z, moveVals.current.yaw, moveVals.current.pitch, moveVals.current.roll);
         })
-    },[zoom, trackMouse]);
+    },[zoom, trackMouse, range]);
 
     //On mouse down store mouse position
     const mouseDown = useCallback((e) => {
@@ -89,7 +89,7 @@ export const Camera = (props) => {
                 window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, val, camera.yaw, camera.pitch, camera.roll));
             }
         }
-    },[props.tool, camera, zoom])
+    },[props.tool, camera, zoom, range])
 
     //Set event listeners
     useEffect(() => {
