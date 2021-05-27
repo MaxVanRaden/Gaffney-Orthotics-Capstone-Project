@@ -56,22 +56,26 @@ const Import = () => {
                     //3: filepath
 
     const handleChange = ({target: {files}}) => {
-        fileName = files[0].name;
-        fileReader = new FileReader();
-        if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
-            fileFormat = 0;
-        } else if (/^[a-zA-Z0-9_-]+\.[.stl|.STL]+$/.test(fileName)) {
-            if (isBinarySTL(files[0])) {
-                fileFormat = 2;
+        try {
+            fileName = files[0].name;
+            fileReader = new FileReader();
+            if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
+                fileFormat = 0;
+            } else if (/^[a-zA-Z0-9_-]+\.[.stl|.STL]+$/.test(fileName)) {
+                if (isBinarySTL(files[0])) {
+                    fileFormat = 2;
+                } else {
+                    fileFormat = 1;
+                }
             } else {
-                fileFormat = 1;
+                alert("wrong file format");
+                return {};
             }
-        } else{
-            alert("wrong file format");
-            return{};
+            fileReader.onloadend = handleFileRead;
+            fileReader.readAsText(files[0], 'ISO-8859-1');
+        } catch (err) {
+            console.log(err => console.log("import canceled"));
         }
-        fileReader.onloadend = handleFileRead;
-        fileReader.readAsText(files[0], 'ISO-8859-1');
     }
 
     const sendFile = (filePath) => {
