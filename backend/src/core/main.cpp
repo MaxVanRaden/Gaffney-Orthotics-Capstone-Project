@@ -99,24 +99,7 @@ extern "C" {
         return x;
     }
 
-    void import_model(char* buffer, int fileformat){
-        // fileformat 0: obj
-        //            1: stl (ascii)
-        //            2: stl (binary)
-        //            3: filepath
-        if (fileformat == 0 || fileformat == 1) {
-            printf("sending buffer in ascii format (obj or stl)...\n");
-            editor->add_model(buffer, fileformat);
-            printf("buffer transfer operation has concluded\n");
-        }
-        else if (fileformat == 2) {
-            printf("sending file path of model...\n");
-            load_model(buffer);
-            printf("file transfer operation has concluded\n");
-        }
-        else
-        printf("no file format reported\n");
-    }
+
 
     char* export_model(const char* fileformat) {
         return editor->export_model(fileformat);
@@ -155,7 +138,32 @@ extern "C" {
         editor->flip_axis();
     }
 
-    // does not handle obj files
+    // Handles strings that contain model information in the form of
+    // STL ascii & OBJ. STL files in binary format are handled by
+    // import_file, because of a UTF-8 conversion issue that starts
+    // to happen with files in the ~50MB range and higher
+    void import_model(char* buffer, int fileformat){
+        // fileformat 0: obj
+        //            1: stl (ascii)
+        //            2: stl (binary)
+        //            3: filepath
+        if (fileformat == 0 || fileformat == 1) {
+            printf("sending buffer in ascii format (obj or stl)...\n");
+            editor->add_model(buffer, fileformat);
+            printf("buffer transfer operation has concluded\n");
+        }
+        else if (fileformat == 2) {
+            printf("sending file path of model...\n");
+            load_model(buffer);
+            printf("file transfer operation has concluded\n");
+        }
+        else
+            printf("no file format reported\n");
+    }
+
+    // Currently only set to handle STL files in binary format. This could
+    // be improved later to handle STL's in ascii, but the function import_model
+    // is already functioning to do so
     void import_file(char* file_path, int fileformat){
         // fileformat 0: obj
         //            1: stl (ascii)
@@ -197,6 +205,7 @@ extern "C" {
     }
 }
 
+//ToDo: Move function to render.cpp
 bool is_Binary_STL(char * name){
     char tag[strlen("solid") +1] = "solid";
 
@@ -208,6 +217,7 @@ bool is_Binary_STL(char * name){
     return false;
 }
 
+//ToDo: Move function to render.cpp
 void load_STL (char* buffer) {
     const char *offset = buffer;
     float temp;
