@@ -7,6 +7,8 @@
 #include "assimp/Exporter.hpp"
 #include "emscripten.h"
 
+#define MAX_REVERT_COUNT 25 // total number of state changes that can be stored in undo/redo
+
 enum axis {
     x,
     y,
@@ -754,13 +756,16 @@ uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
 }
 
-// created for code reusability.
 // this function should be called before making new state changes to a model
 // such as a transformation or scaling the size of the rendering
 void MeshEditor::set_undo() {
     redostack.clear();
-    if(undostack.size() < 25 )
+    if(undostack.size() < MAX_REVERT_COUNT )
         undostack.emplace_back(entities.back());
+    else {
+        undostack.erase(undostack.begin());
+        undostack.emplace_back(entities.back());
+    }
 }
 
 void MeshEditor::undo_model() {
