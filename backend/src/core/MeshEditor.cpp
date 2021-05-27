@@ -754,7 +754,9 @@ uint32_t MeshEditor::get_export_strlen() const {
     return export_strlen;
 }
 
-// created for code reusability
+// created for code reusability.
+// this function should be called before making new state changes to a model
+// such as a transformation or scaling the size of the rendering
 void MeshEditor::set_undo() {
     redostack.clear();
     if(undostack.size() < 25 )
@@ -763,14 +765,16 @@ void MeshEditor::set_undo() {
 
 void MeshEditor::undo_model() {
     if(!undostack.empty()) {
-        Entity revert = undostack.back(); // grab the earlier used state from the design
-        if(redostack.size() < 25 )
-            redostack.emplace_back(revert); // push top of undo stack to redo before popping it
-        entities.pop_back(); // pop latest change from design
-        if (revert.get_current().meshes.size() != 0 || // checks for content before adding
+
+        Entity revert = undostack.back();                   // grab the undo state
+        redostack.emplace_back(entities.back());            // update redo stack with current
+        if (revert.get_current().meshes.size() != 0 ||      // checks for content before adding
             (revert.get_current().materials.size() != 0)) {
-            entities.emplace_back(revert);
+            entities.pop_back();                            // remove current state
+            entities.emplace_back(revert);                  // update with undo state
         }
+        undostack.pop_back();                               // pop undo state
+
         // refresh screen with changes:
         for (Entity &e : entities) {
             for (Mesh &m : e.get_current().meshes) {
@@ -778,7 +782,6 @@ void MeshEditor::undo_model() {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
             }
         }
-        undostack.pop_back(); // pop whatever was on the undo stack
     }
     printf("undo function end: ");
     printf("%d undostack, ", undostack.size());
@@ -786,29 +789,23 @@ void MeshEditor::undo_model() {
     printf("%d entities\n\n", entities.size());
 }
 
-//TODO: may still contain an alignment fault, needs more testing
 void MeshEditor::redo_model() {
     if (!redostack.empty()) {
-        // checks for content before adding:
-        if (redostack.back().get_current().meshes.size() != 0 ||
-            (redostack.back().get_current().materials.size() != 0)) {
-            undostack.emplace_back(redostack.back());     // update undo stack with change
-            redostack.pop_back(); // pop whatever was on the redo stack
-            if (!redostack.empty()) {
-                // checks for content before adding:
-                if (redostack.back().get_current().meshes.size() != 0 ||
-                    (redostack.back().get_current().materials.size() != 0)) {
-                    Entity revert = redostack.back();   // grab from redo stack
-                    entities.pop_back();                // remove last modification (should be first undo)
-                    entities.emplace_back(revert);      // update
-                }
-            }
-            // refresh screen with changes:
-            for (Entity &e : entities) {
-                for (Mesh &m : e.get_current().meshes) {
-                    glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
-                    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
-                }
+
+        Entity revert = redostack.back();                   // grab the redo state
+        undostack.emplace_back(entities.back());            // update undo stack with current
+        if (revert.get_current().meshes.size() != 0 ||      // checks for content before adding
+            (revert.get_current().materials.size() != 0)) {
+            entities.pop_back();                            // remove current state
+            entities.emplace_back(revert);                  // update with redo state
+        }
+        redostack.pop_back();                               // pop redo stack
+
+        // refresh screen with changes:
+        for (Entity &e : entities) {
+            for (Mesh &m : e.get_current().meshes) {
+                glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.vertices.size(), &m.vertices[0], GL_STATIC_DRAW);
             }
         }
     }
