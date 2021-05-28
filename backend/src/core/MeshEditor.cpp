@@ -48,7 +48,7 @@ MeshEditor::MeshEditor() {
     undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position({4, 4, 4});
+    //entities.back().set_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     //move_cam_backwards(&camera, 10);
     cameraPos.x = cameraPos.y = cameraPos.z = 4;
@@ -107,7 +107,7 @@ void MeshEditor::run(int width, int height) {
 
     int keytest = glfwGetKey(KEY_P);
     if (keytest == GLFW_PRESS){
-        twist_vertices(10);
+        twist_vertices(45);
     }
 
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);

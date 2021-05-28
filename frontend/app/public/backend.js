@@ -185,36 +185,30 @@ moduleOverrides = null;
 
 if (Module["arguments"]) arguments_ = Module["arguments"];
 
-if (!Object.getOwnPropertyDescriptor(Module, "arguments")) {
- Object.defineProperty(Module, "arguments", {
-  configurable: true,
-  get: function() {
-   abort("Module.arguments has been replaced with plain arguments_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "arguments")) Object.defineProperty(Module, "arguments", {
+ configurable: true,
+ get: function() {
+  abort("Module.arguments has been replaced with plain arguments_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
 if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
 
-if (!Object.getOwnPropertyDescriptor(Module, "thisProgram")) {
- Object.defineProperty(Module, "thisProgram", {
-  configurable: true,
-  get: function() {
-   abort("Module.thisProgram has been replaced with plain thisProgram (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "thisProgram")) Object.defineProperty(Module, "thisProgram", {
+ configurable: true,
+ get: function() {
+  abort("Module.thisProgram has been replaced with plain thisProgram (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
 if (Module["quit"]) quit_ = Module["quit"];
 
-if (!Object.getOwnPropertyDescriptor(Module, "quit")) {
- Object.defineProperty(Module, "quit", {
-  configurable: true,
-  get: function() {
-   abort("Module.quit has been replaced with plain quit_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "quit")) Object.defineProperty(Module, "quit", {
+ configurable: true,
+ get: function() {
+  abort("Module.quit has been replaced with plain quit_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
 assert(typeof Module["memoryInitializerPrefixURL"] === "undefined", "Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead");
 
@@ -234,41 +228,33 @@ assert(typeof Module["setWindowTitle"] === "undefined", "Module.setWindowTitle o
 
 assert(typeof Module["TOTAL_MEMORY"] === "undefined", "Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY");
 
-if (!Object.getOwnPropertyDescriptor(Module, "read")) {
- Object.defineProperty(Module, "read", {
-  configurable: true,
-  get: function() {
-   abort("Module.read has been replaced with plain read_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "read")) Object.defineProperty(Module, "read", {
+ configurable: true,
+ get: function() {
+  abort("Module.read has been replaced with plain read_ (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
-if (!Object.getOwnPropertyDescriptor(Module, "readAsync")) {
- Object.defineProperty(Module, "readAsync", {
-  configurable: true,
-  get: function() {
-   abort("Module.readAsync has been replaced with plain readAsync (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "readAsync")) Object.defineProperty(Module, "readAsync", {
+ configurable: true,
+ get: function() {
+  abort("Module.readAsync has been replaced with plain readAsync (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
-if (!Object.getOwnPropertyDescriptor(Module, "readBinary")) {
- Object.defineProperty(Module, "readBinary", {
-  configurable: true,
-  get: function() {
-   abort("Module.readBinary has been replaced with plain readBinary (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "readBinary")) Object.defineProperty(Module, "readBinary", {
+ configurable: true,
+ get: function() {
+  abort("Module.readBinary has been replaced with plain readBinary (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
-if (!Object.getOwnPropertyDescriptor(Module, "setWindowTitle")) {
- Object.defineProperty(Module, "setWindowTitle", {
-  configurable: true,
-  get: function() {
-   abort("Module.setWindowTitle has been replaced with plain setWindowTitle (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "setWindowTitle")) Object.defineProperty(Module, "setWindowTitle", {
+ configurable: true,
+ get: function() {
+  abort("Module.setWindowTitle has been replaced with plain setWindowTitle (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
 var IDBFS = "IDBFS is no longer included by default; build with -lidbfs.js";
 
@@ -455,25 +441,23 @@ var wasmBinary;
 
 if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
 
-if (!Object.getOwnPropertyDescriptor(Module, "wasmBinary")) {
- Object.defineProperty(Module, "wasmBinary", {
-  configurable: true,
-  get: function() {
-   abort("Module.wasmBinary has been replaced with plain wasmBinary (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "wasmBinary")) Object.defineProperty(Module, "wasmBinary", {
+ configurable: true,
+ get: function() {
+  abort("Module.wasmBinary has been replaced with plain wasmBinary (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
-var noExitRuntime = Module["noExitRuntime"] || true;
+var noExitRuntime;
 
-if (!Object.getOwnPropertyDescriptor(Module, "noExitRuntime")) {
- Object.defineProperty(Module, "noExitRuntime", {
-  configurable: true,
-  get: function() {
-   abort("Module.noExitRuntime has been replaced with plain noExitRuntime (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (Module["noExitRuntime"]) noExitRuntime = Module["noExitRuntime"];
+
+if (!Object.getOwnPropertyDescriptor(Module, "noExitRuntime")) Object.defineProperty(Module, "noExitRuntime", {
+ configurable: true,
+ get: function() {
+  abort("Module.noExitRuntime has been replaced with plain noExitRuntime (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
 if (typeof WebAssembly !== "object") {
  abort("no native wasm support detected");
@@ -1049,14 +1033,12 @@ if (Module["TOTAL_STACK"]) assert(TOTAL_STACK === Module["TOTAL_STACK"], "the st
 
 var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 1992294400;
 
-if (!Object.getOwnPropertyDescriptor(Module, "INITIAL_MEMORY")) {
- Object.defineProperty(Module, "INITIAL_MEMORY", {
-  configurable: true,
-  get: function() {
-   abort("Module.INITIAL_MEMORY has been replaced with plain INITIAL_MEMORY (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
-  }
- });
-}
+if (!Object.getOwnPropertyDescriptor(Module, "INITIAL_MEMORY")) Object.defineProperty(Module, "INITIAL_MEMORY", {
+ configurable: true,
+ get: function() {
+  abort("Module.INITIAL_MEMORY has been replaced with plain INITIAL_MEMORY (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)");
+ }
+});
 
 assert(INITIAL_MEMORY >= TOTAL_STACK, "INITIAL_MEMORY should be larger than TOTAL_STACK, was " + INITIAL_MEMORY + "! (TOTAL_STACK=" + TOTAL_STACK + ")");
 
@@ -1382,9 +1364,6 @@ function createWasm() {
    return WebAssembly.instantiate(binary, info);
   }).then(receiver, function(reason) {
    err("failed to asynchronously prepare wasm: " + reason);
-   if (isFileURI(wasmBinaryFile)) {
-    err("warning: Loading from a file URI (" + wasmBinaryFile + ") is not supported in most browsers. See https://emscripten.org/docs/getting_started/FAQ.html#how-do-i-run-a-local-webserver-for-testing-why-does-my-program-stall-in-downloading-or-preparing");
-   }
    abort(reason);
   });
  }
@@ -1990,6 +1969,14 @@ var MEMFS = {
   }
   return node;
  },
+ getFileDataAsRegularArray: function(node) {
+  if (node.contents && node.contents.subarray) {
+   var arr = [];
+   for (var i = 0; i < node.usedBytes; ++i) arr.push(node.contents[i]);
+   return arr;
+  }
+  return node.contents;
+ },
  getFileDataAsTypedArray: function(node) {
   if (!node.contents) return new Uint8Array(0);
   if (node.contents.subarray) return node.contents.subarray(0, node.usedBytes);
@@ -2005,6 +1992,7 @@ var MEMFS = {
   var oldContents = node.contents;
   node.contents = new Uint8Array(newCapacity);
   if (node.usedBytes > 0) node.contents.set(oldContents.subarray(0, node.usedBytes), 0);
+  return;
  },
  resizeFileStorage: function(node, newSize) {
   newSize >>>= 0;
@@ -2012,14 +2000,20 @@ var MEMFS = {
   if (newSize == 0) {
    node.contents = null;
    node.usedBytes = 0;
-  } else {
+   return;
+  }
+  if (!node.contents || node.contents.subarray) {
    var oldContents = node.contents;
    node.contents = new Uint8Array(newSize);
    if (oldContents) {
     node.contents.set(oldContents.subarray(0, Math.min(newSize, node.usedBytes)));
    }
    node.usedBytes = newSize;
+   return;
   }
+  if (!node.contents) node.contents = [];
+  if (node.contents.length > newSize) node.contents.length = newSize; else while (node.contents.length < newSize) node.contents.push(0);
+  node.usedBytes = newSize;
  },
  node_ops: {
   getattr: function(node) {
@@ -4150,25 +4144,19 @@ var SYSCALLS = {
  mappings: {},
  DEFAULT_POLLMASK: 5,
  umask: 511,
- calculateAt: function(dirfd, path, allowEmpty) {
-  if (path[0] === "/") {
-   return path;
-  }
-  var dir;
-  if (dirfd === -100) {
-   dir = FS.cwd();
-  } else {
-   var dirstream = FS.getStream(dirfd);
-   if (!dirstream) throw new FS.ErrnoError(8);
-   dir = dirstream.path;
-  }
-  if (path.length == 0) {
-   if (!allowEmpty) {
-    throw new FS.ErrnoError(44);
+ calculateAt: function(dirfd, path) {
+  if (path[0] !== "/") {
+   var dir;
+   if (dirfd === -100) {
+    dir = FS.cwd();
+   } else {
+    var dirstream = FS.getStream(dirfd);
+    if (!dirstream) throw new FS.ErrnoError(8);
+    dir = dirstream.path;
    }
-   return dir;
+   path = PATH.join2(dir, path);
   }
-  return PATH.join2(dir, path);
+  return path;
  },
  doStat: function(func, path, buf) {
   try {
@@ -4579,15 +4567,16 @@ function _emscripten_resize_heap(requestedSize) {
  requestedSize = requestedSize >>> 0;
  var oldSize = _emscripten_get_heap_size();
  assert(requestedSize > oldSize);
- var maxHeapSize = 4294901760;
+ var maxHeapSize = 4294967296;
  if (requestedSize > maxHeapSize) {
   err("Cannot enlarge memory, asked to go up to " + requestedSize + " bytes, but the limit is " + maxHeapSize + " bytes!");
   return false;
  }
+ var minHeapSize = 16777216;
  for (var cutDown = 1; cutDown <= 4; cutDown *= 2) {
   var overGrownHeapSize = oldSize * (1 + .2 / cutDown);
   overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
-  var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
+  var newSize = Math.min(maxHeapSize, alignUp(Math.max(minHeapSize, requestedSize, overGrownHeapSize), 65536));
   var replacement = emscripten_realloc_buffer(newSize);
   if (replacement) {
    return true;
@@ -4945,17 +4934,54 @@ var Browser = {
   var RAF = Browser.fakeRequestAnimationFrame;
   RAF(func);
  },
+ safeCallback: function(func) {
+  return function() {
+   if (!ABORT) return func.apply(null, arguments);
+  };
+ },
+ allowAsyncCallbacks: true,
+ queuedAsyncCallbacks: [],
+ pauseAsyncCallbacks: function() {
+  Browser.allowAsyncCallbacks = false;
+ },
+ resumeAsyncCallbacks: function() {
+  Browser.allowAsyncCallbacks = true;
+  if (Browser.queuedAsyncCallbacks.length > 0) {
+   var callbacks = Browser.queuedAsyncCallbacks;
+   Browser.queuedAsyncCallbacks = [];
+   callbacks.forEach(function(func) {
+    func();
+   });
+  }
+ },
  safeRequestAnimationFrame: function(func) {
   return Browser.requestAnimationFrame(function() {
    if (ABORT) return;
-   func();
+   if (Browser.allowAsyncCallbacks) {
+    func();
+   } else {
+    Browser.queuedAsyncCallbacks.push(func);
+   }
   });
  },
  safeSetTimeout: function(func, timeout) {
   noExitRuntime = true;
   return setTimeout(function() {
    if (ABORT) return;
-   func();
+   if (Browser.allowAsyncCallbacks) {
+    func();
+   } else {
+    Browser.queuedAsyncCallbacks.push(func);
+   }
+  }, timeout);
+ },
+ safeSetInterval: function(func, timeout) {
+  noExitRuntime = true;
+  return setInterval(function() {
+   if (ABORT) return;
+   if (Browser.allowAsyncCallbacks) {
+    func();
+   }
   }, timeout);
  },
  getMimetype: function(name) {
@@ -5282,9 +5308,9 @@ function setMainLoop(browserIterationFunc, fps, simulateInfiniteLoop, arg, noSet
  }
 }
 
-function _emscripten_set_main_loop(func, fps, simulateInfiniteLoop) {
+function _emscripten_set_main_loop(func, fps, simulateInfiniteLoop, arg, noSetTiming) {
  var browserIterationFunc = wasmTable.get(func);
- setMainLoop(browserIterationFunc, fps, simulateInfiniteLoop);
+ setMainLoop(browserIterationFunc, fps, simulateInfiniteLoop, arg, noSetTiming);
 }
 
 var ENV = {};
@@ -7748,8 +7774,6 @@ var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__w
 
 var _print_hello = Module["_print_hello"] = createExportWrapper("print_hello");
 
-var _import_model = Module["_import_model"] = createExportWrapper("import_model");
-
 var _export_model = Module["_export_model"] = createExportWrapper("export_model");
 
 var _get_export_strlen = Module["_get_export_strlen"] = createExportWrapper("get_export_strlen");
@@ -7765,6 +7789,8 @@ var _set_size = Module["_set_size"] = createExportWrapper("set_size");
 var _on_mouse_up = Module["_on_mouse_up"] = createExportWrapper("on_mouse_up");
 
 var _flip_axis = Module["_flip_axis"] = createExportWrapper("flip_axis");
+
+var _import_model = Module["_import_model"] = createExportWrapper("import_model");
 
 var _import_file = Module["_import_file"] = createExportWrapper("import_file");
 
@@ -8024,14 +8050,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "setErrNo")) Module["setErrNo"] = f
  abort("'setErrNo' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
 };
 
-if (!Object.getOwnPropertyDescriptor(Module, "readSockaddr")) Module["readSockaddr"] = function() {
- abort("'readSockaddr' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
-};
-
-if (!Object.getOwnPropertyDescriptor(Module, "writeSockaddr")) Module["writeSockaddr"] = function() {
- abort("'writeSockaddr' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
-};
-
 if (!Object.getOwnPropertyDescriptor(Module, "DNS")) Module["DNS"] = function() {
  abort("'DNS' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
 };
@@ -8154,14 +8172,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "syscallMmap2")) Module["syscallMma
 
 if (!Object.getOwnPropertyDescriptor(Module, "syscallMunmap")) Module["syscallMunmap"] = function() {
  abort("'syscallMunmap' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
-};
-
-if (!Object.getOwnPropertyDescriptor(Module, "getSocketFromFD")) Module["getSocketFromFD"] = function() {
- abort("'getSocketFromFD' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
-};
-
-if (!Object.getOwnPropertyDescriptor(Module, "getSocketAddress")) Module["getSocketAddress"] = function() {
- abort("'getSocketAddress' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
 };
 
 if (!Object.getOwnPropertyDescriptor(Module, "JSEvents")) Module["JSEvents"] = function() {
@@ -8476,10 +8486,6 @@ if (!Object.getOwnPropertyDescriptor(Module, "SOCKFS")) Module["SOCKFS"] = funct
  abort("'SOCKFS' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
 };
 
-if (!Object.getOwnPropertyDescriptor(Module, "_setNetworkCallback")) Module["_setNetworkCallback"] = function() {
- abort("'_setNetworkCallback' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
-};
-
 if (!Object.getOwnPropertyDescriptor(Module, "tempFixedLengthArray")) Module["tempFixedLengthArray"] = function() {
  abort("'tempFixedLengthArray' was not exported. add it to EXTRA_EXPORTED_RUNTIME_METHODS (see the FAQ)");
 };
@@ -8711,21 +8717,15 @@ function callMain(args) {
  }
 }
 
-function stackCheckInit() {
- _emscripten_stack_init();
- writeStackCookie();
-}
-
 function run(args) {
  args = args || arguments_;
  if (runDependencies > 0) {
   return;
  }
- stackCheckInit();
+ _emscripten_stack_init();
+ writeStackCookie();
  preRun();
- if (runDependencies > 0) {
-  return;
- }
+ if (runDependencies > 0) return;
  function doRun() {
   if (calledRun) return;
   calledRun = true;
@@ -8810,6 +8810,8 @@ if (Module["preInit"]) {
 var shouldRunNow = true;
 
 if (Module["noInitialRun"]) shouldRunNow = false;
+
+noExitRuntime = true;
 
 run();
 
