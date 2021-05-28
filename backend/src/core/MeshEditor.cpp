@@ -9,12 +9,6 @@
 
 #define MAX_REVERT_COUNT 25 // total number of state changes that can be stored in undo/redo
 
-enum axis {
-    x,
-    y,
-    z
-};
-
 extern "C" {
 
     EM_JS(float, get_translation_factor, (), {
@@ -107,6 +101,7 @@ void MeshEditor::run(int width, int height) {
 
     int keytest = glfwGetKey(KEY_P);
     if (keytest == GLFW_PRESS){
+        axis = Y;
         twist_vertices(45);
     }
 
@@ -321,7 +316,6 @@ void MeshEditor::draw() {
 
     if(state == STATE_SELECT_VERTICES && draw_arrows) {
         vec2 mouse;
-        Axis axis;
         int x;
         int y;
         glfwGetMousePos(&x, &y);
@@ -402,7 +396,7 @@ void MeshEditor::draw() {
         glEnable(GL_DEPTH_TEST);
 
         if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && axis_clicked && !is_select_or_move_checked()) {
-            translate_vertices_along_axis(axis);
+            translate_vertices_along_axis();
         } else {
             if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
                 axis_clicked = false;
@@ -437,7 +431,7 @@ void MeshEditor::draw() {
 }
 
 //Translates vertices along the passed in axis if the left mouse button is being pressed.
-void MeshEditor::translate_vertices_along_axis(Axis axis) {
+void MeshEditor::translate_vertices_along_axis() {
     //Z axis is flipped for some reason
     float translation_factor;
     if (axis == Z)
@@ -832,16 +826,27 @@ void MeshEditor::flip_axis() {
         fliparrows = true;
 }
 
-void MeshEditor::twist_vertices(int degrees) {
+void MeshEditor::twist_vertices(float degrees) {
     vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
         for (Mesh& m : e.get_current().meshes) {
             for (u32 v : m.selected_vertices) {
                 vec4 newpos = {m.vertices[v].position.x, m.vertices[v].position.y, m.vertices[v].position.z, 1.0};
-                mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateX(degrees) * translation(-center.x, -center.y, -center.z);
-                newpos = newpos * rotateAroundPoint;
-                m.vertices[v].position = newpos.xyz;
-                //v.position = newpos.xyz;
+                if (axis == X) {
+                    mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateX(degrees) * translation(-center.x, -center.y, -center.z);
+                    newpos = newpos * rotateAroundPoint;
+                    m.vertices[v].position = newpos.xyz;
+                }
+                else if (axis == Y) {
+                    mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateY(degrees) * translation(-center.x, -center.y, -center.z);
+                    newpos = newpos * rotateAroundPoint;
+                    m.vertices[v].position = newpos.xyz;
+                }
+                else if (axis == Z) {
+                    mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateZ(degrees) * translation(-center.x, -center.y, -center.z);
+                    newpos = newpos * rotateAroundPoint;
+                    m.vertices[v].position = newpos.xyz;
+                }
             }
         }
     }

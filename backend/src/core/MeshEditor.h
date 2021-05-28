@@ -21,6 +21,11 @@ enum Axis {
     Z
 };
 
+enum Deformation {
+    Bend,
+    Twist
+};
+
 class MeshEditor {
 public:
     MeshEditor();
@@ -40,11 +45,11 @@ public:
     void undo_model();
     void redo_model();
     void flip_axis();
-    void twist_vertices(int degrees);
+    void twist_vertices(float degrees);
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 
 private:
-    void translate_vertices_along_axis(Axis axis);
+    void translate_vertices_along_axis();
     vec3 calculate_avg_pos_selected_vertices();
 
     std::vector<Entity> entities;
@@ -90,6 +95,7 @@ private:
     Model arrow;
 
     EditorState state;
+    Axis axis;
 };
 
 #endif //GAFFNEY_ORTHOTICS_CAPSTONE_PROJECT_MESHEDITOR_H
