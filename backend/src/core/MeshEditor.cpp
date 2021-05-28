@@ -833,10 +833,10 @@ void MeshEditor::flip_axis() {
 }
 
 void MeshEditor::twist_vertices(int degrees) {
+    vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
         for (Mesh& m : e.get_current().meshes) {
             for (u32 v : m.selected_vertices) {
-                vec3 center = calculate_avg_pos_selected_vertices();
                 vec4 newpos = {m.vertices[v].position.x, m.vertices[v].position.y, m.vertices[v].position.z, 1.0};
                 mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateX(degrees) * translation(-center.x, -center.y, -center.z);
                 newpos = newpos * rotateAroundPoint;
