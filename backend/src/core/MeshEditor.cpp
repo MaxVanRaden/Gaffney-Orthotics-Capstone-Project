@@ -105,6 +105,11 @@ void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
     mat4 view = look_at(cameraPos, cameraCenter);
 
+    int keytest = glfwGetKey(KEY_P);
+    if (keytest == GLFW_PRESS){
+        twist_vertices(10);
+    }
+
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
     if(button == GLFW_PRESS) {
         mouseDown = true;
@@ -825,6 +830,21 @@ void MeshEditor::flip_axis() {
         fliparrows = false;
     else
         fliparrows = true;
+}
+
+void MeshEditor::twist_vertices(int degrees) {
+    for (Entity& e: entities) {
+        for (Mesh& m : e.get_current().meshes) {
+            for (u32 v : m.selected_vertices) {
+                vec3 center = calculate_avg_pos_selected_vertices();
+                vec4 newpos = {m.vertices[v].position.x, m.vertices[v].position.y, m.vertices[v].position.z, 1.0};
+                mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateX(degrees) * translation(-center.x, -center.y, -center.z);
+                newpos = newpos * rotateAroundPoint;
+                m.vertices[v].position = newpos.xyz;
+                //v.position = newpos.xyz;
+            }
+        }
+    }
 }
 
 MeshEditor::~MeshEditor() {

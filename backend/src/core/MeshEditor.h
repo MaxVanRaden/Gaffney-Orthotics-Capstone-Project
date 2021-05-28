@@ -40,7 +40,7 @@ public:
     void undo_model();
     void redo_model();
     void flip_axis();
-
+    void twist_vertices(int degrees);
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 
 private:
