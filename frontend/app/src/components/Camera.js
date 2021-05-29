@@ -45,7 +45,6 @@ export const Camera = (props) => {
             window.Module._free(addr);
         });
     },[]);
-
     //Set values on change
     useEffect(() => {
         window.Module.ready.then(api => api.set_camera(props.zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, camera.roll))
@@ -68,7 +67,7 @@ export const Camera = (props) => {
             api.set_camera(props.zoom, moveVals.current.x, moveVals.current.y, moveVals.current.z, moveVals.current.yaw, moveVals.current.pitch, moveVals.current.roll);
             updateCamera();
         })
-    },[props.zoom, trackMouse, range, updateCamera]);
+    },[trackMouse, range, updateCamera, props.zoom]);
 
     //On mouse down store mouse position
     const mouseDown = useCallback((e) => {
@@ -83,15 +82,17 @@ export const Camera = (props) => {
     //On mouse up call corresponding function
     const mouseUp = useCallback((e) => {
         setClicked(false);
-        switch(props.tool){
-            case 'move':
-                setCamera({...moveVals.current});
-                break;
-            default:
-                break;
-        }
+        // switch(props.tool){
+        //     case 'move':
+        //         setCamera({...moveVals.current});
+        //         updateCamera();
+        //         break;
+        //     default:
+        //         break;
+        // }
         canvasElement.onmousemove = trackMouse;
-    },[canvasElement,props.tool, trackMouse])
+    },[canvasElement, trackMouse])
+    // },[canvasElement,props.tool, trackMouse, updateCamera])
 
     //Move camera while scrolling wheel
     const onwheel = useCallback((e) => {
