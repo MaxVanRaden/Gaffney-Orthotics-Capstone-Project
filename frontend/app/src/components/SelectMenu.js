@@ -59,7 +59,8 @@ export const SelectMenu = (props) => {
             <button className="tool"
                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>
                 Select
-                <input type="checkbox" id='selectToggle' checked={props.tool === "select" || props.tool === "vertex" }
+                <input type="checkbox" id='selectToggle'
+                       checked={props.tool === "select" || props.tool === "vertex" || props.tool === "section"}
                 onChange={e => {
                     props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
                 }}/>
@@ -84,7 +85,11 @@ export const SelectMenu = (props) => {
                     />
                 </div>
                 <div className="option" id="hover_here">
-                    Cross section<input type='checkbox' id='crossToggle' className='toggle' value="section"/>
+                    Cross section
+                    <input type='checkbox' checked={props.tool === "section"}
+                           onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
+                           value="section"
+                           id='crossToggle' className='toggle'/>
                 </div>
                 <div id="hidden_box">
                     <p id="hidden_text"> Click on the model to place a line on each side of the section you'd like to select. Right click to remove a line. </p>
