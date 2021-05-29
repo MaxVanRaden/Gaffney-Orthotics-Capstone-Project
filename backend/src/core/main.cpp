@@ -112,6 +112,9 @@ extern "C" {
 	void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
 		editor->set_camera(zoom, x, y ,z ,yaw, pitch, roll);
 	}
+	float* get_camera(){
+        return editor->get_camera();
+    }
 
 	// Scale every vertex in every mesh in every entity by the factor passed in
 	void scale(float factor){
