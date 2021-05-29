@@ -474,12 +474,16 @@ void MeshEditor::translate_vertices_along_axis(Axis axis) {
         }
     }
 }
-
+void MeshEditor::zoom(int dir){
+    vec3 diff = normalize(cameraPos - cameraCenter);
+    cameraPos = cameraPos + diff * (0.5f * (float)dir);
+    update_camera();
+}
 void MeshEditor::set_camera(float zoom, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ) {
     cameraPos = {posX, posY, posZ};
     cameraCenter = {lookAtX, lookAtY, lookAtZ};
     vec3 diff = normalize(cameraPos - cameraCenter);
-    cameraPos = cameraPos + diff * (-zoom);
+    cameraPos = cameraPos + diff * zoom;
 }
 float* MeshEditor::get_camera(){
     float* vals = new float[6];

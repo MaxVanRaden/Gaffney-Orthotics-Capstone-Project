@@ -199,6 +199,13 @@ extern "C" {
         }
     }
 
+    //Zoom in or out
+    void zoom(int dir){
+        //dir -1: Zoom in
+        //     1: Zoom out
+        editor->zoom(dir);
+    }
+
     void undo(){
         editor -> undo_model();
     }

@@ -34,6 +34,7 @@ public:
     char* export_model(const char* fileformat);
     void set_camera(float zoom, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     float* get_camera();
+    void zoom(int dir);
     void scale_all_entities(float factor);
     void on_mouse_up(int x, int y, int x2, int y2);
     uint32_t get_export_strlen() const;

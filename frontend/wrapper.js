@@ -7,6 +7,7 @@ Module.ready = new Promise(function(resolve, reject) {
             export_model: Module.cwrap('export_model', 'number', ['string']),
             set_camera: Module.cwrap('set_camera',null,['number','number','number','number','number','number']),
             get_camera: Module.cwrap('get_camera','number',[null]),
+            zoom: Module.cwrap('zoom',null,['number']),
             set_size: Module.cwrap('set_size',null,['number','number']),
             on_mouse_up: Module.cwrap('on_mouse_up', null, ['number']),
             get_export_strlen: Module.cwrap('get_export_strlen', 'number', ['number']),
