@@ -9,6 +9,103 @@
 
 #define MAX_REVERT_COUNT 25 // total number of state changes that can be stored in undo/redo
 
+#include<vector>
+
+#define POS_P 0.5f  // temp value for an arbitrary rectangle window pos.
+#define POS_N -0.5f  // temp value for an arbitrary rectangle window pos.
+
+// judge the relationship between the point and the boundary
+// evaluated 3 times in a loop of the sutherland-h function
+bool Inside(Point p, int boundary) {
+    switch (boundary) {
+        case 0: // left
+            if (p.x >= POS_N) return true;
+            break;
+        case 1: // top
+            if (p.y <= POS_P) return true;
+            break;
+        case 2: // right
+            if (p.x <= POS_P) return true;
+            break;
+        case 3: // bottom
+            if (p.y >= POS_N) return true;
+            break;
+        default:
+            return false;
+    }
+    return false;
+}
+
+// get the intersection point
+// called twice in the sutherland-h function
+Point intersect(Point& S, Point& P, int boundary) {
+    Point tmp;
+    double dy = P.y - S.y, dx = P.x - S.x;
+    // left
+    if (boundary == 0) {
+        tmp.x = POS_N;
+        tmp.y = S.y + (POS_N - S.x) * (dy / dx);
+    }
+        // top
+    else if (boundary == 1) {
+        tmp.y = POS_P;
+        tmp.x = S.x + (POS_P - S.y) * (dx / dy);
+    }
+        // right
+    else if (boundary == 2) {
+        tmp.x = POS_P;
+        tmp.y = S.y + (POS_P - S.x) * (dy / dx);
+    }
+        // bottom
+    else {
+        tmp.y = POS_N;
+        tmp.x = S.x + (POS_N - S.y) * (dx / dy);
+    }
+    return tmp;
+}
+
+// clip the polygon (sutherland-hodgman algorithm)
+void MeshEditor::sutherland_hodgman(std::vector<Point> points) {
+    std::vector<Point> clipPoints = points;
+    // for each window's boundary
+    for (int boundary = 0; boundary < 4; boundary++) {
+        std::vector<Point> remainPoints;  // remaining points
+        // each line
+        for (int i = 0; i < clipPoints.size(); i++) {
+            // S(start point) and P(end point)
+            Point S, P;
+            S = clipPoints[i];
+            if (i == clipPoints.size() - 1) P = clipPoints[0];
+            else P = clipPoints[i + 1];
+
+            //
+            if (Inside(S, boundary)) {
+                // situation 1: remain the P(end point)
+                if (Inside(P, boundary)) {
+                    remainPoints.push_back(P);
+                }
+                    // situation 3: remain the mid of S-P
+                else {
+                    Point tmp = intersect(S, P, boundary);
+                    remainPoints.push_back(tmp);
+                }
+            }
+            else {
+                //situation 4: remain the mid of S-P and P
+                if (Inside(P, boundary)) {
+                    Point tmp = intersect(S, P, boundary);
+                    remainPoints.push_back(tmp);
+                    remainPoints.push_back(P);
+                }
+                // situation 2: remain nothing
+            }
+        }
+        clipPoints = remainPoints;
+    }
+    points = clipPoints;
+}
+
+
 enum axis {
     x,
     y,
@@ -47,8 +144,8 @@ MeshEditor::MeshEditor() {
     redostack.clear();
     undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
-    entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position({4, 4, 4});
+    //entities.back().load(staircaseobjhardcoded, 0);
+    //entities.back().set_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     //move_cam_backwards(&camera, 10);
     cameraPos.x = cameraPos.y = cameraPos.z = 4;

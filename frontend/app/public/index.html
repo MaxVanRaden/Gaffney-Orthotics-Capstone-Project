@@ -103,7 +103,10 @@ to call some C++ function the backend team will write.
 
 <!-- The canvas, the most important tag -->
 <div class="emscripten_border">
-  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    <canvas class="emscripten" id="canvas" onclick="showCoords(e)" oncontextmenu="event.preventDefault()" tabindex=-1
+            style="z-index: 0;">></canvas>
+<!--    <canvas id="canvas2" width=2000 height=1000-->
+<!--            style="position: absolute; margin-top: 100px; left: 0; top: 0; z-index: 1;">></canvas>-->
 </div>
 
 <!-- Debug Buttons to mess with the canvas -->
@@ -170,21 +173,51 @@ to call some C++ function the backend team will write.
       .on('beforestart', e => {
         return document.getElementById('selectToggle').checked
       });
+    </script>
 
-      // let canvasElement = document.getElementById('canvas');
-      // let x = 0;
-      // let y = 0;
-      //
-      // canvasElement.onmousedown = function mouseDown(e) {
-      //   x = e.pageX - this.offsetLeft;
-      //   y = e.pageY - this.offsetTop;
-      // };
-      //
-      // canvasElement.onmouseup = function mouseUp(e) {
-      //   let x2 = e.pageX - this.offsetLeft;
-      //   let y2 = e.pageY - this.offsetTop;
-      //   window.Module.ready.then(api => console.log(api.on_mouse_up(x, y, x2, y2)));
-      // };
+    <!--For grabbing points used in the line clipping tool-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+      let drawq = [];
+      let canvas = document.getElementById('canvas2');
+      let width = canvas.scrollWidth;
+      let height = canvas.scrollHeight;
+      let ctx = canvas.getContext('2d');
+
+      function pushOp(coords) {
+          drawq.push(coords);
+          update();
+      }
+
+      function update() {
+          ctx.clearRect(0, 0, width, height);
+          ctx.beginPath();
+
+          ctx.moveTo(drawq[0][0], drawq[0][1]); //first vertex
+          for (let i = 1; i < drawq.length; i++)
+              ctx.lineTo(drawq[i][0], drawq[i][1]);
+          ctx.lineTo(drawq[0][0], drawq[0][1]); //back to start
+
+          ctx.strokeStyle = "red";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.closePath();
+
+      }
+
+      // $('#undo').click(function() {
+      //     drawq.pop();
+      //     $('#drawq option').last().remove();
+      //     update();
+      // });
+
+      $('#canvas2').on('mousewheel DOMMouseScroll', function(event){
+      }).mousemove(function(event){
+          // $('#coord').html([event.offsetX,event.offsetY].join(','));
+      }).click(function(event){
+          let args = [event.offsetX,event.offsetY];
+          pushOp(args);
+      });
     </script>
   </body>
 </html>

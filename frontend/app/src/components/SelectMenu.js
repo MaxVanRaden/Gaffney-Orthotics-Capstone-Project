@@ -21,6 +21,93 @@ export const SelectMenu = (props) => {
                 api.on_mouse_up(x2, y2, x1, y1);
         });
     }
+
+
+
+
+
+
+
+
+    function clipArea(){
+
+        let drawq = [];
+        //let canvas = document.getElementById('canvas');
+        let width = 2000;
+        let height = 2000;
+        let ctx = canvas.getContext('2d');
+
+        function pushOp(coords) {
+            drawq.push(coords);
+            update();
+        }
+        //
+        function update() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.beginPath();
+
+            ctx.moveTo(drawq[0][0], drawq[0][1]); //first vertex
+            for (let i = 1; i < drawq.length; i++)
+                ctx.lineTo(drawq[i][0], drawq[i][1]);
+            ctx.lineTo(drawq[0][0], drawq[0][1]); //back to start
+
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.closePath();
+
+        }
+
+
+        // $('#undo').click(function() {
+        //     drawq.pop();
+        //     $('#drawq option').last().remove();
+        //     update();
+        // });
+
+        try {
+
+            let args = ((e) => {
+                drawq.push (e.pageX - canvas.offsetLeft);
+            },[canvas]);
+
+            pushOp(args);
+
+        } catch(e) {
+            console.log('Error')
+        }
+
+        console.log(drawq);
+
+    }
+
+
+    const samplePoints = [0];
+
+    const sendClip  = useCallback((points) => {
+
+        points.push(1);
+        points.push(2);
+        points.push(3);
+        points.push(4);
+        const count = points.length;
+
+        let bytesSize = new Int32Array(window.Module.HEAP32.BYTES_PER_ELEMENT);
+        const arrPtr = window.Module._malloc((count * bytesSize));
+        window.Module.HEAP32.set(points, (arrPtr / bytesSize));
+        window.Module.ready.then(api => api.point_click(points, count));
+
+    }, [canvas]);
+
+
+
+
+
+
+
+
+
+
     //Store mouse position
     const mouseDown = useCallback((e) => {
         clickPos.current = {x: e.pageX - canvas.offsetLeft, y: e.pageY - canvas.offsetTop}
@@ -48,6 +135,9 @@ export const SelectMenu = (props) => {
             canvas.onmousedown = mouseDown;
             canvas.onmouseup = mouseUp;
         }
+        if(props.tool === "clipper") {
+            clipArea();
+        }
         return () => {
             canvas.onclick = null;
             canvas.onmouseup = null;
@@ -60,36 +150,45 @@ export const SelectMenu = (props) => {
                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>
                 Select
                 <input type="checkbox" id='selectToggle' checked={props.tool === "select" || props.tool === "vertex" }
-                onChange={e => {
-                    props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
-                }}/>
+                       onChange={e => {
+                           props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
+                       }}/>
             </button>
             <Draggable>
-            <div className="menu-items" id="select-menu">
-                <div className="menu-header" style={{padding:5}}>Select</div>
-                <div className="option">
-                    Vertex
-                    <input type="checkbox" checked={props.tool === "vertex"}
-                           onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
-                           value="vertex"
-                           className="toggle"
-                    />
+                <div className="menu-items" id="select-menu">
+                    <div className="menu-header" style={{padding:5}}>Select</div>
+                    <div className="option">
+                        Vertex
+                        <input type="checkbox" checked={props.tool === "vertex"}
+                               onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
+                               value="vertex"
+                               className="toggle"
+                        />
+                    </div>
+                    <div className="option">
+                        Section
+                        <input type="checkbox" checked={props.tool === "select"}
+                               onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
+                               value="select"
+                               id="selectToggle" className="toggle"
+                        />
+                    </div>
+                    <div className="option">
+                        Clipping Tool
+                        <input type="checkbox" checked={props.tool === "clipper"}
+                               onChange={clipArea}
+                               value="clipper"
+                               id="clipperToggle" className="toggle"
+                        />
+                        {/*<button onClick={sendClip(samplePoints)}>Apply</button>*/}
+                    </div>
+                    <div className="option" id="hover_here">
+                        Cross section<input type='checkbox' id='crossToggle' className='toggle' value="section"/>
+                    </div>
+                    <div id="hidden_box">
+                        <p id="hidden_text"> Click on the model to place a line on each side of the section you'd like to select. Right click to remove a line. </p>
+                    </div>
                 </div>
-                <div className="option">
-                    Section
-                    <input type="checkbox" checked={props.tool === "select"}
-                           onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
-                           value="select"
-                           id="selectToggle" className="toggle"
-                    />
-                </div>
-                <div className="option" id="hover_here">
-                    Cross section<input type='checkbox' id='crossToggle' className='toggle' value="section"/>
-                </div>
-                <div id="hidden_box">
-                    <p id="hidden_text"> Click on the model to place a line on each side of the section you'd like to select. Right click to remove a line. </p>
-                </div>
-            </div>
             </Draggable>
         </div>
     )

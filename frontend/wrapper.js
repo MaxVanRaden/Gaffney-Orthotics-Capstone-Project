@@ -14,7 +14,8 @@ Module.ready = new Promise(function(resolve, reject) {
             import_file: Module.cwrap('import_file', null, ['string'], ['number']),
             undo: Module.cwrap('undo',null),
             redo: Module.cwrap('redo',null),
-            flip_axis: Module.cwrap('flip_axis',null)
+            flip_axis: Module.cwrap('flip_axis',null),
+            point_click: Module.cwrap('point_click', null, ['number','number'])
         };
         resolve(api);
     });

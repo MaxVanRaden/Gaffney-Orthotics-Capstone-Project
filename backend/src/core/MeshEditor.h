@@ -21,6 +21,13 @@ enum Axis {
     Z
 };
 
+struct Point {
+    double x, y;
+    Point() { }
+    Point(double a, double b)
+            :x(a), y(b) { }
+};
+
 class MeshEditor {
 public:
     MeshEditor();
@@ -42,6 +49,7 @@ public:
     void flip_axis();
     void twist_vertices(int degrees);
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
+    void sutherland_hodgman(std::vector<Point> points);
 
 private:
     void translate_vertices_along_axis(Axis axis);

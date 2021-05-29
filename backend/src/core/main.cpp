@@ -7,6 +7,7 @@
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
 #include "MeshEditor.h"
+#include<vector>
 
 int initialize();
 void mainloop();
@@ -132,6 +133,31 @@ extern "C" {
     void on_mouse_up(int x, int y, int x2, int y2){
         printf("(%d,%d),(%d,%d)\n", x, y, x2, y2);
         editor->on_mouse_up(x, y, x2, y2);
+    }
+
+    void point_click(int* coords, int size){
+
+        std::vector<Point> points;
+        for(int i=0; i<size; i+=2){
+            printf("%d\n", coords[i]);
+            Point tmp;
+            tmp.x = coords[i];
+            if(i+1)
+                tmp.y = coords[i+1];
+            else
+                printf("clipping coordinates are out of sync\n");
+            points.push_back(tmp);
+        }
+
+        // pseudocode for the transformation of coordinates prior to alg
+        // (might not be required, haven't looked into it yet)
+        // for: coords length
+        //      xpos = (coords.x - width / 2) / width * 2;
+        //      ypos = (height / 2 - coords.y) / height * 2;
+        //  coords.update(xpos, ypos);
+
+        // not currently ready to be called
+        //editor->sutherland_hodgman(points);
     }
 
     void flip_axis(){
