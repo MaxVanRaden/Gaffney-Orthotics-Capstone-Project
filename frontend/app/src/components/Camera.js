@@ -16,8 +16,6 @@ export const Camera = (props) => {
         roll: 0
     }
     const [camera, setCamera] = useState(cameraOrigin);
-
-    const zoom = props.zoom / 100;
     const range = Number.MAX_SAFE_INTEGER;//range of xyz coordinates
     let canvasElement = document.getElementById('canvas');
     const [clicked, setClicked] = useState(false) //Sets onmousemove listener
@@ -32,6 +30,26 @@ export const Camera = (props) => {
         document.getElementById('ycoord').innerHTML = curY;
     },[canvasElement]);
 
+    //Read camera values from backend
+    const updateCamera = useCallback(() =>{
+        window.Module.ready.then(api => {
+            let addr = api.get_camera()
+            let x = window.Module.getValue(addr, "float");
+            let y = window.Module.getValue(addr+4, "float");
+            let z = window.Module.getValue(addr+8, "float");
+            let yaw = window.Module.getValue(addr+12, "float");
+            let pitch = window.Module.getValue(addr+16, "float");
+            let roll = window.Module.getValue(addr+20, "float");
+            // console.log({x, y, z, yaw, pitch, roll});
+            setCamera({x, y, z, yaw, pitch, roll})
+            window.Module._free(addr);
+        });
+    },[]);
+
+    //Set values on change
+    useEffect(() => {
+        window.Module.ready.then(api => api.set_camera(props.zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, camera.roll))
+    },[props.zoom, camera])
     //Handle mouse(and camera) movement
     const handleMove = useCallback((e) =>{
         trackMouse(e);
@@ -45,11 +63,12 @@ export const Camera = (props) => {
             let newY = Math.min(Math.max(-range, Number(moveVals.current.y - e.movementY*0.1)), range);
             moveVals.current = {...moveVals.current, x: newX, y: newY};
         }
-        setCamera({...moveVals.current});
+        // setCamera({...moveVals.current});
         window.Module.ready.then(api => {
-            api.set_camera(zoom, moveVals.current.x, moveVals.current.y, moveVals.current.z, moveVals.current.yaw, moveVals.current.pitch, moveVals.current.roll);
+            api.set_camera(props.zoom, moveVals.current.x, moveVals.current.y, moveVals.current.z, moveVals.current.yaw, moveVals.current.pitch, moveVals.current.roll);
+            updateCamera();
         })
-    },[zoom, trackMouse, range]);
+    },[props.zoom, trackMouse, range, updateCamera]);
 
     //On mouse down store mouse position
     const mouseDown = useCallback((e) => {
@@ -81,15 +100,15 @@ export const Camera = (props) => {
             if(e.ctrlKey){
                 let val = Math.min(Math.max(-360,  (e.deltaY * 0.1) + camera.roll), 360);
                 setCamera({...camera,roll: val});
-                window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, val));
+                window.Module.ready.then(api => api.set_camera(props.zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, val));
             }
             else{
                 let val = Math.min(Math.max(-range,  (e.deltaY * 0.01) + camera.z), range);
                 setCamera({...camera, z:val});
-                window.Module.ready.then(api => api.set_camera(zoom, camera.x, camera.y, val, camera.yaw, camera.pitch, camera.roll));
+                window.Module.ready.then(api => api.set_camera(props.zoom, camera.x, camera.y, val, camera.yaw, camera.pitch, camera.roll));
             }
         }
-    },[props.tool, camera, zoom, range])
+    },[props.tool, camera, props.zoom, range])
 
     //Set event listeners
     useEffect(() => {
@@ -109,7 +128,7 @@ export const Camera = (props) => {
     },[props.tool,handleMove,mouseDown,canvasElement,mouseUp,onwheel, clicked,trackMouse]);
 
     //Handle input
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         let val = Number(e.target.value);
         let newCamera = {...camera};
         switch(e.target.className){
@@ -135,8 +154,8 @@ export const Camera = (props) => {
                 console.log("unexpected input class");
         }
         setCamera({...newCamera});
-        window.Module.ready.then(api => api.set_camera(zoom, newCamera.x, newCamera.y, newCamera.z, newCamera.yaw, newCamera.pitch, newCamera.roll));
-    }
+        window.Module.ready.then(api => api.set_camera(props.zoom, newCamera.x, newCamera.y, newCamera.z, newCamera.yaw, newCamera.pitch, newCamera.roll));
+    },[props.zoom, camera]);
     const styles = {
         float:"left",
         minWidth:10,
@@ -146,30 +165,28 @@ export const Camera = (props) => {
         padding:"12px 0 16px 5px",
         display: "block",
         width: "100%",
-        jusContent: "center",
     }
+
     return(
         <>
-            <img src={center_icon} alt="center model icon" className="icon" onClick={(e) => {
-                setCamera(cameraOrigin);
-                window.Module.ready.then(api => api.set_camera(zoom,cameraOrigin.x, cameraOrigin.y, cameraOrigin.z, cameraOrigin.yaw, cameraOrigin.pitch, cameraOrigin.roll))
-            }}/>
+            <button id="update_camera" style={{display:"none"}} onClick={updateCamera}/>
+            <div className="reset_icon">
+                <span className="description" style={{fontSize:10, top:"100%",position:"absolute"}}>Reset Camera</span>
+                <img src={center_icon} alt="center model icon" className="icon" onClick={(e) => {
+                    setCamera(cameraOrigin);
+                    window.Module.ready.then(api => api.set_camera(props.zoom,cameraOrigin.x, cameraOrigin.y, cameraOrigin.z, cameraOrigin.yaw, cameraOrigin.pitch, cameraOrigin.roll))
+                }}/>
+            </div>
             <div className="dropdown">
-                <img src={cam_icon} alt="camera control icon" className="icon"
-                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}/>
+                <div className="camera_controls">
+                <span className="description" style={{fontSize:10, position:"absolute", top:"100%"}}>Camera Controls</span>
+                <img src={cam_icon} alt="camera control icon" className="icon" id="camera_icon"
+                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}/></div>
                 <Draggable handle=".menu-header">
                     <div className="menu-items" id="camera-menu" style={{minWidth:110,resize: "both", overflow: "auto"}}>
                         <div className="menu-header" style={{padding:5}}>Camera</div>
                         <div className="option" style={styles}>
                             X:
-                            <input type="range"
-                                   className="x-inp"
-                                   value={camera.x}
-                                   min={-range} max={range}
-                                   style={{minWidth:"1px" ,maxWidth:"500px", width:"50%"}}
-                                   step=".1"
-                                   onChange={handleChange}
-                            />
                             <input type="number"
                                    className="x-inp"
                                    min={-range} max={range}
@@ -179,14 +196,6 @@ export const Camera = (props) => {
                         </div>
                         <div className="option" style={styles}>
                             Y:
-                            <input type="range"
-                                   style={{minWidth:"1px" ,maxWidth:"500px", width:"50%"}}
-                                   className="y-inp"
-                                   value={camera.y}
-                                   min={-range} max={range}
-                                   step=".1"
-                                   onChange={handleChange}
-                            />
                             <input type="number"
                                    className="y-inp"
                                    min={-range} max={range}
@@ -196,14 +205,6 @@ export const Camera = (props) => {
                         </div>
                         <div className="option" style={styles}>
                             Z:
-                            <input type="range"
-                                   style={{minWidth:"1px" ,maxWidth:"500px", width:"50%"}}
-                                   className="z-inp"
-                                   value={camera.z}
-                                   min={-range} max={range}
-                                   step=".1"
-                                   onChange={handleChange}
-                            />
                             <input type="number"
                                    className="z-inp"
                                    min={-range} max={range}
@@ -213,14 +214,6 @@ export const Camera = (props) => {
                         </div>
                         <div className="option" style={styles}>
                             Yaw:
-                            <input type="range"
-                                   className="yaw-inp"
-                                   value={camera.yaw}
-                                   min="-360" max="360"
-                                   style={{minWidth:"1px" ,maxWidth:"500px", width:"50%"}}
-                                   step=".1"
-                                   onChange={handleChange}
-                            />
                             <input type="number"
                                    className="yaw-inp"
                                    min="-360" max="360"
@@ -230,14 +223,6 @@ export const Camera = (props) => {
                         </div>
                         <div className="option" style={styles}>
                             Pitch:
-                            <input type="range"
-                                   className="pitch-inp"
-                                   value={camera.pitch}
-                                   min="-360" max="360"
-                                   style={{minWidth:"1px" ,maxWidth:"500px", width:"50%"}}
-                                   step=".1"
-                                   onChange={handleChange}
-                            />
                             <input type="number"
                                    className="pitch-inp"
                                    min="-360" max="360"
@@ -247,14 +232,6 @@ export const Camera = (props) => {
                         </div>
                         <div className="option" style={styles}>
                             Roll:
-                            <input type="range"
-                                   className="roll-inp"
-                                   value={camera.roll}
-                                   min="-360" max="360"
-                                   style={{minWidth:"1px" ,maxWidth:"500px", width:"50%"}}
-                                   step=".1"
-                                   onChange={handleChange}
-                            />
                             <input type="number"
                                    className="roll-inp"
                                    min="-360" max="360"

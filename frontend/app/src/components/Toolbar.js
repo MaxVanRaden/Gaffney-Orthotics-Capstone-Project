@@ -22,19 +22,25 @@ export const Toolbar = () => {
     },[dev])
     return(
         <div id ="toolbar" className="toolbar">
-            <button onClick={() => window.Module.ready.then(api => api.undo())}>UNDO</button>
+            <div className="undo">
+                <span className="description" style={{fontSize:10, position:"absolute", top:"100%" ,left:5}}>Undo</span>
+                <button className="backbtn" onClick={() => window.Module.ready.then(api => api.undo())}>&#8617;</button>
+            </div>
             {/*<a href="./" className="backbtn">&#8617;</a>*/}
-            <button onClick={() => window.Module.ready.then(api => api.redo())}>REDO</button>
-            {/*<a href="./" className="backbtn">&#8618;</a>*/}
+            <div className="redo">
+                <span className="description" style={{fontSize:10, position:"absolute", top:"100%" ,left:50}}>Redo</span>
+                <button className="backbtn" onClick={() => window.Module.ready.then(api => api.redo())}>&#8618;</button>
+                {/*<a href="./" className="backbtn">&#8618;</a>*/}
+            </div>
             <button id="devToggle" className="tool" onClick={() => setDev(!dev)}>Dev Stuff</button>
             <ImportFile/>
             <ExportFile/>
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu tool={tool} setTool={setTool}/>
+            <button className="tool" onClick={() => window.Module.ready.then(api => api.flip_axis())}>Flip Axis</button>
             {/*<img src={center_icon} alt="center model icon" className="icon"/>*/}
             <Camera tool={tool} zoom={zoom}/>
-            <button onClick={() => window.Module.ready.then(api => api.flip_axis())}>Flip Axis</button>
             <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
         </div>
