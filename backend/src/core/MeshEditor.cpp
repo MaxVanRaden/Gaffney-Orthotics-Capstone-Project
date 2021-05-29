@@ -105,6 +105,12 @@ void MeshEditor::run(int width, int height) {
         twist_vertices(45);
     }
 
+    keytest = glfwGetKey(KEY_B);
+    if (keytest == GLFW_PRESS) {
+        axis = X;
+        bend_vertices();
+    }
+
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
     if(button == GLFW_PRESS) {
         mouseDown = true;
@@ -846,6 +852,40 @@ void MeshEditor::twist_vertices(float degrees) {
                     mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateZ(degrees) * translation(-center.x, -center.y, -center.z);
                     newpos = newpos * rotateAroundPoint;
                     m.vertices[v].position = newpos.xyz;
+                }
+            }
+        }
+    }
+}
+
+void MeshEditor::bend_vertices() {
+    vec3 center = calculate_avg_pos_selected_vertices();
+    for (Entity& e: entities) {
+        for (Mesh& m : e.get_current().meshes) {
+            for (u32 v : m.selected_vertices) {
+                vec4 current = {m.vertices[v].position.x, m.vertices[v].position.y, m.vertices[v].position.z, 1.0};
+                vec3 dirVector = m.vertices[v].position - center;
+                if (axis == X) {
+                    //random point from the center's x axis to generate a direction vector
+                    vec3 centerPoint = {center.x, 50, 50};
+                    vec3 centerDirVector = centerPoint - center;
+                    float dotProduct = dot(vec2 {centerDirVector.y, centerDirVector.z}, vec2 {dirVector.y, dirVector.z});
+                    //this bendNearPoint needs to be changed somehow, but I don't know how yet to get the bending effect.  This is just rotating/twisting atm
+                    mat4 bendNearPoint = translation(center.x, center.y, center.z) * rotateX(dotProduct) * translation(-center.x, -center.y, -center.z);
+                    current = current * bendNearPoint;
+                    m.vertices[v].position = current.xyz;
+                }
+                else if (axis == Y) {
+                    float dotProduct = dot(vec2 {center.x, center.z}, vec2 {dirVector.x, dirVector.z});
+                    mat4 bendNearPoint = translation(center.x, center.y, center.z) * rotateY(dotProduct) * translation(-center.x, -center.y, -center.z);
+                    current = current * bendNearPoint;
+                    m.vertices[v].position = current.xyz;
+                }
+                else if (axis == Z) {
+                    float dotProduct = dot(vec2 {center.x, center.y}, vec2 {dirVector.x, dirVector.y});
+                    mat4 bendNearPoint = translation(center.x, center.y, center.z) * rotateZ(dotProduct) * translation(-center.x, -center.y, -center.z);
+                    current = current * bendNearPoint;
+                    m.vertices[v].position = current.xyz;
                 }
             }
         }
