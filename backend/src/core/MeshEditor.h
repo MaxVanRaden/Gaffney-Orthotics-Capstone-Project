@@ -96,6 +96,7 @@ private:
 
     EditorState state;
     Axis axis;
+    Deformation deform;
 };
 
 #endif //GAFFNEY_ORTHOTICS_CAPSTONE_PROJECT_MESHEDITOR_H
