@@ -53,7 +53,7 @@ export const SelectMenu = (props) => {
     }, [canvas]);
 
     const resetClip = useCallback( (e) => {
-        globalPoints.length= 0;
+        globalPoints.splice(0, globalPoints.length);
     })
 
     const clipperClick = useCallback((e) => {
