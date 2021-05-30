@@ -49,6 +49,8 @@ public:
     void flip_axis();
     void twist_vertices(int degrees);
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
+    bool Inside(Point p, int boundary);
+    Point intersect(Point& S, Point& P, int boundary);
     void sutherland_hodgman(std::vector<Point> points);
 
 private:

@@ -148,15 +148,8 @@ extern "C" {
             points.push_back(tmp);
         }
 
-        // pseudocode for the transformation of coordinates prior to alg
-        // (might not be required, haven't looked into it yet)
-        // for: coords length
-        //      xpos = (coords.x - width / 2) / width * 2;
-        //      ypos = (height / 2 - coords.y) / height * 2;
-        //  coords.update(xpos, ypos);
-
         // not currently ready to be called
-//        editor->sutherland_hodgman(points);
+        editor->sutherland_hodgman(points);
     }
 
     void flip_axis(){

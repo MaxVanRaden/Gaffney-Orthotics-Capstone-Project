@@ -11,12 +11,14 @@
 
 #include<vector>
 
+// These two example values represent a 2D rectangle to be clipped
+// used from the original example code used as a starting point
 #define POS_P 0.5f  // temp value for an arbitrary rectangle window pos.
 #define POS_N -0.5f  // temp value for an arbitrary rectangle window pos.
 
 // judge the relationship between the point and the boundary
 // evaluated 3 times in a loop of the sutherland-h function
-bool Inside(Point p, int boundary) {
+bool MeshEditor::Inside(Point p, int boundary) {
     switch (boundary) {
         case 0: // left
             if (p.x >= POS_N) return true;
@@ -38,7 +40,7 @@ bool Inside(Point p, int boundary) {
 
 // get the intersection point
 // called twice in the sutherland-h function
-Point intersect(Point& S, Point& P, int boundary) {
+Point MeshEditor::intersect(Point& S, Point& P, int boundary) {
     Point tmp;
     double dy = P.y - S.y, dx = P.x - S.x;
     // left
@@ -65,6 +67,7 @@ Point intersect(Point& S, Point& P, int boundary) {
 }
 
 // clip the polygon (sutherland-hodgman algorithm)
+// resource example used: https://github.com/zih-an/SDU-CGLabs2020/blob/main/polygonClip.cpp
 void MeshEditor::sutherland_hodgman(std::vector<Point> points) {
     std::vector<Point> clipPoints = points;
     // for each window's boundary
@@ -103,6 +106,15 @@ void MeshEditor::sutherland_hodgman(std::vector<Point> points) {
         clipPoints = remainPoints;
     }
     points = clipPoints;
+
+    // Entity::select looks like a health example of the sort of thing that will need to happen
+    // Here is a starting point for the type of thing that will need to be called later:
+//    for(Entity& e: entities) {
+//        for (int i = 0; i < points.size(); i++)
+//            e.clipping_select(points[i].x, points[i].y, look_at(cameraPos, cameraCenter), projection, viewport);
+//    }
+
+
 }
 
 
