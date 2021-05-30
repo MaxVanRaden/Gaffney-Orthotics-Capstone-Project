@@ -179,7 +179,7 @@ to call some C++ function the backend team will write.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
       let drawq = [];
-      let canvas = document.getElementById('canvas2');
+      let canvas = document.getElementById('clipperToggle');
       let width = canvas.scrollWidth;
       let height = canvas.scrollHeight;
       let ctx = canvas.getContext('2d');
@@ -211,12 +211,13 @@ to call some C++ function the backend team will write.
       //     update();
       // });
 
-      $('#canvas2').on('mousewheel DOMMouseScroll', function(event){
+      $('#canvas').on('mousewheel DOMMouseScroll', function(event){
       }).mousemove(function(event){
           // $('#coord').html([event.offsetX,event.offsetY].join(','));
       }).click(function(event){
           let args = [event.offsetX,event.offsetY];
           pushOp(args);
+          console.log(args);
       });
     </script>
   </body>

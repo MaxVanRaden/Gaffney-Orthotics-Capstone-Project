@@ -22,91 +22,46 @@ export const SelectMenu = (props) => {
         });
     }
 
-
-
-
-
-
-
-
-    function clipArea(){
-
-        let drawq = [];
-        //let canvas = document.getElementById('canvas');
-        let width = 2000;
-        let height = 2000;
-        let ctx = canvas.getContext('2d');
-
-        function pushOp(coords) {
-            drawq.push(coords);
-            update();
-        }
-        //
-        function update() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.beginPath();
-
-            ctx.moveTo(drawq[0][0], drawq[0][1]); //first vertex
-            for (let i = 1; i < drawq.length; i++)
-                ctx.lineTo(drawq[i][0], drawq[i][1]);
-            ctx.lineTo(drawq[0][0], drawq[0][1]); //back to start
-
-            ctx.strokeStyle = "red";
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            ctx.closePath();
-
-        }
-
-
-        // $('#undo').click(function() {
-        //     drawq.pop();
-        //     $('#drawq option').last().remove();
-        //     update();
-        // });
-
-        try {
-
-            let args = ((e) => {
-                drawq.push (e.pageX - canvas.offsetLeft);
-            },[canvas]);
-
-            pushOp(args);
-
-        } catch(e) {
-            console.log('Error')
-        }
-
-        console.log(drawq);
-
+    const sendPoints = (buffer, count) => {
+        window.Module.ready.then(api => api.point_click(buffer, count))
+            .catch(e => console.log("failed to send array of points to backend"));
+        console.log("Operating for sending array points concluded")
     }
 
-
-    const samplePoints = [0];
-
-    const sendClip  = useCallback((points) => {
-
-        points.push(1);
-        points.push(2);
-        points.push(3);
-        points.push(4);
+    function selectPoints(points){
         const count = points.length;
+        try{
+            const typedArray = new Float32Array(count);
+            if(!typedArray){
+                console.log("failed to convert heap of clipping point")
+            } else {
+                for (let i=0; i <points.length; i++){
+                    typedArray[i] = points[i];
+                }
+                const buffer = window.Module._malloc(typedArray.length * count);
+                window.Module.HEAP32.set(typedArray, buffer >> 2);
+                setTimeout(sendPoints(buffer, count), 1000);
+            }
+        } catch (err) {
+            console.log(err => console.log("error handling array of points for clipping tool"));
+        }
+    }
 
-        let bytesSize = new Int32Array(window.Module.HEAP32.BYTES_PER_ELEMENT);
-        const arrPtr = window.Module._malloc((count * bytesSize));
-        window.Module.HEAP32.set(points, (arrPtr / bytesSize));
-        window.Module.ready.then(api => api.point_click(points, count));
-
+    let globalPoints = [];
+    const sendClip  = useCallback((e) => {
+        selectPoints(globalPoints);
     }, [canvas]);
 
+    const resetClip = useCallback( (e) => {
+        globalPoints.length= 0;
+    })
 
-
-
-
-
-
-
-
+    const clipperClick = useCallback((e) => {
+        let x = e.pageX - canvas.offsetLeft;
+        let y = e.pageY - canvas.offsetTop;
+        globalPoints.push(x);
+        globalPoints.push(y);
+    }, [canvas]);
 
     //Store mouse position
     const mouseDown = useCallback((e) => {
@@ -136,7 +91,7 @@ export const SelectMenu = (props) => {
             canvas.onmouseup = mouseUp;
         }
         if(props.tool === "clipper") {
-            clipArea();
+            canvas.onmouseup = clipperClick;
         }
         return () => {
             canvas.onclick = null;
@@ -176,11 +131,12 @@ export const SelectMenu = (props) => {
                     <div className="option">
                         Clipping Tool
                         <input type="checkbox" checked={props.tool === "clipper"}
-                               onChange={clipArea}
+                               onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
                                value="clipper"
                                id="clipperToggle" className="toggle"
                         />
-                        {/*<button onClick={sendClip(samplePoints)}>Apply</button>*/}
+                        <button onClick={sendClip}>Apply</button>
+                        <button onClick={resetClip}>Reset</button>
                     </div>
                     <div className="option" id="hover_here">
                         Cross section<input type='checkbox' id='crossToggle' className='toggle' value="section"/>

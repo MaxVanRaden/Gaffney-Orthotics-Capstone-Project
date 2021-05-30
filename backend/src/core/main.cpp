@@ -137,15 +137,14 @@ extern "C" {
 
     void point_click(int* coords, int size){
 
+        for(int i=0; i<size; i++)
+            printf("%d\n", coords[i]);
+
         std::vector<Point> points;
         for(int i=0; i<size; i+=2){
-            printf("%d\n", coords[i]);
             Point tmp;
             tmp.x = coords[i];
-            if(i+1)
-                tmp.y = coords[i+1];
-            else
-                printf("clipping coordinates are out of sync\n");
+            tmp.y = coords[i+1];
             points.push_back(tmp);
         }
 
@@ -157,7 +156,7 @@ extern "C" {
         //  coords.update(xpos, ypos);
 
         // not currently ready to be called
-        //editor->sutherland_hodgman(points);
+//        editor->sutherland_hodgman(points);
     }
 
     void flip_axis(){
