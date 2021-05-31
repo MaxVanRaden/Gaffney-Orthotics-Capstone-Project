@@ -19,23 +19,57 @@
 // judge the relationship between the point and the boundary
 // evaluated 3 times in a loop of the sutherland-h function
 bool MeshEditor::Inside(Point p, int boundary) {
-    switch (boundary) {
-        case 0: // left
-            if (p.x >= POS_N) return true;
-            break;
-        case 1: // top
-            if (p.y <= POS_P) return true;
-            break;
-        case 2: // right
-            if (p.x <= POS_P) return true;
-            break;
-        case 3: // bottom
-            if (p.y >= POS_N) return true;
-            break;
-        default:
-            return false;
+    // Needs to be re-evaluated based on the boundaries
+    // of planes defined by the viewing space, not the
+    // "POS_N" & "POS_P" values of a non-existing rectangle
+
+    /////////////////////////////////////////////////
+    //             UNTESTED 3D SOLUTION            //
+    /////////////////////////////////////////////////
+    // writing this under the assumption that
+    // m.vertices[index].position is always <= 1
+    for (Entity& e : entities) {
+        for (Mesh &m : e.get_current().meshes) {
+            for (u32 index: m.selected_vertices) {
+                switch (boundary) {
+                    case X:
+                        if (p.x >= m.vertices[index].position.x)
+                            return true;
+                        break;
+                    case Y:
+                        if (p.y <= m.vertices[index].position.y)
+                            return true;
+                        break;
+                    default:
+                        return false;
+                }
+            }
+        }
     }
     return false;
+
+
+    /////////////////////////////////////////////////
+    //                 2D SOLUTION                 //
+    /////////////////////////////////////////////////
+//    //for all entities loop to cover avery vert?
+//    switch (boundary) {
+//        case 0: // left
+//            if (p.x >= POS_N) return true; // how to find this (<= 1) vec position?
+//            break;                         // i.e. viewing space plane boundary?
+//        case 1: // top
+//            if (p.y <= POS_P) return true;
+//            break;
+//        case 2: // right
+//            if (p.x <= POS_P) return true;
+//            break;
+//        case 3: // bottom
+//            if (p.y >= POS_N) return true;
+//            break;
+//        default:
+//            return false;
+//    }
+//    return false;
 }
 
 // get the intersection point
@@ -43,10 +77,20 @@ bool MeshEditor::Inside(Point p, int boundary) {
 Point MeshEditor::intersect(Point& S, Point& P, int boundary) {
     Point tmp;
     double dy = P.y - S.y, dx = P.x - S.x;
+
+//    for (Entity& e : entities) {
+//        for (Mesh &m : e.get_current().meshes) {
+//            for (u32 index: m.selected_vertices) {
+//
+//
+//            }
+//        }
+//    }
+
     // left
     if (boundary == 0) {
-        tmp.x = POS_N;
-        tmp.y = S.y + (POS_N - S.x) * (dy / dx);
+        tmp.x = POS_N;                              // how to find this (<= 1) vec position?
+        tmp.y = S.y + (POS_N - S.x) * (dy / dx);    // i.e. viewing space plane boundary?
     }
         // top
     else if (boundary == 1) {
@@ -63,6 +107,8 @@ Point MeshEditor::intersect(Point& S, Point& P, int boundary) {
         tmp.y = POS_N;
         tmp.x = S.x + (POS_N - S.y) * (dx / dy);
     }
+
+
     return tmp;
 }
 
@@ -70,35 +116,38 @@ Point MeshEditor::intersect(Point& S, Point& P, int boundary) {
 // resource example used: https://github.com/zih-an/SDU-CGLabs2020/blob/main/polygonClip.cpp
 void MeshEditor::sutherland_hodgman(std::vector<Point> points) {
     std::vector<Point> clipPoints = points;
-    // for each window's boundary
-    for (int boundary = 0; boundary < 4; boundary++) {
+    // currently set to evaluate the 4 sides of an
+    // arbitrary rectangle that doesn't exist
+    for (int boundary = 0; boundary < entities.size(); boundary++) {
+    //for (int boundary = 0; boundary < 4; boundary++) {
         std::vector<Point> remainPoints;  // remaining points
         // each line
         for (int i = 0; i < clipPoints.size(); i++) {
-            // S(start point) and P(end point)
-            Point S, P;
-            S = clipPoints[i];
-            if (i == clipPoints.size() - 1) P = clipPoints[0];
-            else P = clipPoints[i + 1];
+            Point start, end;
+            start = clipPoints[i];
+            if (i == clipPoints.size() - 1) end = clipPoints[0];
+            else end = clipPoints[i + 1];
 
-            //
-            if (Inside(S, boundary)) {
+            if (Inside(start, boundary)) {
+
                 // situation 1: remain the P(end point)
-                if (Inside(P, boundary)) {
-                    remainPoints.push_back(P);
+                if (Inside(end, boundary)) {
+                    remainPoints.push_back(end);
                 }
-                    // situation 3: remain the mid of S-P
+
+                // situation 3: remain the mid of S-P
                 else {
-                    Point tmp = intersect(S, P, boundary);
+                    Point tmp = intersect(start, end, boundary);
                     remainPoints.push_back(tmp);
                 }
             }
             else {
+
                 //situation 4: remain the mid of S-P and P
-                if (Inside(P, boundary)) {
-                    Point tmp = intersect(S, P, boundary);
+                if (Inside(end, boundary)) {
+                    Point tmp = intersect(start, end, boundary);
                     remainPoints.push_back(tmp);
-                    remainPoints.push_back(P);
+                    remainPoints.push_back(end);
                 }
                 // situation 2: remain nothing
             }
