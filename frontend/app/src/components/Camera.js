@@ -45,10 +45,7 @@ export const Camera = (props) => {
             window.Module._free(addr);
         });
     },[]);
-    //Set values on change
-    useEffect(() => {
-        window.Module.ready.then(api => api.set_camera(props.zoom, camera.x, camera.y, camera.z, camera.yaw, camera.pitch, camera.roll))
-    },[props.zoom, camera])
+
     //Handle mouse(and camera) movement
     const handleMove = useCallback((e) =>{
         trackMouse(e);
@@ -82,17 +79,8 @@ export const Camera = (props) => {
     //On mouse up call corresponding function
     const mouseUp = useCallback((e) => {
         setClicked(false);
-        // switch(props.tool){
-        //     case 'move':
-        //         setCamera({...moveVals.current});
-        //         updateCamera();
-        //         break;
-        //     default:
-        //         break;
-        // }
         canvasElement.onmousemove = trackMouse;
     },[canvasElement, trackMouse])
-    // },[canvasElement,props.tool, trackMouse, updateCamera])
 
     //Move camera while scrolling wheel
     const onwheel = useCallback((e) => {
@@ -154,9 +142,10 @@ export const Camera = (props) => {
             default:
                 console.log("unexpected input class");
         }
-        setCamera({...newCamera});
+        // setCamera({...newCamera});
         window.Module.ready.then(api => api.set_camera(props.zoom, newCamera.x, newCamera.y, newCamera.z, newCamera.yaw, newCamera.pitch, newCamera.roll));
-    },[props.zoom, camera]);
+        updateCamera();
+    },[props.zoom, camera, updateCamera]);
     const styles = {
         float:"left",
         minWidth:10,
@@ -180,9 +169,9 @@ export const Camera = (props) => {
             </div>
             <div className="dropdown">
                 <div className="camera_controls">
-                <span className="description" style={{fontSize:10, position:"absolute", top:"100%"}}>Camera Controls</span>
-                <img src={cam_icon} alt="camera control icon" className="icon" id="camera_icon"
-                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}/></div>
+                    <span className="description" style={{fontSize:10, position:"absolute", top:"100%"}}>Camera Controls</span>
+                    <img src={cam_icon} alt="camera control icon" className="icon" id="camera_icon"
+                         onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}/></div>
                 <Draggable handle=".menu-header">
                     <div className="menu-items" id="camera-menu" style={{minWidth:110,resize: "both", overflow: "auto"}}>
                         <div className="menu-header" style={{padding:5}}>Camera</div>

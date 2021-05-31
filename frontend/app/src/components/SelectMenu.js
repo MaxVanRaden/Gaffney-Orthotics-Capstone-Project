@@ -61,40 +61,40 @@ export const SelectMenu = (props) => {
                 Select
                 <input type="checkbox" id='selectToggle'
                        checked={props.tool === "select" || props.tool === "vertex" || props.tool === "section"}
-                onChange={e => {
-                    props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
-                }}/>
+                       onChange={e => {
+                           props.setTool(prev => prev === "select" || prev === "vertex" ? "default" : "select");
+                       }}/>
             </button>
             <Draggable>
-            <div className="menu-items" id="select-menu">
-                <div className="menu-header" style={{padding:5}}>Select</div>
-                <div className="option">
-                    Vertex
-                    <input type="checkbox" checked={props.tool === "vertex"}
-                           onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
-                           value="vertex"
-                           className="toggle"
-                    />
+                <div className="menu-items" id="select-menu">
+                    <div className="menu-header" style={{padding:5}}>Select</div>
+                    <div className="option">
+                        Vertex
+                        <input type="checkbox" checked={props.tool === "vertex"}
+                               onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
+                               value="vertex"
+                               className="toggle"
+                        />
+                    </div>
+                    <div className="option">
+                        Section
+                        <input type="checkbox" checked={props.tool === "select"}
+                               onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
+                               value="select"
+                               id="select" className="toggle"
+                        />
+                    </div>
+                    <div className="option" id="hover_here">
+                        Cross section
+                        <input type='checkbox' checked={props.tool === "section"}
+                               onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
+                               value="section"
+                               id='crossToggle' className='toggle'/>
+                    </div>
+                    <div id="hidden_box">
+                        <p id="hidden_text"> Click on the model to place a line on each side of the section you'd like to select. Right click to remove a line. </p>
+                    </div>
                 </div>
-                <div className="option">
-                    Section
-                    <input type="checkbox" checked={props.tool === "select"}
-                           onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
-                           value="select"
-                           id="selectToggle" className="toggle"
-                    />
-                </div>
-                <div className="option" id="hover_here">
-                    Cross section
-                    <input type='checkbox' checked={props.tool === "section"}
-                           onChange={e => props.setTool(e.target.value === props.tool ? "default" : e.target.value)}
-                           value="section"
-                           id='crossToggle' className='toggle'/>
-                </div>
-                <div id="hidden_box">
-                    <p id="hidden_text"> Click on the model to place a line on each side of the section you'd like to select. Right click to remove a line. </p>
-                </div>
-            </div>
             </Draggable>
         </div>
     )

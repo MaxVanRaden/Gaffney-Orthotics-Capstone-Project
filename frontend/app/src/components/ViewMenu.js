@@ -33,7 +33,7 @@ export const ViewMenu = (props) => {
                             <button value={-1} onMouseDown={zoom} onMouseUp={stop}>+</button>
                         </div>
                     </div>
-                    <a className="option" href="#">Perspective</a>
+                    {/*<a className="option" href="#">Perspective</a>*/}
                     <a className="option" onClick={() => document.getElementById('fullscreen').click()}>
                         Fullscreen
                     </a>
