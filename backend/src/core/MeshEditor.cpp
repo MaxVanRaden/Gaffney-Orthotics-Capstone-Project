@@ -25,6 +25,10 @@ extern "C" {
         return (document.getElementById('selectToggle').checked || document.getElementById('moveToggle').checked);
     });
 
+    EM_JS(void, update_camera, (), {
+        document.getElementById('update_camera').click();
+    });
+
 }
 
 void scroll_callback(int test);
@@ -252,6 +256,7 @@ void MeshEditor::camera_controls() {
             f32 pitch = (mouseY - lastMouseY) * 0.15f;
             pos = pos * rotateX(pitch) * rotateY(yaw);
             cameraPos = pos.xyz;
+            update_camera();
         }
     }
 
@@ -274,10 +279,12 @@ void MeshEditor::camera_controls() {
     if(zoomOut) {
         vec3 diff = normalize(cameraPos - cameraCenter);
         cameraPos = cameraPos + diff * 0.5f;
+        update_camera();
     }
     if(zoomIn) {
         vec3 diff = normalize(cameraPos - cameraCenter);
         cameraPos = cameraPos + diff * -0.5f;
+        update_camera();
     }
 
     glfwGetMousePos(&lastMouseX, &lastMouseY);
@@ -467,14 +474,27 @@ void MeshEditor::translate_vertices_along_axis(Axis axis) {
         }
     }
 }
-
+void MeshEditor::zoom(int dir){
+    vec3 diff = normalize(cameraPos - cameraCenter);
+    cameraPos = cameraPos + diff * (0.5f * (float)dir);
+    update_camera();
+}
 void MeshEditor::set_camera(float zoom, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ) {
     cameraPos = {posX, posY, posZ};
     cameraCenter = {lookAtX, lookAtY, lookAtZ};
     vec3 diff = normalize(cameraPos - cameraCenter);
     cameraPos = cameraPos + diff * zoom;
 }
-
+float* MeshEditor::get_camera(){
+    float* vals = new float[6];
+    vals[0] = cameraPos.x;
+    vals[1] = cameraPos.y;
+    vals[2] = cameraPos.z;
+    vals[3] = cameraCenter.x;
+    vals[4] = cameraCenter.y;
+    vals[5] = cameraCenter.z;
+    return vals;
+}
 void MeshEditor::add_model(const char* str, int fileformat) {
     redostack.clear();
     undostack.clear();

@@ -3,7 +3,6 @@ import {useState} from 'react'
 
 const Export = () => {
     const [format, setFormat] = useState('.stl');
-    //const [format] = useState('.obj');
 
     const handleChange = (e) => {setFormat(e.target.value);}
 
@@ -42,6 +41,6 @@ const Export = () => {
 
 export const ExportFile = () => {
     return (
-            <Export />
+        <Export />
     );
 }

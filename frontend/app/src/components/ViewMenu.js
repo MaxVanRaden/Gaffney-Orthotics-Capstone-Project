@@ -1,12 +1,21 @@
 /* eslint-disable */
 import Draggable from 'react-draggable';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 
 export const ViewMenu = (props) => {
     const [display,setDisplay] = useState("none");
+    const loop = useRef(0);
     useEffect(() => {
         document.getElementById("view-menu").style.display = display;
     },[display]);
+    const zoom = (e) => {
+        loop.current = setInterval(() => {
+            window.Module.ready.then(api => api.zoom(e.target.value));
+        },10);
+    }
+    const stop = ()=>{
+        clearInterval(loop.current);
+    }
 
     return (
         <div className="dropdown">
@@ -15,23 +24,20 @@ export const ViewMenu = (props) => {
                 View
             </button>
             <Draggable>
-            <div className="menu-items" id="view-menu">
-                <div className="menu-header" style={{padding:5}}>View</div>
-                <div className="option" style={{textAlign:"left"}}>
-                    Zoom
-                    <br/>
-                    <div style={{paddingRight:5, display:"inline", paddingLeft:5}}>
-                        <button onClick={() => props.setZoom(prev => prev > 0 ? prev - 1 : prev)}>-</button>
+                <div className="menu-items" id="view-menu">
+                    <div className="menu-header" style={{padding:5}}>View</div>
+                    <div className="option" style={{textAlign:"left"}}>
+                        Zoom
+                        <div style={{paddingRight:5, display:"inline", paddingLeft:5}}>
+                            <button style={{marginRight:10}} value={1} onMouseDown={zoom} onMouseUp={stop}>-</button>
+                            <button value={-1} onMouseDown={zoom} onMouseUp={stop}>+</button>
+                        </div>
                     </div>
-                    <input type="number" min="0" max="100" step="1" style={{maxWidth:50}}
-                           value={props.zoom} onChange={e => props.setZoom(Number(e.target.value))}/>%
-                    <button onClick={() => props.setZoom(prev => prev < 100 ? prev + 1 : prev)}>+</button>
+                    {/*<a className="option" href="#">Perspective</a>*/}
+                    <a className="option" onClick={() => document.getElementById('fullscreen').click()}>
+                        Fullscreen
+                    </a>
                 </div>
-                <a className="option" href="#">Perspective</a>
-                <a className="option" onClick={() => document.getElementById('fullscreen').click()}>
-                    Fullscreen
-                </a>
-            </div>
             </Draggable>
         </div>
     )

@@ -12,16 +12,25 @@ Jacob Odell,
 Carlos Sotello
 
 ## Installation
+* Ensure you have [Node.js](https://nodejs.org/en/) and [Emscripten](https://emscripten.org/docs/getting_started/downloads.html) installed
 * Navigate to *frontend/app* directory and run:
 ```
 npm install
 npm install react-draggable
 ```
+* Change line 3 in build.bat to point to emsdk in the form:
+  ```set EMSDK=C:/.../emsdk```
+* Change lines 3 & 4 in CMakeLists.txt to point to the project directory and emsdk 
+```
+set(PWD "C:/.../Gaffney-Orthotics-Capstone-Project")
+set(EMSDK "C:/.../emsdk")
+```  
 * Navigate to the root directory and run:
 ```
 build
 ```
-
+* After the project is built a dev server will start. 
+For an optomized build navigate to frontend/app and run ```npm run-script build```
 ## Documentation
 
 ### Front End

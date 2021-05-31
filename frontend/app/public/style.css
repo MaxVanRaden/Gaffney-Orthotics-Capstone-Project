@@ -111,6 +111,7 @@ div.toolbar {
     font-weight: bolder;
     font-size: 20px;
     text-decoration: none;
+    cursor: pointer;
 }
 .tool {
     font-family: sans-serif;
@@ -198,6 +199,11 @@ div.toolbar {
 .menu-items a:hover {background-color: #ddd; cursor:pointer;}
 /*.dropdown:hover .menu-items {display: block;}*/
 #export-menu:hover .menu-items {display: block;}
+.description {display: none;}
+.reset_icon:hover .description {display: block;}
+.camera_controls:hover .description {display: block;}
+.undo:hover .description {display: block;}
+.redo:hover .description {display: block;}
 .toolGroup {
     display: flex;
     flex-flow: row wrap;

@@ -1,4 +1,3 @@
-// import {TranslateVertex} from "./Translate";
 import {ExportFile} from "./ExportFile";
 import {ImportFile} from "./ImportFile";
 import {ViewMenu} from "./ViewMenu";
@@ -8,7 +7,6 @@ import {Coords} from "./Coords";
 import {Camera} from "./Camera";
 import {useState, useEffect} from 'react'
 import {ToolGroup} from "./ToolGroup";
-//import center_icon from "../button_icons/center_icon.jpg"
 
 export const Toolbar = () => {
     const [tool, setTool] = useState('default');
@@ -22,19 +20,22 @@ export const Toolbar = () => {
     },[dev])
     return(
         <div id ="toolbar" className="toolbar">
-            <button onClick={() => window.Module.ready.then(api => api.undo())}>UNDO</button>
-            {/*<a href="./" className="backbtn">&#8617;</a>*/}
-            <button onClick={() => window.Module.ready.then(api => api.redo())}>REDO</button>
-            {/*<a href="./" className="backbtn">&#8618;</a>*/}
+            <div className="undo">
+                <span className="description" style={{fontSize:10, position:"absolute", top:"100%" ,left:5}}>Undo</span>
+                <button className="backbtn" onClick={() => window.Module.ready.then(api => api.undo())}>&#8617;</button>
+            </div>
+            <div className="redo">
+                <span className="description" style={{fontSize:10, position:"absolute", top:"100%" ,left:50}}>Redo</span>
+                <button className="backbtn" onClick={() => window.Module.ready.then(api => api.redo())}>&#8618;</button>
+            </div>
             <button id="devToggle" className="tool" onClick={() => setDev(!dev)}>Dev Stuff</button>
             <ImportFile/>
             <ExportFile/>
             <ViewMenu zoom={zoom} setZoom={setZoom}/>
             <EditMenu/>
             <SelectMenu tool={tool} setTool={setTool}/>
-            {/*<img src={center_icon} alt="center model icon" className="icon"/>*/}
+            <button className="tool" onClick={() => window.Module.ready.then(api => api.flip_axis())}>Flip Axis</button>
             <Camera tool={tool} zoom={zoom}/>
-            <button onClick={() => window.Module.ready.then(api => api.flip_axis())}>Flip Axis</button>
             <ToolGroup tool={tool} setTool={setTool}/>
             <Coords/>
         </div>
