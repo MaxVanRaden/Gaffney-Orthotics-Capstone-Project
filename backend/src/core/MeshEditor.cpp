@@ -99,13 +99,7 @@ void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
     mat4 view = look_at(cameraPos, cameraCenter);
 
-    int keytest = glfwGetKey(KEY_P);
-    if (keytest == GLFW_PRESS){
-        axis = Y;
-        twist_vertices(45);
-    }
-
-    keytest = glfwGetKey(KEY_B);
+    int keytest = glfwGetKey(KEY_B);
     if (keytest == GLFW_PRESS) {
         axis = X;
         bend_vertices();
@@ -832,6 +826,9 @@ void MeshEditor::flip_axis() {
         fliparrows = true;
 }
 
+//This function twists the selected vertices
+//by the degrees sent by the user/frontend
+//frontend should also designate the axis the user wants the twist
 void MeshEditor::twist_vertices(float degrees) {
     vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
@@ -858,6 +855,9 @@ void MeshEditor::twist_vertices(float degrees) {
     }
 }
 
+//This function bends the selected vertices
+//based on the center of said vertices
+//frontend should designate the axis the user wants the bend
 void MeshEditor::bend_vertices() {
     vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
