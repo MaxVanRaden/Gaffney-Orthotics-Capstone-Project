@@ -406,8 +406,9 @@ void MeshEditor::draw() {
             translate_vertices_along_axis();
         } else {
             if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
+                if(axis_clicked)
+                    set_undo();
                 axis_clicked = false;
-                //TODO: Consider this a complete operation, so save the model here
             }
         }
     }
