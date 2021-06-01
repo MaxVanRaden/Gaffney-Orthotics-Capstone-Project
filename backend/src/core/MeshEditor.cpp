@@ -9,12 +9,6 @@
 
 #define MAX_REVERT_COUNT 25 // total number of state changes that can be stored in undo/redo
 
-enum axis {
-    x,
-    y,
-    z
-};
-
 extern "C" {
 
     EM_JS(float, get_translation_factor, (), {
@@ -52,7 +46,7 @@ MeshEditor::MeshEditor() {
     undostack.emplace_back(entities.back());
     //TODO: [DEV] Comment out staircaseobj
     entities.back().load(staircaseobjhardcoded, 0);
-    entities.back().set_position({4, 4, 4});
+    //entities.back().set_position({4, 4, 4});
     projection = perspective_projection(90, 16.0f / 9.0f, 0.01f, 3000.0f);
     //move_cam_backwards(&camera, 10);
     cameraPos.x = cameraPos.y = cameraPos.z = 4;
@@ -108,6 +102,12 @@ MeshEditor::MeshEditor() {
 void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
     mat4 view = look_at(cameraPos, cameraCenter);
+
+    int keytest = glfwGetKey(KEY_T);
+    if (keytest == GLFW_PRESS) {
+        axis = X;
+        twist_vertices(45);
+    }
 
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
     if(button == GLFW_PRESS) {
@@ -323,7 +323,6 @@ void MeshEditor::draw() {
 
     if(state == STATE_SELECT_VERTICES && draw_arrows) {
         vec2 mouse;
-        Axis axis;
         int x;
         int y;
         glfwGetMousePos(&x, &y);
@@ -404,7 +403,7 @@ void MeshEditor::draw() {
         glEnable(GL_DEPTH_TEST);
 
         if (glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && axis_clicked && !is_select_or_move_checked()) {
-            translate_vertices_along_axis(axis);
+            translate_vertices_along_axis();
         } else {
             if(glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
                 axis_clicked = false;
@@ -439,7 +438,7 @@ void MeshEditor::draw() {
 }
 
 //Translates vertices along the passed in axis if the left mouse button is being pressed.
-void MeshEditor::translate_vertices_along_axis(Axis axis) {
+void MeshEditor::translate_vertices_along_axis() {
     //Z axis is flipped for some reason
     float translation_factor;
     if (axis == Z)
@@ -846,6 +845,73 @@ void MeshEditor::flip_axis() {
     else
         fliparrows = true;
 }
+
+//This function twists the selected vertices
+//by the degrees sent by the user/frontend
+//frontend should also designate the axis the user wants the twist
+void MeshEditor::twist_vertices(float degrees) {
+    vec3 center = calculate_avg_pos_selected_vertices();
+    for (Entity& e: entities) {
+        for (Mesh& m : e.get_current().meshes) {
+            for (u32 v : m.selected_vertices) {
+                vec4 newpos = {m.vertices[v].position.x, m.vertices[v].position.y, m.vertices[v].position.z, 1.0};
+                if (axis == X) {
+                    mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateX(degrees) * translation(-center.x, -center.y, -center.z);
+                    newpos = newpos * rotateAroundPoint;
+                    m.vertices[v].position = newpos.xyz;
+                }
+                else if (axis == Y) {
+                    mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateY(degrees) * translation(-center.x, -center.y, -center.z);
+                    newpos = newpos * rotateAroundPoint;
+                    m.vertices[v].position = newpos.xyz;
+                }
+                else if (axis == Z) {
+                    mat4 rotateAroundPoint = translation(center.x, center.y, center.z) * rotateZ(degrees) * translation(-center.x, -center.y, -center.z);
+                    newpos = newpos * rotateAroundPoint;
+                    m.vertices[v].position = newpos.xyz;
+                }
+            }
+        }
+    }
+}
+
+//This function bends the selected vertices
+//based on the center of said vertices
+//frontend should designate the axis the user wants the bend
+//could not get this to function in time before deadline
+/*void MeshEditor::bend_vertices() {
+    vec3 center = calculate_avg_pos_selected_vertices();
+    for (Entity& e: entities) {
+        for (Mesh& m : e.get_current().meshes) {
+            for (u32 v : m.selected_vertices) {
+                vec4 current = {m.vertices[v].position.x, m.vertices[v].position.y, m.vertices[v].position.z, 1.0};
+                vec3 dirVector = m.vertices[v].position - center;
+                if (axis == X) {
+                    //random point from the center's x axis to generate a direction vector
+                    vec3 centerPoint = {center.x, 50, 50};
+                    vec3 centerDirVector = centerPoint - center;
+                    float dotProduct = dot(vec2 {centerDirVector.y, centerDirVector.z}, vec2 {dirVector.y, dirVector.z});
+                    //this bendNearPoint needs to be changed somehow, but I don't know how yet to get the bending effect.  This is just rotating/twisting atm
+                    mat4 bendNearPoint = translation(center.x, center.y, center.z) * rotateX(dotProduct) * translation(-center.x, -center.y, -center.z);
+                    current = current * bendNearPoint;
+                    m.vertices[v].position = current.xyz;
+                }
+                else if (axis == Y) {
+                    float dotProduct = dot(vec2 {center.x, center.z}, vec2 {dirVector.x, dirVector.z});
+                    mat4 bendNearPoint = translation(center.x, center.y, center.z) * rotateY(dotProduct) * translation(-center.x, -center.y, -center.z);
+                    current = current * bendNearPoint;
+                    m.vertices[v].position = current.xyz;
+                }
+                else if (axis == Z) {
+                    float dotProduct = dot(vec2 {center.x, center.y}, vec2 {dirVector.x, dirVector.y});
+                    mat4 bendNearPoint = translation(center.x, center.y, center.z) * rotateZ(dotProduct) * translation(-center.x, -center.y, -center.z);
+                    current = current * bendNearPoint;
+                    m.vertices[v].position = current.xyz;
+                }
+            }
+        }
+    }
+} */
 
 MeshEditor::~MeshEditor() {
     shader.dispose();

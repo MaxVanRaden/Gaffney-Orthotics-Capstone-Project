@@ -116,6 +116,10 @@ extern "C" {
         return editor->get_camera();
     }
 
+    void twist_vertices(float degrees){
+        editor->twist_vertices(degrees);
+    }
+    
 	// Scale every vertex in every mesh in every entity by the factor passed in
 	void scale(float factor){
         if(initialized){
