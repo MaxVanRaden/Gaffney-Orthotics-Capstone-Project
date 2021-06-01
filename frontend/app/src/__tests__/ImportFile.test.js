@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import Enzyme from 'enzyme';
 import { shallow } from 'enzyme';
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { ImportFile } from './ImportFile';
+import { ImportFile } from '../components/ImportFile';
 
 Enzyme.configure({ adapter: new Adapter() });
 
