@@ -4,9 +4,7 @@ import cam_icon from '../button_icons/camera_icon.jpg';
 import center_icon from "../button_icons/center_icon.jpg";
 export const Camera = (props) => {
     const [display,setDisplay] = useState("none");
-    useEffect(() => {
-        document.getElementById("camera-menu").style.display = display;
-    },[display]);
+
     const cameraOrigin = {
         x: 2,
         y: 3,
@@ -173,7 +171,7 @@ export const Camera = (props) => {
                     <img src={cam_icon} alt="camera control icon" className="icon" id="camera_icon"
                          onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}/></div>
                 <Draggable handle=".menu-header">
-                    <div className="menu-items" id="camera-menu" style={{minWidth:110,resize: "both", overflow: "auto"}}>
+                    <div className="menu-items" id="camera-menu" style={{minWidth:110,resize: "both", overflow: "auto", display:display}}>
                         <div className="menu-header" style={{padding:5}}>Camera</div>
                         <div className="option" style={styles}>
                             X:

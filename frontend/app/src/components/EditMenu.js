@@ -1,15 +1,10 @@
-/* eslint-disable */
 import Draggable from 'react-draggable';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 
 export const EditMenu = () => {
     const [display,setDisplay] = useState("none");
-    useEffect(() => {
-        document.getElementById("edit-menu").style.display = display;
-    },[display]);
-    useEffect(() => {
-        document.getElementById("translationFactor").value = 0.001;
-    })
+    const [factor, setFactor] = useState(0.001);
+
     //Scale the model
     const Scale = () => {
         let val = document.getElementById("scale-val").value;
@@ -29,7 +24,7 @@ export const EditMenu = () => {
             <button className="tool"
                     onClick={(e) => setDisplay(prev => prev === "none" ? "block" : "none")}>Edit</button>
             <Draggable>
-                <div className="menu-items" id="edit-menu">
+                <div className="menu-items" id="edit-menu" style={{display:display}}>
                     <div className="menu-header" style={{padding:5}}>Edit</div>
                     <div className="option">
                         Scale Model
@@ -102,7 +97,8 @@ export const EditMenu = () => {
                             <input type='number' id='translationFactor'
                                    min='0.001' step='0.01'
                                    style={{width:60}}
-                                //value="0.01" Can't set value to literal or it won't change
+                                   value={factor}
+                                   onChange={(e) => setFactor(Number(e.target.value))}
                             />
                         </div>
                     </div>
