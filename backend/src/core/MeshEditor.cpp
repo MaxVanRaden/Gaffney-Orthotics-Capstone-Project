@@ -99,10 +99,10 @@ void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
     mat4 view = look_at(cameraPos, cameraCenter);
 
-    int keytest = glfwGetKey(KEY_B);
+    int keytest = glfwGetKey(KEY_T);
     if (keytest == GLFW_PRESS) {
         axis = X;
-        bend_vertices();
+        twist_vertices(45);
     }
 
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
@@ -858,7 +858,8 @@ void MeshEditor::twist_vertices(float degrees) {
 //This function bends the selected vertices
 //based on the center of said vertices
 //frontend should designate the axis the user wants the bend
-void MeshEditor::bend_vertices() {
+//could not get this to function in time before deadline
+/*void MeshEditor::bend_vertices() {
     vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
         for (Mesh& m : e.get_current().meshes) {
@@ -890,7 +891,7 @@ void MeshEditor::bend_vertices() {
             }
         }
     }
-}
+} */
 
 MeshEditor::~MeshEditor() {
     shader.dispose();
