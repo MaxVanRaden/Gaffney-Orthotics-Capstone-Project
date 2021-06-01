@@ -59,9 +59,9 @@ const Import = () => {
         try {
             fileName = files[0].name;
             fileReader = new FileReader();
-            if (/^[a-zA-Z0-9_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
+            if (/^[ a-zA-Z0-9!#$%&'()+_-]+\.[.obj|.OBJ]+$/.test(fileName)) {
                 fileFormat = 0;
-            } else if (/^[a-zA-Z0-9_-]+\.[.stl|.STL]+$/.test(fileName)) {
+            } else if (/^[ a-zA-Z0-9!#$%&'()+_-]+\.[.stl|.STL]+$/.test(fileName)) {
                 if (isBinarySTL(files[0])) {
                     fileFormat = 2;
                 } else {
