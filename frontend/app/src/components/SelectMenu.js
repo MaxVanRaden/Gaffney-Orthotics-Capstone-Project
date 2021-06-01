@@ -4,9 +4,7 @@ export const SelectMenu = (props) => {
     let canvas = document.getElementById("canvas")
     const clickPos = useRef({x:0, y:0})
     const [display,setDisplay] = useState("none");
-    useEffect(() => {
-        document.getElementById("select-menu").style.display = display;
-    },[display]);
+
     //Pass selection coords to backend
     //Backend assumes (x1,y1) is top left
     function selectArea(x1, y1, x2, y2){
@@ -66,7 +64,7 @@ export const SelectMenu = (props) => {
                        }}/>
             </button>
             <Draggable>
-                <div className="menu-items" id="select-menu">
+                <div className="menu-items" id="select-menu" style={{display:display}}>
                     <div className="menu-header" style={{padding:5}}>Select</div>
                     <div className="option">
                         Vertex

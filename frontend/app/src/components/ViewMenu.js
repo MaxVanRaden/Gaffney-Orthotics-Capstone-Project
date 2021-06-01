@@ -1,13 +1,11 @@
 /* eslint-disable */
 import Draggable from 'react-draggable';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useRef} from 'react';
 
 export const ViewMenu = (props) => {
     const [display,setDisplay] = useState("none");
     const loop = useRef(0);
-    useEffect(() => {
-        document.getElementById("view-menu").style.display = display;
-    },[display]);
+
     const zoom = (e) => {
         loop.current = setInterval(() => {
             window.Module.ready.then(api => api.zoom(e.target.value));
@@ -24,7 +22,7 @@ export const ViewMenu = (props) => {
                 View
             </button>
             <Draggable>
-                <div className="menu-items" id="view-menu">
+                <div className="menu-items" id="view-menu" style={{display:display}}>
                     <div className="menu-header" style={{padding:5}}>View</div>
                     <div className="option" style={{textAlign:"left"}}>
                         Zoom

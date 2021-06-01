@@ -14,7 +14,7 @@ export const Toolbar = () => {
     const [dev, setDev] = useState(false)
     useEffect(() =>{
         let devStuff = document.getElementById("dev_stuff")
-        let body = document.getElementsByClassName("main")[0]
+        let body = document.body
         devStuff.style.display = dev ? "block" : "none";
         body.style.overflow = dev ? "visible" : "hidden";
     },[dev])
