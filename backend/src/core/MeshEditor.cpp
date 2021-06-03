@@ -93,7 +93,7 @@ MeshEditor::MeshEditor() {
 
     crossSectionBot = crossSectionTop = INVALID_CROSS_SECTION;
     placedFirstSection = false;
-
+    cameraPos = {2, 3, 15};
     //pickbuffer = create_color_buffer(1920, 1080, GL_LINEAR);
 
     glfwSetMouseWheelCallback(scroll_callback);
@@ -108,7 +108,7 @@ void MeshEditor::run(int width, int height) {
     int keytest = glfwGetKey(KEY_T);
     if (keytest == GLFW_PRESS) {
         //axis = X;
-        twist_vertices(45, X);
+        twist_vertices(45, 'X');
     }
 
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
@@ -854,7 +854,20 @@ void MeshEditor::flip_axis() {
 //by the degrees sent by the user/frontend
 //frontend should also designate the axis the user wants the twist
 void MeshEditor::twist_vertices(float degrees, char designation) {
-    axis = static_cast<Axis>(designation);
+//    axis = static_cast<Axis>(designation);
+    switch(designation){
+        case 'X':
+            axis = X;
+            break;
+        case 'Y':
+            axis = Y;
+            break;
+        case 'Z':
+            axis = Z;
+            break;
+        default:
+            return;
+    }
     vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
         for (Mesh& m : e.get_current().meshes) {

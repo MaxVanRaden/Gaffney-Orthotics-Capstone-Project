@@ -117,11 +117,11 @@ extern "C" {
     }
     //Twist selected vertices by a set amount of degrees
     //The twist is based around an Axis set by the frontend
-    void twist_vertices(float degrees, char axis){
-        if(axis == X || axis == Y || axis == Z)
-            editor->twist_vertices(degrees, axis);
+    void twist_vertices(float degrees, char* axis){
+        if(axis[0] == 'X' || axis[0] == 'Y'|| axis[0] == 'Z')
+            editor->twist_vertices(degrees, axis[0]);
         else
-            editor->twist_vertices(degrees, X);
+            editor->twist_vertices(degrees, 'X');
     }
     
 	// Scale every vertex in every mesh in every entity by the factor passed in
