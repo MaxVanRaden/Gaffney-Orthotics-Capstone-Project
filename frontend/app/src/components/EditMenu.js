@@ -1,10 +1,14 @@
 import Draggable from 'react-draggable';
-import {useState} from 'react';
+import {useState, useCallback} from 'react';
 
 export const EditMenu = () => {
     const [display,setDisplay] = useState("none");
     const [factor, setFactor] = useState(0.001);
-
+    const [twist, setTwist] = useState({
+        x:0,
+        y:0,
+        z:0
+    })
     //Scale the model
     const Scale = () => {
         let val = document.getElementById("scale-val").value;
@@ -14,6 +18,13 @@ export const EditMenu = () => {
             })
         }
     }
+    const Twist = useCallback(() => {
+        window.Module.ready.then(api => {
+            api.twist_vertices(twist.x, 'X');
+            api.twist_vertices(twist.y, 'Y');
+            api.twist_vertices(twist.z, 'Z');
+        })
+    },[twist])
 
     const styles = {
         float:"left",
@@ -65,30 +76,33 @@ export const EditMenu = () => {
                         </div>
                     </div>
                     <div className="option">
-                        Translate Vertex
+                        Twist Vertex
                         <div className="input-box">
                             <input className="bend-val"
                                    style={styles}
                                    type="number"
-                                   placeholder="0"
+                                   value={twist.x}
+                                   onChange={(e) => {setTwist({...twist,x:Number(e.target.value)})}}
                                    min="0"
                                    step="1"/>
                             <span style={{...styles, paddingLeft:2}}> X</span>
                             <input className="bend-val"
                                    style={styles}
                                    type="number"
-                                   placeholder="0"
+                                   value={twist.y}
+                                   onChange={(e) => {setTwist({...twist,y:Number(e.target.value)})}}
                                    min="0"
                                    step="1"/>
                             <span style={{...styles, paddingLeft:2}}> Y</span>
                             <input className="bend-val"
                                    style={styles}
                                    type="number"
-                                   placeholder="0"
+                                   value={twist.z}
+                                   onChange={(e) => {setTwist({...twist,z:Number(e.target.value)})}}
                                    min="0"
                                    step="1"/>
                             <span style={{...styles, paddingLeft:2}}> Z</span>
-                            <button>Apply</button>
+                            <button onClick={Twist}>Apply</button>
                         </div>
                     </div>
                     <div className="option">
