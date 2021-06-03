@@ -47,7 +47,7 @@ public:
     void undo_model();
     void redo_model();
     void flip_axis();
-    void twist_vertices(float degrees);
+    void twist_vertices(float degrees, char designation);
     //void bend_vertices();
     bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 

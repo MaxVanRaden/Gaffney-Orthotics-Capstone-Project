@@ -103,10 +103,12 @@ void MeshEditor::run(int width, int height) {
     viewport = {0, 0, (float)width, (float)height};
     mat4 view = look_at(cameraPos, cameraCenter);
 
+    //Temporary hotkey untill setup on the frontend.
+    //This also sets it to twist around the X axis by 45 degrees.
     int keytest = glfwGetKey(KEY_T);
     if (keytest == GLFW_PRESS) {
-        axis = X;
-        twist_vertices(45);
+        //axis = X;
+        twist_vertices(45, X);
     }
 
     int button = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
@@ -117,6 +119,7 @@ void MeshEditor::run(int width, int height) {
         mouseDown = false;
     }
 
+    //Temporary hotkey untill setup on the frontend
     int keystate = glfwGetKey(KEY_C);
     if(keystate == GLFW_PRESS) {
         state = STATE_SELECT_CROSS_SECTION;
@@ -847,10 +850,11 @@ void MeshEditor::flip_axis() {
         fliparrows = true;
 }
 
-//This function twists the selected vertices
+//This function twists the selected vertices around an axis
 //by the degrees sent by the user/frontend
 //frontend should also designate the axis the user wants the twist
-void MeshEditor::twist_vertices(float degrees) {
+void MeshEditor::twist_vertices(float degrees, char designation) {
+    axis = static_cast<Axis>(designation);
     vec3 center = calculate_avg_pos_selected_vertices();
     for (Entity& e: entities) {
         for (Mesh& m : e.get_current().meshes) {

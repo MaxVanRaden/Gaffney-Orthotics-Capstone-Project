@@ -115,9 +115,13 @@ extern "C" {
 	float* get_camera(){
         return editor->get_camera();
     }
-
-    void twist_vertices(float degrees){
-        editor->twist_vertices(degrees);
+    //Twist selected vertices by a set amount of degrees
+    //The twist is based around an Axis set by the frontend
+    void twist_vertices(float degrees, char axis){
+        if(axis == X || axis == Y || axis == Z)
+            editor->twist_vertices(degrees, axis);
+        else
+            editor->twist_vertices(degrees, X);
     }
     
 	// Scale every vertex in every mesh in every entity by the factor passed in
