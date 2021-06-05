@@ -200,7 +200,7 @@ Phillip Chen (philchen@pdx.edu),<br />
 Stephanie Beagle (beagle@pdx.edu),<br />
 Christopher Teters (cteters@pdx.edu),<br />
 Jacob Odell (jeo@pdx.edu),<br />
-Carlos Sotello (csotello@pdx.edu)
+Carlos Sotello (csotello@pdx.edu)<br />
 
 # License
 
