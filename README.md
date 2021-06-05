@@ -193,16 +193,14 @@ void move_cam_left(Camera cam, f32 units);
 
 ## Contact
 
-//TODO: Other people's emails here
-
-Max Van Raden (vanraden@pdx.edu),
-Corbin Stark (starkcorbin@gmail.com),
-Forest Pearson(fpearson@pdx.edu),
-Phillip Chen (philchen@pdx.edu),
-Stephanie Beagle (beagle@pdx.edu),
-Christopher Teters (cteters@pdx.edu),
-Jacob Odell (jeo@pdx.edu),
-Carlos Sotello (csotello@pdx.edu)
+Max Van Raden (vanraden@pdx.edu),<br />
+Corbin Stark (starkcorbin@gmail.com),<br />
+Forest Pearson(fpearson@pdx.edu),<br />
+Phillip Chen (philchen@pdx.edu),<br />
+Stephanie Beagle (beagle@pdx.edu),<br />
+Christopher Teters (cteters@pdx.edu),<br />
+Jacob Odell (jeo@pdx.edu),<br />
+Carlos Sotello (csotello@pdx.edu)<br />
 
 # License
 
