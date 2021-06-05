@@ -7,23 +7,99 @@
 #include "backend/src/engine/shaders.h"
 #include "backend/src/engine/render.h"
 
+#define INVALID_CROSS_SECTION 0xFFFFFF
+
+enum EditorState {
+    STATE_SELECT_ENTITY,
+    STATE_SELECT_VERTICES,
+    STATE_SELECT_CROSS_SECTION
+};
+
+enum Axis {
+    X,
+    Y,
+    Z
+};
+
+enum Deformation {
+    Bend,
+    Twist
+};
+
 class MeshEditor {
 public:
     MeshEditor();
     ~MeshEditor();
 
-    void run();
-    void add_model(const char* str);
-    char* export_model(int ID, const char* fileformat);
-    void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll);
+    void draw();
+    void run(int width, int height);
+    void camera_controls();
+
+    void add_model(const char* str, int fileformat);
+    char* export_model(const char* fileformat);
+    void set_camera(float zoom, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    float* get_camera();
+    void zoom(int dir);
     void scale_all_entities(float factor);
+    void on_mouse_up(int x, int y, int x2, int y2);
+    uint32_t get_export_strlen() const;
+    void set_undo();
+    void undo_model();
+    void redo_model();
+    void flip_axis();
+    void twist_vertices(float degrees, char designation);
+    //void bend_vertices();
+    bool is_mouse_over_arrow(vec3 o, vec3 d, mat4 transform);
 
 private:
-    std::vector<Entity> entities;
+    void translate_vertices_along_axis();
+    vec3 calculate_avg_pos_selected_vertices();
 
+    std::vector<Entity> entities;
+    int selectedEntity;
+    std::vector<Entity> undostack;
+    std::vector<Entity> redostack;
+
+    float scale_factor;
+    bool draw_arrows;
+
+    bool axis_clicked;
+    bool fliparrows;
+
+    bool mouseDown;
+    bool waitForRelease;
+    bool shiftDown;
+    bool zoomOut;
+    bool zoomIn;
+    bool showOverlay;
+    vec3 dragDirection;
+
+    bool placedFirstSection;
+    float crossSectionBot;
+    float crossSectionTop;
+    int lastMouseX;
+    int lastMouseY;
+
+    Mesh billboard;
+    Texture circle;
+    Rect viewport;
+
+    mat4 projection;
+    PickingShader pshader{};
     StaticShader shader{};
-    Camera camera{};
+    BillboardShader bshader{};
+    Framebuffer pickbuffer;
+    //Camera camera{};
+    vec3 cameraPos;
+    vec3 cameraCenter;
     Model stairs;
+    Model cylinderModel;
+    uint32_t export_strlen;
+    Model arrow;
+
+    EditorState state;
+    Axis axis;
+    Deformation deform;
 };
 
 #endif //GAFFNEY_ORTHOTICS_CAPSTONE_PROJECT_MESHEDITOR_H

@@ -10,14 +10,18 @@
 
 int initialize();
 void mainloop();
+bool is_Binary_STL(char * name);
+void load_STL (char * buffer);
 
 //globals for now just for testing
 //look in defines.h if you want to see what this "global" type is
 global MeshEditor* editor;
 global bool initialized = false;
 
-static const int width = 1000;
-static const int height = 640;
+static int width = 800;
+static int height = 600;
+
+
 
 int main(void) 
 {
@@ -25,7 +29,7 @@ int main(void)
 		glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
 		editor = new MeshEditor();
 		initialized = true;
-		emscripten_set_main_loop(mainloop, 60, 1);
+		emscripten_set_main_loop(mainloop, 0, 1);
 	}
 
 	glfwTerminate();
@@ -39,7 +43,7 @@ void mainloop()
     //set the viewport to the same as the windows resolution (feel free to mess around with the numbers if you want to see what it does)
     glViewport(0, 0, width, height);
 
-    editor->run();
+    editor->run(width, height);
 
     glfwSwapBuffers();
     glfwPollEvents();
@@ -77,6 +81,8 @@ int initialize()
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+	glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glfwSetWindowTitle("Gaffney Orthotics");
 
     return GL_TRUE;
@@ -93,25 +99,33 @@ extern "C" {
         return x;
     }
 
-    void import_model(char* str, int len){
-//        int i;
-//        for(i = 0; i < len; i++){
-//            printf("%c", str[i]);
-//        }
-        printf("import success\n");
+
+
+    char* export_model(const char* fileformat) {
+        return editor->export_model(fileformat);
     }
 
-    char* export_model(int ID, const char* fileformat) {
-        return editor->export_model(ID, fileformat);
+    uint32_t get_export_strlen() {
+        return editor->get_export_strlen();
     }
     
 	void set_camera(float zoom, float x, float y, float z, float yaw, float pitch, float roll){
 		editor->set_camera(zoom, x, y ,z ,yaw, pitch, roll);
 	}
-
+	float* get_camera(){
+        return editor->get_camera();
+    }
+    //Twist selected vertices by a set amount of degrees
+    //The twist is based around an Axis set by the frontend
+    void twist_vertices(float degrees, char* axis){
+        if(axis[0] == 'X' || axis[0] == 'Y'|| axis[0] == 'Z')
+            editor->twist_vertices(degrees, axis[0]);
+        else
+            editor->twist_vertices(degrees, 'X');
+    }
+    
 	// Scale every vertex in every mesh in every entity by the factor passed in
 	void scale(float factor){
-        printf("backend scale got factor %f and attempted to scale\n", factor);
         if(initialized){
             editor->scale_all_entities(factor);
         }
@@ -119,5 +133,164 @@ extern "C" {
 
     bool is_ready() {
         return initialized;
+    }
+    //Set canvas size
+    void set_size(int w, int h){
+        width = w;
+        height = h;
+    }
+
+    void on_mouse_up(int x, int y, int x2, int y2){
+        printf("(%d,%d),(%d,%d)\n", x, y, x2, y2);
+        editor->on_mouse_up(x, y, x2, y2);
+    }
+
+    void flip_axis(){
+        editor->flip_axis();
+    }
+
+    // Handles strings that contain model information in the form of
+    // STL ascii & OBJ. STL files in binary format are handled by
+    // import_file, because of a UTF-8 conversion issue that starts
+    // to happen with files in the ~50MB range and higher
+    void import_model(char* buffer, int fileformat){
+        // fileformat 0: obj
+        //            1: stl (ascii)
+        //            2: stl (binary)
+        //            3: filepath
+        if (fileformat == 0 || fileformat == 1) {
+            printf("sending buffer in ascii format (obj or stl)...\n");
+            editor->add_model(buffer, fileformat);
+            printf("buffer transfer operation has concluded\n");
+        }
+        else if (fileformat == 2) {
+            printf("sending file path of model...\n");
+            load_model(buffer);
+            printf("file transfer operation has concluded\n");
+        }
+        else
+            printf("no file format reported\n");
+    }
+
+    // Currently only set to handle STL files in binary format. This could
+    // be improved later to handle STL's in ascii, but the function import_model
+    // is already functioning to do so
+    void import_file(char* file_path, int fileformat){
+        // fileformat 0: obj
+        //            1: stl (ascii)
+        //            2: stl (binary)
+        //            3: filepath
+        if (fileformat == 0) {
+            printf("sending obj file..\n");
+            editor->add_model(file_path, 0);
+            printf("file transfer operation has concluded\n");
+        }
+        else if (fileformat == 1 || fileformat == 2) {
+            FILE *file = fopen(file_path, "r+");
+            if (!file)
+                printf("cannot open file\n");
+            else {
+                fseek(file, 0, SEEK_END);
+                long fileSize = ftell(file);//Read file size
+                fseek(file, 0, SEEK_SET);
+                char *buffer = (char *) malloc(sizeof(char) * fileSize);//Apply for memory
+                long result = fread(buffer, 1, fileSize, file);//File read into buffer
+                if (result != fileSize) {
+                    printf("Reading error");
+                    printf("result = %ld  fileSize = %ld\n", result, fileSize);
+                }
+                fclose(file);
+                load_STL(buffer);
+            }
+        } else {
+            printf("unknown file format\n");
+        }
+    }
+
+    //Zoom in or out
+    void zoom(int dir){
+        //dir -1: Zoom in
+        //     1: Zoom out
+        editor->zoom(dir);
+    }
+
+    void undo(){
+        editor -> undo_model();
+    }
+
+    void redo(){
+        editor -> redo_model();
+    }
+}
+
+//ToDo: Move function to render.cpp
+bool is_Binary_STL(char * name){
+    char tag[strlen("solid") +1] = "solid";
+
+    for (int i = 0; i < strlen(tag); i++){
+        if (tag[i] != name[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+//ToDo: Move function to render.cpp
+void load_STL (char* buffer) {
+    const char *offset = buffer;
+    float temp;
+    char name[80];
+    memcpy(name, offset, 80);//Record file name
+    if(is_Binary_STL(name)) {
+        offset += 80;
+        int numTriangles;
+        memcpy(&numTriangles, offset, 4);//Record the number of triangles
+        offset += 4;
+
+        std::string view;
+        view.append("solid name\n");
+        for (int i = 0; i < numTriangles; i++) {
+            memcpy(&temp, offset, 4);
+            float normalI = temp;
+            memcpy(&temp, offset + 4, 4);
+            float normalJ = temp;
+            memcpy(&temp, offset + 8, 4);
+            float normalK = temp;
+            std::string line1 =
+                    "facet normal " +
+                    std::to_string(normalI) + " " +
+                    std::to_string(normalJ) + " " +
+                    std::to_string(normalK) +
+                    "\n  outer loop\n";
+            view.append(line1);
+            offset += 12;
+            for (int j = 0; j < 3; j++) {
+                memcpy(&temp, offset, 4);
+                float verticesX = temp;
+                memcpy(&temp, offset + 4, 4);
+                float verticesY = temp;
+                memcpy(&temp, offset + 8, 4);
+                float verticesZ = temp;
+                std::string line2 =
+                        "    vertex " +
+                        std::to_string(verticesX) + " " +
+                        std::to_string(verticesY) + " " +
+                        std::to_string(verticesZ) + "\n";
+                view.append(line2);
+                offset += 12;
+            }
+            view.append("  endloop\nendfacet\n");
+            offset += 2;
+        }
+        view.append("endsolid name\n");
+
+        printf("sending converted STL ascii string...\n");
+        editor->add_model(&view[0], 1);
+        printf("file transfer operation has concluded\n");
+    } else {
+        printf("sending STL ascii file\n");
+        //load_model(buffer);
+        editor->add_model(&buffer[0], 1);
+        printf("file transfer operation has concluded\n");
     }
 }

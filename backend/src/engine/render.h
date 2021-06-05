@@ -48,6 +48,9 @@ struct Mesh {
     GLuint ebo;
 	std::vector<Vertex> vertices;
 	std::vector<GLushort> indices;
+	// Vertices are duplicated when meshes are diagonalized.
+	std::vector<bool> selected; //shadows vertices vector indicating if selected
+	std::vector<u32> selected_vertices; //contains ONLY the indices of the selected vertices
     u32 indexcount;
     u32 material;
 };
@@ -66,15 +69,13 @@ void dispose_model(Model* model);
 Mesh create_mesh(std::vector<Vertex> vertices, std::vector<GLushort> indices);
 void load_mesh(Model* model, u32 i, const aiMesh* paiMesh);
 Model load_model(const char* filename);
-Model load_model_string(std::string file);
-void draw_mesh(Mesh mesh);
+Model load_model_string(const std::string& filepath, int fileformat);
+void draw_mesh(Mesh& mesh);
 void draw_model(Model* model);
 
 Mesh create_billboard();
-Mesh create_ground_quad(f32 width, f32 height);
-void draw_billboard_unordered(Mesh* mesh, Texture texture);
-mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, vec3 rotation, mat4& view);
+void draw_billboard_unordered(Mesh* mesh);
+mat4 no_view_scaling_transform(f32 x, f32 y, f32 z, vec3 scaleVec, vec3 cameraPos, mat4& view, f32 xrot=0, f32 yrot=0, f32 zrot=0);
 mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, mat4& view);
-mat4 billboard_transform(f32 x, f32 y, f32 z, vec3 scaleVec, f32 rotation, mat4& view);
 
 #endif

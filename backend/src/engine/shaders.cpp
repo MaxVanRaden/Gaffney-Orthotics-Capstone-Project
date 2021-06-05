@@ -2,10 +2,43 @@
 
 const int FOV = 90;
 void PickingShader::load() {
-    shader = load_shader("data/shaders/picking_vs.glsl", "data/shaders/picking_fs.glsl");
+    char vShaderStr[] = R"foo(
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+varying vec2 pass_uv;
+
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 transform;
+uniform int flip;
+
+void main(void) {
+    pass_uv = position.xy + vec2(0.5, 0.5);
+    pass_uv.y = 1.0 - pass_uv.y;
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
+}
+
+)foo";
+
+    char fShaderStr[] = R"foo(
+precision mediump float;
+varying vec2 pass_uv;
+
+uniform sampler2D sprite;
+uniform vec4 pickID;
+
+void main() {
+    if(texture2D(sprite, pass_uv).a < 0.5) {
+        discard;
+    }
+    gl_FragColor = vec4(pickID.r / 255.0, pickID.g / 255.0, pickID.b / 255.0, pickID.a / 255.0);
+}
+)foo";
+    shader = load_shader_from_strings( vShaderStr, fShaderStr );
 
     start_shader(shader);
-    alpha = glGetUniformLocation(shader.ID, "alpha");
     pickID = glGetUniformLocation(shader.ID, "pickID");
     projection = glGetUniformLocation(shader.ID, "projection");
     view = glGetUniformLocation(shader.ID, "view");
@@ -63,11 +96,12 @@ uniform mat4 transform;
 uniform mat4 view;
 
 void main() {
-    pass_pos = vec3(transform * vec4(position, 1.0));
+    pass_pos = vec3(vec4(position, 1.0) * transform);
     //pass_pos = position;
     //pass_normal = transpose(inverse(mat3(transform))) * normal;
     pass_normal = vec3(transform * vec4(normal, 1.0));
-    gl_Position = projection * view * transform * vec4(position, 1.0);
+    //gl_Position = projection * view * transform * vec4(position, 1.0);
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
 }
 )foo";
 
@@ -79,6 +113,11 @@ varying vec3 pass_normal;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 cameraPos;
+uniform float alpha;
+uniform float crossSectionBottom;
+uniform float crossSectionTop;
+uniform float shouldShowCrossSection;
+uniform float solidColor;
 
 void main() {
     vec3 normal = normalize(pass_normal);
@@ -96,8 +135,23 @@ void main() {
     spec = spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec * spec;
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 lighting = (ambient + diffuse + specular) * lightColor;
-    gl_FragColor = vec4(lighting, 1.0);
+    if(solidColor > 0.5) {
+        gl_FragColor = vec4(lightColor, 1.0);
+    } else {
+        vec3 lighting = (ambient + diffuse + specular) * lightColor;
+        gl_FragColor = vec4(lighting, 1.0);
+        gl_FragColor.a = alpha;
+    }
+
+    if(shouldShowCrossSection > 0.5) {
+        if(pass_pos.y >= crossSectionTop-0.015 && pass_pos.y <= crossSectionTop+0.015) {
+            gl_FragColor = vec4(1, 0.4, 0.4, 1);
+        }
+
+        if(pass_pos.y >= crossSectionBottom-0.015 && pass_pos.y <= crossSectionBottom+0.015) {
+            gl_FragColor = vec4(1, 0.4, 0.4, 1);
+        }
+    }
 }
 )foo";
 	shader = load_shader_from_strings( vShaderStr, fShaderStr );
@@ -114,9 +168,18 @@ void main() {
     transform = glGetUniformLocation(shader.ID, "transform");
     view = glGetUniformLocation(shader.ID, "view");
     lightspace = glGetUniformLocation(shader.ID, "lightspace");
+    alpha = glGetUniformLocation(shader.ID, "alpha");
+    solidColor = glGetUniformLocation(shader.ID, "solidColor");
+
+    crossSectionBot = glGetUniformLocation(shader.ID, "crossSectionBottom");
+    crossSectionTop = glGetUniformLocation(shader.ID, "crossSectionTop");
+    showCrossSection = glGetUniformLocation(shader.ID, "shouldShowCrossSection");
 
     glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(90, 16.0f / 9.0f, 1.0f, 300.0f).elements));
-	
+
+    set_show_cross_section(false);
+    set_solid_color(false);
+    set_alpha(1.0f);
 	set_light_color(1.0, 1.0, 1.0);
 	set_light_pos(-4, 24, -2);
 	set_camera_pos(7, 7, 7);
@@ -126,6 +189,24 @@ void main() {
 	set_shadows_on(true);
 
     printf("static shader constructed\n");
+}
+
+void StaticShader::set_alpha(float alpha) const {
+    glUniform1f(this->alpha, alpha);
+}
+
+void StaticShader::set_solid_color(bool solid) const {
+    glUniform1f(this->solidColor, solid);
+}
+
+void StaticShader::set_cross_section_top(float y) const {
+    glUniform1f(this->crossSectionTop, y);
+}
+void StaticShader::set_cross_section_bot(float y) const {
+    glUniform1f(this->crossSectionBot, y);
+}
+void StaticShader::set_show_cross_section(bool show) const {
+    glUniform1f(this->showCrossSection, (float)show);
 }
 
 void StaticShader::dispose() {
@@ -166,4 +247,82 @@ void StaticShader::set_view(mat4 view) {
 
 void StaticShader::set_lightspace(mat4 LSM) {
     glUniformMatrix4fv(lightspace, 1, GL_FALSE, LSM.elements);
+}
+
+
+//BILLBOARDS
+
+void BillboardShader::load() {
+    char vShaderStr[] = R"foo(
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+varying vec2 pass_uv;
+
+uniform mat4 projection;
+uniform mat4 transform;
+uniform mat4 view;
+
+void main() {
+    pass_uv = position.xy + vec2(0.5, 0.5);
+    gl_Position = vec4(position, 1.0) * transform * view * projection;
+}
+)foo";
+
+    char fShaderStr[] = R"foo(
+precision mediump float;
+varying vec2 pass_uv;
+uniform sampler2D tex;
+uniform vec4 tint;
+
+void main() {
+    vec4 tex = texture2D(tex, pass_uv);
+    if(tex.a < 0.45)
+        discard;
+
+    gl_FragColor = tex * tint;
+    //gl_FragColor = vec4(1, 1, 0, 1);
+}
+)foo";
+    shader = load_shader_from_strings( vShaderStr, fShaderStr );
+
+    start_shader(shader);
+    upload_int(shader, "tex", 0);
+    projection = glGetUniformLocation(shader.ID, "projection");
+    transform = glGetUniformLocation(shader.ID, "transform");
+    view = glGetUniformLocation(shader.ID, "view");
+    tint = glGetUniformLocation(shader.ID, "tint");
+
+    glUniformMatrix4fv(projection, 1, GL_FALSE, (perspective_projection(90, 16.0f / 9.0f, 1.0f, 300.0f).elements));
+
+    set_transform(identity());
+    set_view(identity());
+    set_tint({25.0f/255.0f, 25.0f/255.0f, 25.0f/255.0f, 255.0f/255.0f});
+
+    printf("billboard shader constructed\n");
+}
+
+void BillboardShader::dispose() {
+    dispose_shader(shader);
+}
+
+void BillboardShader::bind() {
+    start_shader(shader);
+}
+
+void BillboardShader::set_projection(mat4 proj) {
+    glUniformMatrix4fv(projection, 1, GL_FALSE, proj.elements);
+}
+
+void BillboardShader::set_view(mat4 view) {
+    glUniformMatrix4fv(this->view, 1, GL_FALSE, view.elements);
+}
+
+void BillboardShader::set_transform(mat4 transform) {
+    glUniformMatrix4fv(this->transform, 1, GL_FALSE, transform.elements);
+}
+
+void BillboardShader::set_tint(vec4 tint) {
+    glUniform4f(this->tint, tint.x, tint.y, tint.z, tint.w);
 }

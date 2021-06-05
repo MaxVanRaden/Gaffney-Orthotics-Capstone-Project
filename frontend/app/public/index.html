@@ -25,7 +25,8 @@ to call some C++ function the backend team will write.
     <script src="https://cdn.jsdelivr.net/gh/inexorabletash/text-encoding@master/lib/encoding.js"></script>
   </head>
 
-<body>
+<body class="main">
+
 <!--<p align="left">HTML</p>-->
 <!--<div class='container'>-->
 <!--&lt;!&ndash; Nav Bar &ndash;&gt;-->
@@ -41,11 +42,11 @@ to call some C++ function the backend team will write.
 <!--  <a href="#" class="backbtn">&#8617;</a>-->
   <!-- Input file button -->
 <!--  <div class="tool" id='import'>-->
-  <input type='file'
-         id='file'
-         class='input-file'
-         accept='.stl, .obj'
-         />
+<!--  <input type='file'-->
+<!--         id='file'-->
+<!--         class='input-file'-->
+<!--         accept='.stl, .obj'-->
+<!--         />-->
 <!--  </div>-->
 <!--  <div class="tool"-->
 <!--        id="overlay"-->
@@ -110,11 +111,9 @@ to call some C++ function the backend team will write.
   <hr/>
   <div class="emscripten">
     <!-- Initialization check is done on backend -->
-    <input type='number' id='scale_entity' value=100>Scale by %</input>
-    <button onclick='_scale(document.getElementById("scale_entity").value / 100)'>Scale</button>
     <input type="checkbox" id="resize">Resize canvas
     <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
-    <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,
+    <input type="button" value="Fullscreen" id="fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked,
                                                                                 document.getElementById('resize').checked)">
     </div>
 
@@ -138,6 +137,14 @@ to call some C++ function the backend team will write.
 			//make sure backend code has initialized first
 			while(!_is_ready()) {}
 			//then call c++ code
+            let canvas = document.getElementById("canvas")
+            let w = canvas.clientWidth;
+			let h = canvas.clientHeight;
+			if(w !== canvas.width || h !== canvas.height){
+			  canvas.width = w;
+			  canvas.height = h;
+            }
+			_set_size(w, h);
 			_print_hello(5);
 			_print_hello(15);
 			_print_hello(25);
@@ -145,6 +152,39 @@ to call some C++ function the backend team will write.
 		}
 	</script>
 
+    <!-- Library for Marquee tool -->
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/selection-js/lib/selection.min.js"></script>
+    <!-- Marquee tool for grabbing coordinates -->
+    <script>
+      const selection = new SelectionArea({
+        // Class for the selection-area element.
+        class: 'selection-area',
 
+        // Query selectors for elements from where a selection can be started from.
+        startareas: ['#canvas'],
+
+        // Query selectors for elements which will be used as boundaries for the selection.
+        boundaries: ['#canvas'],
+      })
+      //disable selection when moving camera
+      .on('beforestart', e => {
+        return document.getElementById('select').checked
+      });
+
+      // let canvasElement = document.getElementById('canvas');
+      // let x = 0;
+      // let y = 0;
+      //
+      // canvasElement.onmousedown = function mouseDown(e) {
+      //   x = e.pageX - this.offsetLeft;
+      //   y = e.pageY - this.offsetTop;
+      // };
+      //
+      // canvasElement.onmouseup = function mouseUp(e) {
+      //   let x2 = e.pageX - this.offsetLeft;
+      //   let y2 = e.pageY - this.offsetTop;
+      //   window.Module.ready.then(api => console.log(api.on_mouse_up(x, y, x2, y2)));
+      // };
+    </script>
   </body>
 </html>

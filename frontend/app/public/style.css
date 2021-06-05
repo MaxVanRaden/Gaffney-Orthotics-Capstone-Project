@@ -26,8 +26,10 @@ div.emscripten_border {
     background-color: #d5d5d5;
 }
 /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
-canvas.emscripten { border: 0px none; background-color: black; }
+canvas.emscripten { border: 0px none; background-color: black; width: 100%; height: 100%}
 #dev_stuff {
+    display: none;
+    /*visibility: hidden;*/
     background-color: #2c2c2c;
     border: none;
 }
@@ -56,6 +58,18 @@ canvas.emscripten { border: 0px none; background-color: black; }
             4px 4px 0px #d5d5d5,
             7px 7px 0px rgba(0, 0, 0, 0.2);
 }
+body.main{
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+#root{
+    position: absolute;
+    width:100%;
+    height:100px;
+    padding-right: 20px;
+    margin-right: 10px;
+}
 #help {
     list-style-type: none;
     width: 60px;
@@ -79,7 +93,7 @@ a.help:hover {
     width: 100%;
 }
 div.toolbar {
-    height: 35px;
+    max-height: 35px;
     width: 100%;
     background-color: #2c2c2c;
     display: flex;
@@ -97,6 +111,7 @@ div.toolbar {
     font-weight: bolder;
     font-size: 20px;
     text-decoration: none;
+    cursor: pointer;
 }
 .tool {
     font-family: sans-serif;
@@ -112,6 +127,13 @@ div.toolbar {
     border: 2px solid;
     border-left: none;
 }
+
+.icon {
+    max-height: 35px;
+    max-width: 35px;
+}
+.icon:hover {cursor:pointer; opacity: 0.7;}
+
 #import {
     width: 80px;
     opacity: 0;
@@ -132,41 +154,74 @@ div.toolbar {
     position: relative;
     display: inline-block;
     margin-top: auto;
-    margin-bottom: auto;}
+    margin-bottom: auto;
+}
 .menu-items {
     display: none;
     position: absolute;
+    text-align: left;
     background-color: #d5d5d5;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
-.menu-items a {
+.option {
+    border-bottom: 1px solid #7c868a;
+}
+.input-box {
+    position:relative;
+}
+.bend-val {
+    left: 0;
+}
+#hidden_box {
+    display:none;
+}
+#hidden_text {
+    font-style: italic;
+    font-size: 11px;
+}
+#hover_here:hover + #hidden_box {
+    display: block;
+}
+.menu-header{
+    border-bottom: 2px solid #7c868a;
+    text-align: center;
+    background-color: #259c9c;
+    height: 15px;
+}
+.menu-items a, .menu-items div {
     color: #2c2c2c;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
-.menu-items a:hover {background-color: #ddd;}
-.dropdown:hover .menu-items {display: block;}
-.rotate {
+.menu-items a:hover {background-color: #ddd; cursor:pointer;}
+/*.dropdown:hover .menu-items {display: block;}*/
+#export-menu:hover .menu-items {display: block;}
+.description {display: none;}
+.reset_icon:hover .description {display: block;}
+.camera_controls:hover .description {display: block;}
+.undo:hover .description {display: block;}
+.redo:hover .description {display: block;}
+.toolGroup {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
 }
-#rlabel {
+.toggleLabel {
     color: #d5d5d5;
     font-size: 14px;
     font-family: sans-serif;
     display: inline-block;
     line-height: 30px;
 }
-.rtoggle{
+.toggle{
     height: 15px;
     width: 15px;
     background-color: #eee;
 }
-.rtoggle:hover {cursor:pointer;}
+.toggle:hover {cursor:pointer;}
 .coords {
     display: flex;
     flex-flow: row wrap;
@@ -214,4 +269,37 @@ div.toolbar {
 @keyframes rotation {
     from {transform: rotate(0deg);}
     to {transform: rotate(360deg);}
+}
+
+/* Marquee selector tool */
+.selection-area {
+    background: rgba(46, 115, 252, 0.11);
+    border: 2px solid rgba(98, 155, 255, 0.81);
+    border-radius: 0.1em;
+}
+
+/* help.html text styles */
+.help_container {
+    margin: 10px;
+}
+.help_text {
+    font-family: sans-serif;
+}
+.help_container h2{
+    color: #2c2c2c;
+    font-family: sans-serif;
+    text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+    0px 8px 13px rgba(0,0,0,0.1),
+    0px 18px 23px rgba(0,0,0,0.1);
+}
+.subhead {
+    font-family: sans-serif;
+    font-weight: bolder;
+    color: #259c9c;
+}
+.help_img {
+    max-width: 200px;
+    height: auto;
+    margin-left: 20px;
+    box-shadow: 2px 2px #259c9c;
 }

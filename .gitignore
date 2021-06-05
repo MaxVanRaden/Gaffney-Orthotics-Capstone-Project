@@ -1,4 +1,7 @@
 /cmake-build-debug
-/build/backend
+/backend/build
 frontend/app/node_modules
 .idea
+# compilier files
+/frontend/app/public/backend.js
+/frontend/app/public/backend.wasm
